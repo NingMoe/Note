@@ -1,0 +1,458 @@
+###################### Filebeat Configuration Example #########################
+
+# This file is an example configuration file highlighting only the most common
+# options. The filebeat.full.yml file from the same directory contains all the
+# supported options with more comments. You can use it as a reference.
+#
+# You can find the full configuration reference here:
+# https://www.elastic.co/guide/en/beats/filebeat/index.html
+
+#=========================== Filebeat prospectors =============================
+
+filebeat.prospectors:
+
+# Each - is a prospector. Most options can be set at the prospector level, so
+# you can use different prospectors for various configurations.
+# Below are the prospector specific configurations.
+
+- input_type: log
+  paths:
+    - /proj/logs/app/backend/xiaopeng_wap_*.log
+  document_type: xiaopeng_wap_log
+  multiline:
+        pattern: '^2018'
+        negate: true
+        match: after
+  fields:
+    tag: business
+
+- input_type: log
+  paths:
+    - /proj/logs/app/backend/vipbg_web_*.log
+  document_type: vipbg_web_log
+  multiline:
+        pattern: '^2018'
+        negate: true
+        match: after
+  fields:
+    tag: business
+    
+- input_type: log
+  paths:
+    - /proj/logs/app/backend/vipbg_wap_*.log
+  document_type: vipbg_wap_log
+  multiline:
+        pattern: '^2018'
+        negate: true
+        match: after
+  fields:
+    tag: business    
+
+- input_type: log
+  paths:
+    - /proj/logs/app/mmspromo/xiaopeng_mmspromoadmin_*.log
+  document_type: xiaopeng_mmspromoadmin_log
+  multiline:
+        pattern: '^2018'
+        negate: true
+        match: after
+  fields:
+    tag: business
+    
+- input_type: log
+  paths:
+    - /proj/logs/app/mmspromo/xiaopeng_mmspromoadmin_*.err
+  document_type: xiaopeng_mmspromoadmin_err_log
+  multiline:
+        pattern: '^2018'
+        negate: true
+        match: after
+  fields:
+    tag: business
+
+- input_type: log
+  paths:
+    - /proj/logs/app/backend/xiaopeng_backend_*.err
+  document_type: xiaopeng_backend_log_err
+  multiline:
+        pattern: '^2018'
+        negate: true
+        match: after
+  fields:
+    tag: business
+    
+- input_type: log
+  paths:
+    - /proj/logs/app/backend/xiaopeng_backend_*.log
+  document_type: xiaopeng_backend_log
+  multiline:
+        pattern: '^2018'
+        negate: true
+        match: after
+  fields:
+    tag: business
+    
+- input_type: log
+  paths:
+    - /proj/logs/app/pyw_app.log
+  document_type: pyw_app_log
+  multiline:
+        pattern: '^2018'
+        negate: true
+        match: after
+  fields:
+    tag: business    
+
+- input_type: log
+  paths:
+    - /proj/logs/app/sdk_server/sdk_server_201*.log
+  document_type: sdk_server_log
+  multiline:
+        pattern: '^2018'
+        negate: true
+        match: after
+  fields:
+    tag: business 
+    
+- input_type: log
+  paths:
+    - /proj/logs/app/sdk_server/sdk_server_*.err
+  document_type: sdk_server_err_log
+  multiline:
+        pattern: '^2018'
+        negate: true
+        match: after
+  fields:
+    tag: business
+
+- input_type: log
+  paths:
+    - /proj/logs/app/sdk_api/pywsdk_api*.log
+  document_type: sdk_api_log
+  multiline:
+        pattern: '^2018'
+        negate: true
+        match: after
+  fields:
+    tag: business
+
+- input_type: log
+  paths:
+    - /proj/logs/app/sdk_api/pywsdk_api*.err
+  document_type: sdk_api_err_log
+  multiline:
+        pattern: '^2018'
+        negate: true
+        match: after
+  fields:
+    tag: business
+     
+- input_type: log
+  paths:
+    - /proj/logs/app/uc/xiaopeng_usercenter_201*.log
+  document_type: uc_log
+  multiline:
+        pattern: '^2018'
+        negate: true
+        match: after
+  fields:
+    tag: business
+
+- input_type: log
+  paths:
+    - /proj/logs/app/faxing_admin/fx_2018-*.log
+  document_type: faxing_admin_log
+  multiline:
+        pattern: '^2018'
+        negate: true
+        match: after
+  fields:
+    tag: business
+
+- input_type: log
+  paths:
+    - /proj/logs/app/faxing_admin/fx_2018-*.err
+  document_type: faxing_admin_log
+  multiline:
+        pattern: '^2018'
+        negate: true
+        match: after
+  fields:
+    tag: business
+
+    
+    
+- input_type: log
+  paths:
+    - /proj/logs/app/xiaopeng_opensdk.log
+  document_type: xiaopeng_opensdk_log
+  multiline:
+        pattern: '^2018'
+        negate: true
+        match: after
+  fields:
+    tag: business       
+ 
+- input_type: log
+  paths:
+    - /proj/logs/app/xiaopeng_opensdk_admin.log
+  document_type: xiaopeng_opensdk_admin_log
+  multiline:
+        pattern: '^2018'
+        negate: true
+        match: after
+  fields:
+    tag: business
+
+- input_type: log
+  paths:
+    - /proj/logs/app/xiaopeng_opensdk_admin.err
+  document_type: xiaopeng_opensdk_admin_err_log
+  multiline:
+        pattern: '^2018'
+        negate: true
+        match: after
+  fields:
+    tag: business      
+
+- input_type: log
+  paths:
+    - /proj/logs/app/appapi2.2/pyw_app2_*.log
+  document_type: pyw_app2_log
+  multiline:
+        pattern: '^2018'
+        negate: true
+        match: after
+  fields:
+    tag: business  
+
+- input_type: log
+  paths:
+    - /proj/logs/app/payment/xiaopeng_payment_201*.log
+  document_type: xiaopeng_payment_log
+  multiline:
+        pattern: '^2018'
+        negate: true
+        match: after
+  fields:
+    tag: bi   
+
+- input_type: log
+  paths:
+    - /proj/logs/app/appapi2.2/pyw_app2_*.err
+  document_type: pyw_app2_err_log
+  multiline:
+        pattern: '^2018'
+        negate: true
+        match: after
+  fields:
+    tag: business        
+     
+- input_type: log
+  paths:
+    - /proj/logs/app/tg/bi/tg_bi_*.log
+  document_type: tg_bi_log
+  multiline:
+        pattern: '^2018'
+        negate: true
+        match: after
+  fields:
+    tag: bi
+ 
+- input_type: log
+  paths:
+    - /proj/logs/app/sdk_api/bi/pywsdk_api_bi_201*.log
+  document_type: pywsdk_api_bi_log
+  multiline:
+        pattern: '^2018'
+        negate: true
+        match: after
+  fields:
+    tag: bi
+
+- input_type: log
+  paths:
+    - /proj/logs/app/sdk_common/bi/sdk_common_bi_201*.log
+  document_type: sdk_common_bi_log
+  multiline:
+        pattern: '^2018'
+        negate: true
+        match: after
+  fields:
+    tag: bi
+
+- input_type: log
+  paths:
+    - /proj/logs/app/sdk_server/bi/sdk_server_bi_201*.log
+  document_type: sdk_server_bi_log
+  multiline:
+        pattern: '^2018'
+        negate: true
+        match: after
+  fields:
+    tag: bi     
+
+    
+    
+- input_type: log
+  paths:
+    - /proj/logs/app/member_app_*.log
+  document_type: member_app_bi_log
+  multiline:
+        pattern: '^2018'
+        negate: true
+        match: after
+  fields:
+    tag: bi
+
+- input_type: log
+  paths:
+    - /proj/logs/app/adv_bi/adv_bi_*.log
+  document_type: adv_bi_log
+  multiline:
+        pattern: '^2018'
+        negate: true
+        match: after
+  fields:
+    tag: bi
+ 
+- input_type: log
+  paths:
+    - /proj/logs/app/accountonline/bi_accountonline_*.log
+  document_type: accountonline_bi_log
+  multiline:
+        pattern: '^2018'
+        negate: true
+        match: after
+  fields:
+    tag: bi 
+
+- input_type: log
+  paths:
+    - /proj/logs/nginx80/*.log
+  document_type: nginx_log
+  fields:
+    tag: nginx
+    
+- input_type: log
+  paths:
+    - /proj/logs/php/php_errors.log
+  document_type: php_errors_log
+  multiline:
+        pattern: '^\['
+        negate: true
+        match: after
+  fields:
+    tag: php
+
+- input_type: log
+  paths:
+    - /proj/logs/php/php-slow.log
+  document_type: php-slow_log
+  multiline:
+        pattern: '^\[([0-9][0-9])'
+        negate: true
+        match: after
+  fields:
+    tag: php
+
+#- input_type: log
+#  paths:
+#    - /tmp/command.log
+#  document_type: command_log
+#  fields:
+#    tag: command_log 
+
+   
+
+    #- c:\programdata\elasticsearch\logs\*
+
+  # Exclude lines. A list of regular expressions to match. It drops the lines that are
+  # matching any regular expression from the list.
+  #exclude_lines: ["^DBG"]
+
+  # Include lines. A list of regular expressions to match. It exports the lines that are
+  # matching any regular expression from the list.
+  #include_lines: ["^ERR", "^WARN"]
+
+  # Exclude files. A list of regular expressions to match. Filebeat drops the files that
+  # are matching any regular expression from the list. By default, no files are dropped.
+  #exclude_files: [".gz$"]
+
+  # Optional additional fields. These field can be freely picked
+  # to add additional information to the crawled log files for filtering
+  #fields:
+  #  level: debug
+  #  review: 1
+
+  ### Multiline options
+
+  # Mutiline can be used for log messages spanning multiple lines. This is common
+  # for Java Stack Traces or C-Line Continuation
+
+  # The regexp Pattern that has to be matched. The example pattern matches all lines starting with [
+  #multiline.pattern: ^\[
+
+  # Defines if the pattern set under pattern should be negated or not. Default is false.
+  #multiline.negate: false
+
+  # Match can be set to "after" or "before". It is used to define if lines should be append to a pattern
+  # that was (not) matched before or after or as long as a pattern is not matched based on negate.
+  # Note: After is the equivalent to previous and before is the equivalent to to next in Logstash
+  #multiline.match: after
+
+
+#================================ General =====================================
+
+# The name of the shipper that publishes the network data. It can be used to group
+# all the transactions sent by a single shipper in the web interface.
+#name: magpie
+# The tags of the shipper are included in their own field with each
+# transaction published.
+#tags: ["service-X", "web-tier"]
+
+# Optional fields that you can specify to add additional information to the
+# output.
+#fields:
+#  env: staging
+
+#================================ Outputs =====================================
+
+# Configure what outputs to use when sending the data collected by the beat.
+# Multiple outputs may be used.
+
+#-------------------------- Elasticsearch output ------------------------------
+#output.elasticsearch:
+  # Array of hosts to connect to.
+#  hosts: ["172.16.15.19:800"]
+
+  # Optional protocol and basic auth credentials.
+  #protocol: "https"
+  #username: "elastic"
+  #password: "changeme"
+
+#----------------------------- Logstash output --------------------------------
+output.logstash:
+  # The Logstash hosts
+  hosts: ["172.16.15.19:5044"]#端口根据主机不同更改
+
+  # Optional SSL. By default is off.
+  # List of root certificates for HTTPS server verifications
+  #ssl.certificate_authorities: ["/etc/pki/root/ca.pem"]
+
+  # Certificate for SSL client authentication
+  #ssl.certificate: "/etc/pki/client/cert.pem"
+
+  # Client Certificate Key
+  #ssl.key: "/etc/pki/client/cert.key"
+
+#================================ Logging =====================================
+
+# Sets log level. The default log level is info.
+# Available log levels are: critical, error, warning, info, debug
+#logging.level: debug
+
+# At debug level, you can selectively enable logging only for some components.
+# To enable all selectors use ["*"]. Examples of other selectors are "beat",
+# "publish", "service".
+#logging.selectors: ["*"]

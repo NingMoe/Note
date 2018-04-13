@@ -1,0 +1,194 @@
+input {
+  beats {
+    host => "172.16.15.19"
+    port => 5044
+  }
+
+  beats {
+    host => "172.16.15.19"
+    port => 5045
+  }
+
+  beats {
+    host => "172.16.15.19"
+    port => 5046
+  }
+
+  beats {
+    host => "172.16.15.19"
+    port => 5047
+  }
+
+  beats {
+    host => "172.16.15.19"
+    port => 5048
+  }
+
+  beats {
+    host => "172.16.15.19"
+    port => 5049
+  }
+
+  beats {
+    host => "172.16.15.19"
+    port => 5050
+  }
+
+#  beats {
+#    host => "112.74.179.14"
+#    port => 5051
+#  }
+}
+
+
+filter {
+ if [type] == "sdk_huosu_log" {
+  mutate {
+  gsub => [ "message","\\n"," " ]
+  }
+  grok {
+    match => { "message" => "\[ %{TIMESTAMP_ISO8601:log_timestamp} \] %{IP:remote_addr} %{IP:slb_addr} %{WORD:verb} %{NOTSPACE:request} %{GREEDYDATA:event}"
+    }
+    remove_field => ["port","@version","host","offset","input_type","tags","count","beat"]
+  }
+    date {
+      match => ["log_timestamp" , "yyyy-MM-dd'T'HH:mm:ss+08:00"]
+     }
+}
+
+ if [type] == "mobileqry_log" {
+  grok {
+    match => { "message" => "%{TIMESTAMP_ISO8601:log_timestamp} \[%{NOTSPACE:spool}\] %{LOGLEVEL:loglevel}  %{GREEDYDATA:event}"
+    }
+    remove_field => ["port","message","@version","host","offset","input_type","tags","count","beat","spool"]
+  }
+    date {
+      match => [ "log_timestamp" , "yyyy-MM-dd HH:mm:ss.SSS" ]
+     }
+  }
+
+ if [fields][tag] == "business" {
+  grok {
+    match => { "message" => "%{TIMESTAMP_ISO8601:log_timestamp} \[%{LOGLEVEL:loglevel}\] %{GREEDYDATA:event}" 
+    }
+    remove_field => ["port","message","@version","offset","input_type","tags","count","beat"]
+   }
+    date { 
+      match => [ "log_timestamp" , "yyyy-MM-dd HH:mm:ss,SSS" ]
+     }
+  }
+
+ if [fields][tag] == "bi" {
+  grok {
+    match => { "message" => "%{TIMESTAMP_ISO8601:log_timestamp} \[%{LOGLEVEL:loglevel}\] %{GREEDYDATA:event}" 
+    }
+    remove_field => ["port","message","@version","offset","input_type","tags","count","beat"]
+   }
+    date { 
+      match => [ "log_timestamp" , "yyyy-MM-dd HH:mm:ss,SSS" ]
+     }
+  }
+
+
+
+ if [fields][tag] == "nginx" {
+  grok { 
+    match => { "message" => "(?:%{IPV4:remote_addr}|-) - (?:%{USERNAME:user}|-) \[%{HTTPDATE:log_timestamp}\] \"(?:%{WORD:verb} %{NOTSPACE:request}(?: HTTP/%{NUMBER:httpversion})?|%{DATA:rawrequest})\" %{NUMBER:status} (?:%{NUMBER:body_bytes_sent}|-) %{QS:http_referrer}%{QS:agent} (?:%{IP3:http_x_forwarded_for}|%{IP2:http_x_forwarded_for}|%{IP:http_x_forwarded_for}|-) %{NOTSPACE:http_head} %{NOTSPACE:hostname} %{NOTSPACE:upstream_response_time} %{NUMBER:request_time}" }
+    match => { "message" => "%{DATESTAMP:error_log_timestamp} \[%{LOGLEVEL:level}\] %{GREEDYDATA:event}" }
+    remove_field => ["message","@version","input_type","offset","tags","count","beat"]
+    }
+    date { match => ["log_timestamp" , "dd/MMM/yyyy:HH:mm:ss Z"] }
+    date { match => ["error_log_timestamp" , "YY/MM/dd HH:mm:ss"] }
+    mutate {
+      convert => [
+      "status" , "integer",
+      "body_bytes_sent" , "integer",
+      "request_time", "float",
+      "upstream_response_time", "float"
+      ]
+    }
+ }
+
+ if [type] == "php-slow_log" {
+    grok {
+      match => { "message" => "\[%{PHP_SLOW_DATESTAMP:log_timestamp}\]  %{GREEDYDATA:event}" }
+      remove_field => ['message','input_type','port','beat','@version','tags','offset']
+    }
+    date { match => ["log_timestamp" , "dd-MMM-yyyy HH:mm:SS"] }
+  }
+ 
+ if [type] == "php_error_log" {
+    grok {
+      match => { "message" => "\[%{PHP_ERROR_DATESTAMP:log_timestamp}\] %{GREEDYDATA:event}" }
+      remove_field => ['message','input_type','port','beat','@version','tags','offset']
+    }
+    date { match => ["log_timestamp" , "dd-MMM-yyyy HH:mm:SS"] }
+  }
+
+# if [fields][tag] == "xtag" or [fields][tag] == "isign"{
+#    grok {
+#      match => {"message" => "%{TIMESTAMP_ISO8601:log_timestamp} %{GREEDYDATA:event}"
+#    }
+#      remove_field => ["port","message","@version","host","beat","input_type","tags","count"]
+#    }
+#    date { match => [ "log_timestamp" , "yyyy-MM-dd HH:mm:ss.SSS" ] }
+#  }
+}
+
+output {
+  if [fields][tag] == "business" {
+    elasticsearch {
+      hosts => "172.16.15.19:9200"
+      index => "logstash-business-%{+YYYY-MM-dd}"
+      flush_size => 1000
+    }  
+  }
+
+  if [fields][tag] == "nginx" {
+    elasticsearch {
+      hosts => "172.16.15.19:9200"
+      index => "logstash-nginx-%{+YYYY-MM-dd}"
+      flush_size => 1000
+    }  
+  }
+
+  if [fields][tag] == "php" {
+    elasticsearch {
+      hosts => "172.16.15.19:9200"
+      index => "logstash-php-%{+YYYY-MM-dd}"
+      flush_size => 1000
+    }  
+  }
+
+  if [fields][tag] == "bi" {
+    elasticsearch {
+      hosts => "172.16.15.19:9200"
+      index => "logstash-bi-%{+YYYY-MM-dd}"
+      flush_size => 1000
+    }  
+  }
+  if [fields][tag] == "isign" {
+    elasticsearch {
+      hosts => "172.16.15.19:9200"
+      index => "logstash-applelog-%{+YYYY-MM-dd}"
+      flush_size => 1000
+    }
+  }
+
+  if [fields][tag] == "xtag" {
+    elasticsearch {
+      hosts => "172.16.15.19:9200"
+      index => "logstash-apple-xtaglog-%{+YYYY-MM-dd}"
+      flush_size => 1000
+    } 
+  }
+
+  if [fields][tag] == "huosu" {
+    stdout { codec => rubydebug }
+    elasticsearch {
+      hosts => "172.16.15.19:9200"
+      index => "logstash-huosu-%{+YYYY-MM-dd}"
+      flush_size => 1000
+    } 
+  }
+}
