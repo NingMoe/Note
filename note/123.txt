@@ -1,0 +1,153 @@
+
+pywsdkweb01 pywsdkweb02
+
+进入 /proj/server/apache-flume-1.6.0-bin 目录 ，kill 原进程 ，执行相应进程
+
+ 
+nohup bin/flume-ng agent -n a1 -c . -f conf/sdk_common_multiplexing_sink.conf -Dflume.monitoring.type=http -Dflume.monitoring.port=34556>>sdk_common_multiplexing_sink.conf.out &
+
+ 
+
+nohup bin/flume-ng agent -n a1 -Xmx512m -Xms512m -c . -f conf/sdk_multiplexing_sink.conf -Dflume.monitoring.type=http -Dflume.monitoring.port=34554>>sdk_multiplexing_sink.conf.out &  
+
+ 
+
+nohup bin/flume-ng agent -n a1 -c . -f conf/channel_mutiplxing_sink.conf -Dflume.monitoring.type=http -Dflume.monitoring.port=34553>>channel_mutiplxing_sink.conf.out &  
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1.7启动
+
+nohup bin/flume-ng agent -c conf -f conf/channel_mutiplxing_sink.conf -n a1 -Dflume.root.logger=INFO,console  -Dflume.monitoring.type=http -Dflume.monitoring.port=34553 >>channel_mutiplxing_sink.conf.out &
+
+nohup bin/flume-ng agent -c conf -f conf/sdk_multiplexing_sink.conf -n a1 -Xmx512m -Xms512m -Dflume.root.logger=INFO,console  -Dflume.monitoring.type=http -Dflume.monitoring.port=34554 >>sdk_multiplexing_sink.conf.out &
+
+nohup bin/flume-ng agent -c conf -f conf/sdk_common_multiplexing_sink.conf -n a1 -Dflume.root.logger=INFO,console  -Dflume.monitoring.type=http -Dflume.monitoring.port=34545 >>sdk_common_multiplexing_sink.conf.out &
+
+ 
+magpie,web02
+
+进入 /proj/server/apache-flume-1.6.0-bin 目录 ，kill 原进程 ，执行相应进程
+
+
+nohup bin/flume-ng agent -n a1 -Xmx512m -Xms512m  -c . -f conf/request_multiplexing_sink.conf -Dflume.monitoring.type=http -Dflume.monitoring.port=34547>>request_multiplexing_sink.conf.out &  
+ 
+nohup bin/flume-ng agent -n a1 -Xmx512m -Xms512m -c . -f conf/channel_put_multiplexing_sink.conf -Dflume.monitoring.type=http -Dflume.monitoring.port=34548>>channel_put_multiplexing_sink.conf.out &  
+
+
+nohup bin/flume-ng agent -n a1 -c . -f conf/xiaopeng_backend_sink.conf -Dflume.monitoring.type=http -Dflume.monitoring.port=34546>>xiaopeng_backend_sink.conf.out &  
+
+ 
+
+nohup bin/flume-ng agent -n a1 -Xmx512m -Xms512m -c . -f conf/xiaopeng_wap_sink.conf -Dflume.monitoring.type=http -Dflume.monitoring.port=34545>>xiaopeng_wap_sink.conf.out &
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1.7启动
+
+nohup bin/flume-ng agent -c conf -f conf/xiaopeng_wap_sink.conf -n a1 -Xmx512m -Xms512m -Dflume.root.logger=INFO,console  -Dflume.monitoring.type=http -Dflume.monitoring.port=34545 >>xiaopeng_wap_sink.conf.out &
+
+nohup bin/flume-ng agent -c conf -f conf/xiaopeng_backend_sink.conf -n a1 -Dflume.root.logger=INFO,console  -Dflume.monitoring.type=http -Dflume.monitoring.port=34546 >>xiaopeng_backend_sink.conf.out &
+
+nohup bin/flume-ng agent -c conf -f conf/request_multiplexing_sink.conf -n a1 -Xmx512m -Xms512m  -Dflume.root.logger=INFO,console  -Dflume.monitoring.type=http -Dflume.monitoring.port=34547 >>request_multiplexing_sink.conf.out &
+
+nohup bin/flume-ng agent -c conf -f conf/channel_put_multiplexing_sink.conf -n a1 -Xmx512m -Xms512m  -Dflume.root.logger=INFO,console  -Dflume.monitoring.type=http -Dflume.monitoring.port=34548 >>channel_put_multiplexing_sink.conf.out &
+
+
+
+ 
+
+adminpotal1,adminpotal2
+
+进入 /proj/server/apache-flume-1.6.0-bin 目录 ，kill 原进程 ，执行相应进程
+
+ 
+
+nohup /proj/server/apache-flume-1.6.0-bin/bin/flume-ng agent -n a1 -c . -f conf/xiaopeng_backend_sink.conf -Dflume.monitoring.type=http -Dflume.monitoring.port=34546>>xiaopeng_backend_sink.conf.out &  
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1.7启动
+
+nohup bin/flume-ng agent -c conf -f conf/xiaopeng_backend_sink.conf -n a1 -Dflume.root.logger=INFO,console  -Dflume.monitoring.type=http -Dflume.monitoring.port=34546 >>xiaopeng_backend_sink.conf.out &
+
+
+uc1,uc2
+
+进入 /proj/server/apache-flume-1.6.0-bin 目录 ，kill 原进程 ，执行相应进程
+
+nohup bin/flume-ng agent -n a1 -c . -f conf/xiaopeng_usercenter_sink.conf -Dflume.monitoring.type=http -Dflume.monitoring.port=34552>>xiaopeng_usercenter_sink.conf.out &
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1.7启动
+
+nohup bin/flume-ng agent -c conf -f conf/xiaopeng_usercenter_sink.conf -n a1 -Dflume.root.logger=INFO,console  -Dflume.monitoring.type=http -Dflume.monitoring.port=34552 >>xiaopeng_usercenter_sink.conf.out &
+
+
+ 
+
+
+dtweb01
+
+进入 /proj/server/apache-flume-1.6.0-bin 目录 ，kill 原进程 ，执行相应进程
+
+ 
+
+nohup bin/flume-ng agent -n a1 -c . -f conf/accountonline.conf -Dflume.monitoring.type=http -Dflume.monitoring.port=34557>>accountonline.conf.out &
+
+ 
+
+nohup bin/flume-ng agent -n a1 -c . -f conf/app_install.conf -Dflume.monitoring.type=http -Dflume.monitoring.port=34558>>app_install.conf.out &
+
+ 
+
+nohup bin/flume-ng agent -n a1 -c . -f conf/game_inner.conf -Dflume.monitoring.type=http -Dflume.monitoring.port=34559>>game_inner.conf.out &
+
+ 
+
+nohup bin/flume-ng agent -n a1 -c . -f conf/xiaopeng_thirddata.conf -Dflume.monitoring.type=http -Dflume.monitoring.port=34561>>xiaopeng_thirddata.conf.out &
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1.7启动
+
+nohup bin/flume-ng agent -c conf -f conf/accountonline.conf -n a1 -Dflume.root.logger=INFO,console  -Dflume.monitoring.type=http -Dflume.monitoring.port=34557 >>accountonline.conf.out &
+
+nohup bin/flume-ng agent -c conf -f conf/app_install.conf -n a1 -Dflume.root.logger=INFO,console  -Dflume.monitoring.type=http -Dflume.monitoring.port=34558 >>app_install.conf.out &
+
+nohup bin/flume-ng agent -c conf -f conf/game_inner.conf -n a1 -Dflume.root.logger=INFO,console  -Dflume.monitoring.type=http -Dflume.monitoring.port=34559 >>game_inner.conf.out &
+
+nohup bin/flume-ng agent -c conf -f conf/xiaopeng_thirddata.conf -n a1 -Dflume.root.logger=INFO,console  -Dflume.monitoring.type=http -Dflume.monitoring.port=34561 >>xiaopeng_thirddata.conf.out &
+
+ 
+
+appapi
+
+进入 /proj/server/apache-flume-1.6.0-bin 目录 ，kill 原进程 ，执行相应进程
+
+ 
+
+nohup bin/flume-ng agent -n a1 -c . -f conf/xiaopeng_wap_sink.conf -Dflume.monitoring.type=http -Dflume.monitoring.port=34545>>xiaopeng_wap_sink.conf.out &
+
+ 
+
+nohup bin/flume-ng agent -n a1 -c . -f conf/app_multiplexing_sink.conf -Dflume.monitoring.type=http -Dflume.monitoring.port=34560>>app_multiplexing_sink.conf.out &
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1.7启动
+
+nohup bin/flume-ng agent -c conf -f conf/xiaopeng_wap_sink.conf -n a1 -Dflume.root.logger=INFO,console  -Dflume.monitoring.type=http -Dflume.monitoring.port=34545 >>xiaopeng_wap_sink.conf.out &
+
+nohup bin/flume-ng agent -c conf -f conf/app_multiplexing_sink.conf -n a1 -Dflume.root.logger=INFO,console  -Dflume.monitoring.type=http -Dflume.monitoring.port=34560 >>app_multiplexing_sink.conf.out &
+ 
+
+fxweb
+
+进入 /proj/server/apache-flume-1.6.0-bin 目录 ，kill 原进程 ，执行相应进程
+
+ 
+
+nohup bin/flume-ng agent -n a1 -c . -f conf/xiaopeng_backend_sink.conf -Dflume.monitoring.type=http -Dflume.monitoring.port=34546>>xiaopeng_backend_sink.conf.out & 
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1.7启动
+
+nohup bin/flume-ng agent -c conf -f conf/xiaopeng_backend_sink.conf -n a1 -Dflume.root.logger=INFO,console  -Dflume.monitoring.type=http -Dflume.monitoring.port=34546 >>xiaopeng_backend_sink.conf.out & 
+
+ 

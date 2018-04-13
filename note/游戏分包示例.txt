@@ -1,0 +1,185 @@
+1、登录金山跳板机，
+
+2、根据不同的发行组，选择ssh不同的机器
+例如《发行二组》的分包机器是
+ssh bj-fxcdn02
+
+3、进入发行组目录，创建日期目录
+cd unpack/2groups
+mkdir 20170223
+cd 20170223/
+
+根据参数文档创建前缀名目录
+mkdir jyzt
+cd jyzt/
+
+使用bcp命令拉取游戏包
+[develop@bj-fxcdn02 20170223]$ bcp
+
+查找命令: bcp [游戏目录名]
+路径命令: bcp [游戏目录名] [游戏包名]
+拷贝命令: bcp [游戏目录名] [游戏包名] [目标地址]
+恢复命令: reftpfs (卡顿或首次登陆建议先执行reftpfs)
+
+游戏目录名在参数文档，例如：一剑飞仙-剑雨遮天
+通过
+bcp 游戏目录名 查看游戏包名 目标地址为当前目录
+例如：
+[develop@bj-fxcdn02 20170223]$ bcp 一剑飞仙-剑雨遮天
+yjfx_signed.apk  归档包（签）
+获取到游戏包名
+
+拉取游戏包到当前目录
+bcp 一剑飞仙-剑雨遮天 yjfx_signed.apk ./
+
+修改游戏包名为前缀名
+mv yhxy_signed.apk yhxy.apk
+
+复制工具到当前目录，工具在/home/develop/unpack/swdl-test
+cp /home/develop/unpack/swdl-test/*  .  
+
+把参数文档的包名复制粘贴上去list.txt
+vim list.txt
+
+查看运行命令，根据提示执行操作
+[develop@bj-fxcdn03 yhxy]$ ./getcurls.sh
+Error: ./getcurls.sh must input 2 arg
+
+E.g: ./getcurls.sh   201702  yhxy  3groups
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+一次完整的分包过程
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[develop@bj-fxcdn04 ~]$ cd unpack/4groups
+[develop@bj-fxcdn04 4groups]$ mkdir 20170506
+[develop@bj-fxcdn04 4groups]$ cd 20170506
+[develop@bj-fxcdn04 20170506]$ mdkdir tlby2
+[develop@bj-fxcdn04 20170506]$cd tlby2
+[develop@bj-fxcdn04 tlby2]$ bcp 屠龙霸业2-盛世霸业
+tlby2_signed.apk  归档包（签）
+[develop@bj-fxcdn04 tlby2]$ bcp 屠龙霸业2-盛世霸业 tlby2_signed.apk ./
+[develop@bj-fxcdn04 tlby2]$ mv tlby2_signed.apk tlby2.apk
+[develop@bj-fxcdn04 tlby2]$ cp ../../../swdl-test/* .
+[develop@bj-fxcdn04 tlby2]$ ls
+apkgen.sh  cmd.sh  cutcurls.sh  getcurls.sh  repackage.sh  run.sh  start.sh  tlby2.apk
+[develop@bj-fxcdn04 tlby2]$ vim list.txt
+csxunlei_csxxl_403201111
+csxunlei_csxxl_403201112
+csxunlei_csxxl_403201113
+csxunlei_csxxl_403201114
+csxunlei_csxxl_403201115
+csxunlei_csxxl_403201116
+other_othertlbs_403202222
+other_othertlbs_403202223
+other_othertlbs_403202224
+other_othertlbs_403202225
+other_othertlbs_403202226
+other_othertlbs_403202227
+other_othertlbs_403202228
+other_othertlbs_403202229
+other_othertlbs_403202230
+other_othertlbs_403202231
+other_othertlbs_403202232
+other_othertlbs_403202233
+other_othertlbs_403202234
+other_othertlbs_403202235
+[develop@bj-fxcdn04 tlby2]$ ./getcurls.sh 
+Error: ./getcurls.sh must input 2 arg
+
+E.g: ./getcurls.sh   201705  tlby2  4groups
+[develop@bj-fxcdn04 tlby2]$ ./getcurls.sh   201705  tlby2  4groups
+is not dir  /apps/web/tg/4groups/201705/tlby2/
+[develop@bj-fxcdn04 tlby2]$ mkdir -p /apps/web/tg/4groups/201705/tlby2/
+[develop@bj-fxcdn04 tlby2]$ pwd
+/home/develop/unpack/4groups/20170505/tlby2
+[develop@bj-fxcdn04 tlby2]$ ./getcurls.sh   201705  tlby2  4groupsp
+is not dir  /apps/web/tg/4groupsp/
+[develop@bj-fxcdn04 tlby2]$ ./getcurls.sh   201705  tlby2  4groups   ###有时需要新建一个目录
+start ... 
+http://dlf4.pyw.cn/201705/tlby2/tlby2_csxunlei_csxxl_403201111.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_csxunlei_csxxl_403201112.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_csxunlei_csxxl_403201113.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_csxunlei_csxxl_403201114.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_csxunlei_csxxl_403201115.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_csxunlei_csxxl_403201116.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_other_othertlbs_403202222.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_other_othertlbs_403202223.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_other_othertlbs_403202224.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_other_othertlbs_403202225.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_other_othertlbs_403202226.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_other_othertlbs_403202227.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_other_othertlbs_403202228.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_other_othertlbs_403202229.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_other_othertlbs_403202230.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_other_othertlbs_403202231.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_other_othertlbs_403202232.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_other_othertlbs_403202233.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_other_othertlbs_403202234.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_other_othertlbs_403202235.apk
+finsh ...!!!
+
+参数检查,有输出，则参数有问题
+------------
+
+-------有输出则异常-------
+
+http://dlf4.pyw.cn/201705/tlby2/tlby2_csxunlei_csxxl_403201111.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_csxunlei_csxxl_403201112.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_csxunlei_csxxl_403201113.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_csxunlei_csxxl_403201114.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_csxunlei_csxxl_403201115.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_csxunlei_csxxl_403201116.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_other_othertlbs_403202222.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_other_othertlbs_403202223.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_other_othertlbs_403202224.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_other_othertlbs_403202225.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_other_othertlbs_403202226.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_other_othertlbs_403202227.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_other_othertlbs_403202228.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_other_othertlbs_403202229.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_other_othertlbs_403202230.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_other_othertlbs_403202231.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_other_othertlbs_403202232.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_other_othertlbs_403202233.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_other_othertlbs_403202234.apk
+http://dlf4.pyw.cn/201705/tlby2/tlby2_other_othertlbs_403202235.apk
+
+--------------------------
+
+   是否需要分包 ？
+
+   Continue: 'y' or 'enter' OR End: 'n'   :  
+>y
+
+请执行以下命令:
+./start.sh  tlby2    201705
+
+[develop@bj-fxcdn04 tlby2]$ ./start.sh  tlby2    201705
+
+[screen is terminating]
+[develop@bj-fxcdn04 tlby2]$ 
+
+最后测试能否下载下来
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=

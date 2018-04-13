@@ -1,0 +1,196 @@
+
+
+uri:"/ApiForSdk/logon"
+
+{"index":["logstash-nginx-2017-06-08","logstash-nginx-2017-06-09","logstash-nginx-2017-06-10","logstash-nginx-2017-06-11","logstash-nginx-2017-06-12","logstash-nginx-2017-06-13","logstash-nginx-2017-06-14","logstash-nginx-2017-06-15"],"search_type":"count","ignore_unavailable":true}
+{"size":0,"query":{"filtered":{"query":{"query_string":{"query":"uri:\"/ApiForSdk/logon\"","analyze_wildcard":true}},"filter":{"bool":{"must":[{"range":{"@timestamp":{"gte":1496937600000,"lte":1497542399999,"format":"epoch_millis"}}}],"must_not":[]}}}},"aggs":{"2":{"terms":{"field":"http_x_forwarded_for.raw","size":200,"order":{"_count":"desc"}}}}}
+
+curl -XPOST '10.116.155.217:9200/logstash-nginx-2017-06-07,logstash-nginx-2017-06-08,logstash-nginx-2017-06-09,logstash-nginx-2017-06-10,logstash-nginx-2017-06-11,logstash-nginx-2017-06-12,logstash-nginx-2017-06-13,logstash-nginx-2017-06-14,logstash-nginx-2017-06-15/_search?pretty' -d '{"size":0,"query":{"filtered":{"query":{"query_string":{"query":"uri:\"/ApiForSdk/logon\"","analyze_wildcard":true}},"filter":{"bool":{"must":[{"range":{"@timestamp":{"gte":1496851200000,"lte":1497542340000,"format":"epoch_millis"}}}],"must_not":[]}}}},"aggs":{"2":{"terms":{"field":"http_x_forwarded_for.raw","size":200,"order":{"_count":"desc"}}}}}'
+
+
+curl -s -XPOST '10.116.155.217:9200/logstash-nginx-2017-06-07,logstash-nginx-2017-06-08,logstash-nginx-2017-06-09,logstash-nginx-2017-06-10,logstash-nginx-2017-06-11,logstash-nginx-2017-06-12,logstash-nginx-2017-06-13,logstash-nginx-2017-06-14,logstash-nginx-2017-06-15/_search?pretty' -d '{"size":0,"query":{"filtered":{"query":{"query_string":{"query":"uri:\"/ApiForSdk/logon\"","analyze_wildcard":true}},"filter":{"bool":{"must":[{"range":{"@timestamp":{"gte":1496851200000,"lte":1497542340000,"format":"epoch_millis"}}}],"must_not":[]}}}},"aggs":{"2":{"terms":{"field":"http_x_forwarded_for.raw","size":200,"order":{"_count":"desc"}}}}}'|grep -E 'key|doc_count'|grep -Ev "doc_count_error|sum_other"|awk 'BEGIN{RS=",\n";ORS=""}1'|awk -F: '{print $2,$3}'|awk '{print $1 $4}'|sed 's/"//g'|sed 's/,/  /g'|awk '{a[$1]+=$2} END{for(i in a)print i,a[i]}'| sort -nrk2|sed 's/ /,/g'
+
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+uri:"/ApiForSdk/init"
+
+{"index":["logstash-nginx-2017-06-07","logstash-nginx-2017-06-08","logstash-nginx-2017-06-09","logstash-nginx-2017-06-10","logstash-nginx-2017-06-11","logstash-nginx-2017-06-12","logstash-nginx-2017-06-13","logstash-nginx-2017-06-14","logstash-nginx-2017-06-15"],"search_type":"count","ignore_unavailable":true}
+{"size":0,"query":{"filtered":{"query":{"query_string":{"query":"uri:\"/ApiForSdk/init\"","analyze_wildcard":true}},"filter":{"bool":{"must":[{"range":{"@timestamp":{"gte":1496851200000,"lte":1497542340000,"format":"epoch_millis"}}}],"must_not":[]}}}},"aggs":{"2":{"terms":{"field":"http_x_forwarded_for.raw","size":200,"order":{"_count":"desc"}}}}}
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+uri:"/user/register"
+
+{"index":["logstash-nginx-2017-06-07","logstash-nginx-2017-06-08","logstash-nginx-2017-06-09","logstash-nginx-2017-06-10","logstash-nginx-2017-06-11","logstash-nginx-2017-06-12","logstash-nginx-2017-06-13","logstash-nginx-2017-06-14","logstash-nginx-2017-06-15"],"search_type":"count","ignore_unavailable":true}
+{"size":0,"query":{"filtered":{"query":{"query_string":{"query":"uri:\"/user/register\"","analyze_wildcard":true}},"filter":{"bool":{"must":[{"range":{"@timestamp":{"gte":1496851200000,"lte":1497542340000,"format":"epoch_millis"}}}],"must_not":[]}}}},"aggs":{"2":{"terms":{"field":"http_x_forwarded_for.raw","size":200,"order":{"_count":"desc"}}}}}
+	
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++	
+	
+	
+	
+	
+uri:"/ApiForSdk/logon" OR uri:"/ApiForSdk/init"
+{"index":["logstash-nginx-2017-06-14","logstash-nginx-2017-06-15"],"search_type":"count","ignore_unavailable":true}
+{"size":0,"query":{"filtered":{"query":{"query_string":{"query":"uri:\"/ApiForSdk/logon\" OR uri:\"/ApiForSdk/init\"","analyze_wildcard":true}},"filter":{"bool":{"must":[{"range":{"@timestamp":{"gte":1497456000000,"lte":1497542399999,"format":"epoch_millis"}}}],"must_not":[]}}}},"aggs":{"2":{"terms":{"field":"http_x_forwarded_for.raw","size":20,"order":{"_count":"desc"}}}}}
+
+curl -XPOST '10.116.155.217:9200/logstash-nginx-2017-06-14,logstash-nginx-2017-06-15/_search?pretty -d ''
+
+
+
+curl -XPOST '10.116.155.217:9200/logstash-nginx-2017-06-14,logstash-nginx-2017-06-15/_search?pretty' -d '{"size":0,"query":{"filtered":{"query":{"query_string":{"query":"uri:\"/ApiForSdk/logon\" OR uri:\"/ApiForSdk/init\"","analyze_wildcard":true}},"filter":{"bool":{"must":[{"range":{"@timestamp":{"gte":1497456000000,"lte":1497542399999,"format":"epoch_millis"}}}],"must_not":[]}}}},"aggs":{"2":{"terms":{"field":"http_x_forwarded_for.raw","size":20,"order":{"_count":"desc"}}}}}'
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+status:502
+
+Btime=`date -d "-6 hour" +"%s"`000
+Nowtime=`date +%s`000
+
+Bday=`date -d "-14 hour" +%F`
+Nowday=`date -d "-8 hour" +%F`
+
+{"index":["logstash-nginx-2017-06-14","logstash-nginx-2017-06-15"],"search_type":"count","ignore_unavailable":true}
+{"size":0,"query":{"filtered":{"query":{"query_string":{"query":"status:502","analyze_wildcard":true}},"filter":{"bool":{"must":[{"range":{"@timestamp":{"gte":1497456000000,"lte":1497542399999,"format":"epoch_millis"}}}],"must_not":[]}}}},"aggs":{"2":{"terms":{"field":"status","size":5,"order":{"_count":"desc"}}}}}
+
+
+curl -s -XPOST '10.116.155.217:9200/logstash-nginx-'$Bday',logstash-nginx-'$Nowday'/_search?pretty' -d'
+{"size":0,"query":{"filtered":{"query":{"query_string":{"query":"status:502","analyze_wildcard":true}},
+"filter":{"bool":{"must":[{"range":{"@timestamp":{"gte":'$Btime',"lte":'$Nowtime',"format":"epoch_millis"}}}],
+"must_not":[]}}}},"aggs":{"3":{"terms":{"field":"http_head.raw","size":10,"order":{"_count":"desc"}},
+"aggs":{"4":{"terms":{"field":"hostname.raw","size":100,"order":{"_count":"desc"}}}}}}}' |grep -Ev '\{|\}|doc_count_error_upper_bound|sum_other_doc_count|hits|max_score|total|failed|successful|timed_out|took'|awk 'BEGIN{RS=",\n";ORS=""}1' | sed 'N;s/\n//g' |sed 's/"//g' | sed 's/ : /:/g'  | sed 's/^[ ]\+//g'  | sed 's/[ ]\+/,/g'|sed ':a;N;/\nkey.*key/!s/\n/,/;ta;P;D' > /tmp/elk_status_statictics.log
+
+curl -XPOST '10.116.155.217:9200/logstash-nginx-2017-06-14,logstash-nginx-2017-06-15/_search?pretty -d '{"size":0,"query":{"filtered":{"query":{"query_string":{"query":"status:502","analyze_wildcard":true}},"filter":{"bool":{"must":[{"range":{"@timestamp":{"gte":1497456000000,"lte":1497542399999,"format":"epoch_millis"}}}],"must_not":[]}}}},"aggs":{"2":{"terms":{"field":"status","size":5,"order":{"_count":"desc"}}}}}'
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+
+
+
+
+
+###每周一上午10点执行脚本
+Littime=`date +%s`000
+Gtetime=`date -d "-7 day" +"%s"`000 
+
+Nowday=`date +%F` ##现在的时间
+##七天前时间
+Monday=`date -d "-7 day" +%F`
+Tuesday=`date -d "-6 day" +%F`
+Wedday=`date -d "-5 day" +%F`
+Thurday=`date -d "-4 day" +%F`
+Friday=`date -d "-3 day" +%F`
+Satday=`date -d "-2 day" +%F`
+Sunday=`date -d "-1 day" +%F`
+echo -e "$Littime\n$Gtetime\n$Monday\n$Tuesday\n$Wedday\n$Thurday\n$Friday\n$Satday\n$Sunday\n$Nowday"
+
+curl -s -XPOST '10.116.155.217:9200/logstash-nginx-'$Monday',logstash-nginx-'$Tuesday',logstash-nginx-'$Wedday',logstash-nginx-'$Thurday',logstash-nginx-'$Friday',logstash-nginx-'$Satday',logstash-nginx-'$Sunday'/_search?pretty' -d '{"size":0,"query":{"filtered":{"query":{"query_string":{"query":"uri:\"/ApiForSdk/logon\"","analyze_wildcard":true}},"filter":{"bool":{"must":[{"range":{"@timestamp":{"gte":'$Gtetime',"lte":'$Littime',"format":"epoch_millis"}}}],"must_not":[]}}}},"aggs":{"2":{"terms":{"field":"http_x_forwarded_for.raw","size":200,"order":{"_count":"desc"}}}}}'|grep -E 'key|doc_count'|grep -Ev "doc_count_error|sum_other"|awk 'BEGIN{RS=",\n";ORS=""}1'|awk -F: '{print $2,$3}'|awk '{print $1 $4}'|sed 's/"//g'|sed 's/,/  /g'|awk '{sum[$1]+=$2} END{for(i in sum)print i,sum[i]}'| sort -nrk2|sed 's/ /,/g'
+
+
+{"index":["logstash-nginx-2017-06-10","logstash-nginx-2017-06-11","logstash-nginx-2017-06-12","logstash-nginx-2017-06-13","logstash-nginx-2017-06-14","logstash-nginx-2017-06-15","logstash-nginx-2017-06-16","logstash-nginx-2017-06-17"],"search_type":"count","ignore_unavailable":true}
+'{"size":0,"query":{"filtered":{"query":{"query_string":{"query":"uri:\"/ApiForSdk/init\"","analyze_wildcard":true}},"filter":{"bool":{"must":[{"range":{"@timestamp":{"gte":1497058159453,"lte":1497662959453,"format":"epoch_millis"}}}],"must_not":[]}}}},"aggs":{"2":{"terms":{"field":"http_x_forwarded_for.raw","size":5,"order":{"_count":"desc"}}}}}'
+
+{"index":["logstash-nginx-2017-06-10","logstash-nginx-2017-06-11","logstash-nginx-2017-06-12","logstash-nginx-2017-06-13","logstash-nginx-2017-06-14","logstash-nginx-2017-06-15","logstash-nginx-2017-06-16","logstash-nginx-2017-06-17"],"search_type":"count","ignore_unavailable":true}
+{"size":0,"query":{"filtered":{"query":{"query_string":{"query":"uri:\"/user/register\"","analyze_wildcard":true}},"filter":{"bool":{"must":[{"range":{"@timestamp":{"gte":1497059359427,"lte":1497664159427,"format":"epoch_millis"}}}],"must_not":[]}}}},"aggs":{"2":{"terms":{"field":"http_x_forwarded_for.raw","size":5,"order":{"_count":"desc"}}}}}
+
+
+
+
+执行成功的
+curl -s -XPOST '10.116.155.217:9200/logstash-nginx-2017-06-07,logstash-nginx-2017-06-08,logstash-nginx-2017-06-09,logstash-nginx-2017-06-10,logstash-nginx-2017-06-11,logstash-nginx-2017-06-12,logstash-nginx-2017-06-13,logstash-nginx-2017-06-14,logstash-nginx-2017-06-15/_search?pretty' -d '{"size":0,"query":{"filtered":{"query":{"query_string":{"query":"uri:\"/ApiForSdk/logon\"","analyze_wildcard":true}},"filter":{"bool":{"must":[{"range":{"@timestamp":{"gte":1496851200000,"lte":1497542340000,"format":"epoch_millis"}}}],"must_not":[]}}}},"aggs":{"2":{"terms":{"field":"http_x_forwarded_for.raw","size":200,"order":{"_count":"desc"}}}}}'|grep -E 'key|doc_count'|grep -Ev "doc_count_error|sum_other"|awk 'BEGIN{RS=",\n";ORS=""}1'|awk -F: '{print $2,$3}'|awk '{print $1 $4}'|sed 's/"//g'|sed 's/,/  /g'|awk '{a[$1]+=$2} END{for(i in a)print i,a[i]}'| sort -nrk2|sed 's/ /,/g'
+
+最近7天api访问统计
+The last 7 days API access statistics
+
+
+
+
+
+
+
+/home/develop/bin/sendEmail -f "liyb@yyft.com" -t "liyb@yyft.com" -s "smtp.exmail.qq.com" -u "The last 7 days API access statistics" -o message-content-type=html  -o message-charset=utf8 -a /home/develop/zxw_xunjian/201706_apicount/2017-06-17.txt -xu "liyb@yyft.com" -xp "Li123456" -m "我是邮件内容"
+
+
+发送邮件 以附件形式发送
+/usr/local/bin/sendEmail 命令主程序
+-t ttlsafrom@163.com  收件人邮箱
+-f ttlsafrom@163.com  发件人邮箱
+-s smtp.163.com       发件人邮箱的smtp服务器
+-u "我是邮件主题"     邮件的标题
+-o message-content-type=html   邮件内容的格式,html表示它是html格式
+-o message-charset=utf8        邮件内容编码&lt;/pre&gt;
+-a /data/site/a.rar             发送ttlsa.rar这个文件
+-xu ttlsafrom@163.com          发件人邮箱的用户名
+-xp 123456               发件人邮箱密码
+-m "我是邮件内容"        邮件的具体内容
+
+
+
+
+
+#!/usr/bin/env bash
+#! Encoding UTF-8
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
+export PATH
+###每周一上午10点执行脚本
+Littime=`date +%s`000
+Gtetime=`date -d "-7 day" +"%s"`000 
+
+##七天前时间
+Monday=`date -d "-7 day" +%F`
+Tuesday=`date -d "-6 day" +%F`
+Wedday=`date -d "-5 day" +%F`
+Thurday=`date -d "-4 day" +%F`
+Friday=`date -d "-3 day" +%F`
+Satday=`date -d "-2 day" +%F`
+Sunday=`date -d "-1 day" +%F`
+Nowday=`date +%F` ##现在的时间
+
+PWDDIR=/home/develop/zxw_xunjian/
+DIR=`date +%Y%m_apicount`
+
+#LOGON="/ApiForSdk/logon"
+#INIT="/ApiForSdk/init"
+#REGISTER="/user/register"
+#echo $LOGON
+#echo $INIT
+#echo $REGISTER
+[ -d $DIR ] || mkdir $PWDDIR$DIR
+cd $PWDDIR$DIR
+echo -e "$Monday-$Nowday api access count">>./$Nowday.log
+echo -e "$Littime\n$Gtetime\n$Monday\n$Tuesday\n$Wedday\n$Thurday\n$Friday\n$Satday\n$Sunday\n$Nowday">>./$Nowday.log
+for i in "/ApiForSdk/logon" "/ApiForSdk/init" "/user/register"
+do
+echo "uri:\"$i\",count">>./$Monday-$Nowday.csv
+curl -s -XPOST '10.116.155.217:9200/logstash-nginx-'$Monday',logstash-nginx-'$Tuesday',logstash-nginx-'$Wedday',logstash-nginx-'$Thurday',logstash-nginx-'$Friday',logstash-nginx-'$Satday',logstash-nginx-'$Sunday'/_search?pretty' -d '{"size":0,"query":{"filtered":{"query":{"query_string":{"query":"uri:\"'$i'\"","analyze_wildcard":true}},"filter":{"bool":{"must":[{"range":{"@timestamp":{"gte":'$Gtetime',"lte":'$Littime',"format":"epoch_millis"}}}],"must_not":[]}}}},"aggs":{"2":{"terms":{"field":"http_x_forwarded_for.raw","size":200,"order":{"_count":"desc"}}}}}'|grep -E 'key|doc_count'|grep -Ev "doc_count_error|sum_other"|awk 'BEGIN{RS=",\n";ORS=""}1'|awk -F: '{print $2,$3}'|awk '{print $1 $4}'|sed 's/"//g'|sed 's/,/  /g'|awk '{sum[$1]+=$2} END{for(i in sum)print i,sum[i]}'| sort -nrk2|sed 's/ /,/g'>>./$Monday-$Nowday.csv
+#sleep 10
+done
+echo "$PWDDIR$DIR/$Nowday"
+/home/develop/bin/sendEmail -f "liyb@yyft.com" -t "ops@yyft.com" -s "smtp.exmail.qq.com" -u "The last 7 days API access statistics" -o message-content-type=html  -o message-charset=utf8 -a $PWDDIR$DIR/$Monday-$Nowday.csv -xu "liyb@yyft.com" -xp "Li123456" -m "最近7天API接口地址统计量，详细请看附件！"
+
+#echo 
+#curl -s -XPOST '10.116.155.217:9200/logstash-nginx-'$Monday',logstash-nginx-'$Tuesday',logstash-nginx-'$Wedday',logstash-nginx-'$Thurday',logstash-nginx-'$Friday',logstash-nginx-'$Satday',logstash-nginx-'$Sunday'/_search?pretty' -d '{"size":0,"query":{"filtered":{"query":{"query_string":{"query":"uri:\"/ApiForSdk/init\"","analyze_wildcard":true}},"filter":{"bool":{"must":[{"range":{"@timestamp":{"gte":'$Gtetime',"lte":'$Littime',"format":"epoch_millis"}}}],"must_not":[]}}}},"aggs":{"2":{"terms":{"field":"http_x_forwarded_for.raw","size":200,"order":{"_count":"desc"}}}}}'|grep -E 'key|doc_count'|grep -Ev "doc_count_error|sum_other"|awk 'BEGIN{RS=",\n";ORS=""}1'|awk -F: '{print $2,$3}'|awk '{print $1 $4}'|sed 's/"//g'|sed 's/,/  /g'|awk '{sum[$1]+=$2} END{for(i in sum)print i,sum[i]}'| sort -nrk2|sed 's/ /,/g'
+#echo 
+#echo 
+#curl -s -XPOST '10.116.155.217:9200/logstash-nginx-'$Monday',logstash-nginx-'$Tuesday',logstash-nginx-'$Wedday',logstash-nginx-'$Thurday',logstash-nginx-'$Friday',logstash-nginx-'$Satday',logstash-nginx-'$Sunday'/_search?pretty' -d '{"size":0,"query":{"filtered":{"query":{"query_string":{"query":"uri:\"'$REGISTER'\"","analyze_wildcard":true}},"filter":{"bool":{"must":[{"range":{"@timestamp":{"gte":'$Gtetime',"lte":'$Littime',"format":"epoch_millis"}}}],"must_not":[]}}}},"aggs":{"2":{"terms":{"field":"http_x_forwarded_for.raw","size":200,"order":{"_count":"desc"}}}}}'|grep -E 'key|doc_count'|grep -Ev "doc_count_error|sum_other"|awk 'BEGIN{RS=",\n";ORS=""}1'|awk -F: '{print $2,$3}'|awk '{print $1 $4}'|sed 's/"//g'|sed 's/,/  /g'|awk '{sum[$1]+=$2} END{for(i in sum)print i,sum[i]}'| sort -nrk2|sed 's/ /,/g'
+
+########################################
+一天的地址访问量统计
+{"index":["logstash-nginx-2017-06-18","logstash-nginx-2017-06-19"],"search_type":"count","ignore_unavailable":true}
+{"size":0,"query":{"filtered":{"query":{"query_string":{"query":"uri:\"/ApiForSdk/logon\"","analyze_wildcard":true}},"filter":{"bool":{"must":[{"range":{"@timestamp":{"gte":1497801600000,"lte":1497887999999,"format":"epoch_millis"}}}],"must_not":[]}}}},"aggs":{"2":{"terms":{"field":"http_x_forwarded_for.raw","size":200,"order":{"_count":"desc"}}}}}
+
+
+{"index":["logstash-nginx-2017-06-18","logstash-nginx-2017-06-19"],"search_type":"count","ignore_unavailable":true}
+{"size":0,"query":{"filtered":{"query":{"query_string":{"query":"uri:\"/user/register\"","analyze_wildcard":true}},"filter":{"bool":{"must":[{"range":{"@timestamp":{"gte":,"lte":1497887999999,"format":"epoch_millis"}}}],"must_not":[]}}}},"aggs":{"2":{"terms":{"field":"http_x_forwarded_for.raw","size":200,"order":{"_count":"desc"}}}}}
+
+1497801600000  1497887999999
+
+1497976603000  1498063003000
+
+
+
+curl -s -XPOST '10.116.155.217:9200/logstash-nginx-2017-06-18,logstash-nginx-2017-06-19/_search?pretty' -d '{"size":0,"query":{"filtered":{"query":{"query_string":{"query":"uri:\"/user/register\"","analyze_wildcard":true}},"filter":{"bool":{"must":[{"range":{"@timestamp":{"gte":1497801600000,"lte":1497887999999,"format":"epoch_millis"}}}],"must_not":[]}}}},"aggs":{"2":{"terms":{"field":"http_x_forwarded_for.raw","size":200,"order":{"_count":"desc"}}}}}'|grep -E 'key|doc_count'|grep -Ev "doc_count_error|sum_other"|awk 'BEGIN{RS=",\n";ORS=""}1'|awk -F: '{print $2,$NF}'|awk '{print $1 $4}'|sed 's/"//g'|sed 's/,/  /g'|awk '{a[$1]+=$2} END{for(i in a)print i,a[i]}'| sort -nrk2|sed 's/ /,/g'
+
+curl -s -XPOST '10.116.155.217:9200/logstash-nginx-'$Befday',logstash-nginx-'$Yesday'/_search?pretty' -d '{"size":0,"query":{"filtered":{"query":{"query_string":{"query":"uri:\"'$i'\"","analyze_wildcard":true}},"filter":{"bool":{"must":[{"range":{"@timestamp":{"gte":'$Gtetime',"lte":'$Littime',"format":"epoch_millis"}}}],"must_not":[]}}}},"aggs":{"2":{"terms":{"field":"http_x_forwarded_for.raw","size":200,"order":{"_count":"desc"}}}}}'|grep -E 'key|doc_count'|grep -Ev "doc_count_error|sum_other"|awk 'BEGIN{RS=",\n";ORS=""}1'|awk -F: '{print $2,$NF}'|awk '{print $1 $4}'|sed 's/"//g'|sed 's/,/  /g'|awk '{sum[$1]+=$2} END{for(i in sum)print i,sum[i]}'| sort -nrk2|sed 's/ /,/g'

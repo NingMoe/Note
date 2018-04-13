@@ -1,0 +1,202 @@
+经典数据库IP
+10.116.63.63    zebra
+10.116.108.248  buffalo
+10.24.167.208   hippo
+10.45.191.46    moose
+10.46.125.3     ucdb
+10.116.123.113  rptdb
+
+
+
+VPC数据库IP 
+172.16.15.13  zebra_vpc
+172.17.2.78   buffalo_vpc
+172.19.8.47   hippo_vpc
+172.17.2.79   moose_vpc
+172.18.2.224  ucdb_vpc
+172.17.2.81   rptdb_vpc
+
+
+zebra|buffalo|hippo|moose|ucdb|rptdb
+
+ansible migrate -m  shell -a "grep -E 'zebra|buffalo|hippo|moose|ucdb|rptdb' /etc/hosts.vpc"
+
+
+ansible 新建主机组：
+[migrate]
+uc2
+uc1
+adminportal2
+adminportal1
+magpie
+web02
+pywsdkweb01
+pywsdkweb02
+dtweb01
+fxweb
+appapi01
+package4
+hadoopslave3
+hadoopslave2
+hadoopslave1
+hadoopmaster
+bouncer
+
+
+
+1）准备工作
+#对经典机器hosts 进行备份hosts.bak与生成一个修改文件hosts.vpc    （已执行）
+ansible migrate --ask-su-pass -S -R root -m shell -a "cp /etc/hosts /etc/hosts.bak"
+ansible migrate --ask-su-pass -S -R root -m shell -a "cp /etc/hosts /etc/hosts.vpc"
+
+#修改经典机器hosts.vpc 数据库对应IP  （已执行）
+ansible  migrate -m shell -a "sed  -i -e  's/10.116.63.63/172.16.15.13/g' -e  's/10.116.108.248/172.17.2.78/g' -e   's/10.24.167.208/172.19.8.47/g'   -e 's/10.45.191.46/172.17.2.79/g'  -e  's/10.46.125.3/172.18.2.224/g' -e  's/10.116.123.113/172.17.2.81/g' /etc/hosts.vpc" -s -K -U root -f 17
+
+
+2）
+#修改经典机器hosts文件
+ansible  migrate -m shell -a "cp /etc/hosts.vpc /etc/hosts" -s -K -U root -f 17
+
+#验证是否覆盖，无输出则覆盖成功
+ansible  migrate -m shell -a "diff /etc/hosts /etc/hosts.vpc"
+
+ansible migrate -m  shell -a "grep -E 'zebra|buffalo|hippo|moose|ucdb|rptdb' /etc/hosts"
+3)
+#reload php
+ansible php  -m shell -a "/proj/sh/php-fpm.sh reload"  -s -K -U root -f 12
+#验证php-fpm 是否reload成功
+ansible php  -m shell -a "ps -elf |grep -v grep | grep php| grep master"
+
+#pywsdkweb01 pywsdkweb02 两台服务器上php有个9001端口进程，需远程登陆手动杀死并重启这个进程
+/usr/local/php_9001-5.6.8/sbin/php-fpm -c /usr/local/php_9001-5.6.8/etc/php-fpm.ini  
+
+
+#reload nignx
+ansible php  -m shell -a "/proj/sh/nginx.sh reload"
+#验证nignx reload 是否成功
+ansible php  -m shell -a "ps -elf |grep -v grep | grep nginx"
+
+#reload tomcat
+装有tomcat的机器列表：
+dtweb01
+fxweb
+hadoopmaster   (须切到hduser用户下重启,启动命令与其它两台机不一样)
+
+#dtweb01  fxweb 两台机 kill进程并重启  (远程登陆dtweb01 、fxweb)
+ps -elf | grep -v grep |grep tomcat| awk '{print $4}' |xargs kill -9  &&   /proj/server/apache-tomcat-7.0.77/bin/startup.sh &
+#验证tomcat 是否正常起来
+ps -elf | grep  -v grep | grep  tomcat
+
+#hadoopmaster  kill进程并重启   (须切到hduser用户下重启）(远程登陆hadoopmaster)
+ps -elf | grep -v grep |grep tomcat| awk '{print $4}' |xargs kill -9  && /home/hduser/apache-tomcat-7.0.70/bin/startup.sh &
+#验证tomcat 是否正常起来
+ps -elf | grep  -v grep | grep  tomcat
+
+
+4)
+#package4 安卓分包程序重启 （远程登陆package4）
+ps -elf | grep -v grep|grep pyw_package | awk '{print $4}' |xargs kill -9  && /proj/sh/pywpackage/pywpackage.sh  start
+#查询分包程序是否起来
+ps -elf | grep -v grep|grep pyw_package
+
+5)新的跳板机mc和redis的映射改为新的vpc域名
+
+#对原来 /etc/rinetd.conf 进程备份
+cp /etc/rinetd.conf /etc/rinetd.conf.bak
+
+#生成一个新的/etc/rinetd.conf.vpc文件
+cp /etc/rinetd.conf /etc/rinetd.conf.vpc
+
+#修改/etc/rinetd.conf.vpc
+more /etc/rinetd.conf 
+172.16.15.11 6379 r-wz9d805d63d4f684971.redis.rds.aliyuncs.com  6379
+172.16.15.11 11211 m-wz91a249e6e8c9f4868.memcache.rds.aliyuncs.com 11211
+logfile /proj/logs/rinetd/rinetd.log
+
+#修改线上/etc/rinetd.conf 文件
+cp /etc/rinetd.conf.vpc /etc/rinetd.conf
+
+#root用户 kill rinetd 并重新启动
+rinetd -c /etc/rinetd.conf
+
+ps -elf | grep rinetd
+
+杀死旧跳板机上的rinetd 进程 
+
+
+
+
+
+
+
+
+#zebra_vpc
+172.16.15.13
+#buffalo_vpc  
+172.17.2.78
+#hippo_vpc   
+172.19.8.47
+#moose_vpc   
+172.17.2.79
+#ucdb_vpc   
+172.18.2.224
+#rptdb_vpc  
+172.17.2.81   
+
+
+
+
+ansible migrate -m shell -a "sh /home/develop/migrate/chk_ping_nmap.sh" -f 17
+ansible php -m shell -a "/usr/local/php-5.6.8/bin/php /home/develop/migrate/ChkMysql.php" -f 17
+
+
+
+新建主机组：
+[php]
+uc2
+uc1
+adminportal2
+adminportal1
+magpie
+web02
+pywsdkweb01
+pywsdkweb02
+dtweb01
+fxweb
+appapi01
+
+
+
+大数据迁移
+1、停止flume进程
+cat stop_flume.sh
+for i in `ps -elf | grep -v grep | grep  flume | awk '{print $4}'`;do kill -9 $i;done;
+
+ansible flume -m shell -a  "sh /home/develop/stop_flume.sh &" -f 11
+
+查询进程
+ansible flume -m command  -a "ps -elf  | grep  -c flume " :0为无进程 
+
+2、修改客户端flume  IP
+ansible flume -m shell -a "sed -i -e 's/10.46.133.57/172.16.15.20/g' -e  's/10.46.133.56/172.17.2.85/g'  -e  's/10.46.133.69/172.18.2.230/g' -e 's/10.46.133.54/172.19.8.48/g' /proj/server/apache-flume-1.7.0-bin/conf/* " 
+
+验证是否修改成功
+ansible flume -m shell -a "grep -rE '172.16.15.20|172.17.2.85|172.18.2.230|172.19.8.48' /proj/server/apache-flume-1.7.0-bin/conf/* "
+
+3、启动flume客户端（###待丽辉同步完数据之后执行）
+ansible flume -m shell -a  "sh /proj/sh/start-flume.sh"
+
+查看进程是否起来
+ansible flume -m command  -a "ps -elf | grep -v grep  | grep  -c flume "
+
+回滚
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~·
+5、重启步骤1
+
+6、回退命令：
+ansible flume -m command -a "sed -i -e 's/172.16.15.20/10.46.133.57/g' -e  's/172.17.2.85/10.46.133.56/g'  -e  's/172.18.2.230/10.46.133.69/g' -e 's/172.19.8.48/10.46.133.54/g' /proj/server/apache-flume-1.7.0-bin/conf/* " 
+
+7、重复步骤3
+
+
+grep -rE "172.16.15.20|172.17.2.85|172.18.2.230|172.19.8.48" /proj/server/apache-flume-1.7.0-bin/conf/*

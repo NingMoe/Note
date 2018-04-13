@@ -1,0 +1,223 @@
+docker 笔记
+
+加速器
+阿里云   https://ujztwkm5.mirror.aliyuncs.com
+docker 官方 https://registry.docker-cn.com
+中科大  https://docker.mirrors.ustc.edu.cn/
+
+配置加速器
+systemctl enable docker
+vi /etc/systemd/system/multi-user.target.wants/docker.service 
+在文件中找到 ExecStart= 这一行，并且在其行尾添加上所需的配置。假设我们的加速器地址为 https://registry.docker-cn.com，那么可以这样配置：
+
+ExecStart=/usr/bin/dockerd --registry-mirror=https://registry.docker-cn.com
+
+保存退出后，重新加载配置并启动服务：
+
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+
+确认一下配置是否已经生效：
+
+sudo ps -ef | grep dockerd
+
+####################################################################################################################################
+
+Docker 官网文档经常被墙，看不了怎么办？
+
+docker run -d -p 80:4000 docs/docker.github.io
+
+
+####################################################################################################################################
+脚本安装docker
+export CHANNEL=stable
+curl -fsSL https://get.docker.com/ | sh -s -- --mirror Aliyun
+
+
+CentOS 7 (使用yum进行安装)
+# step 1: 安装必要的一些系统工具
+sudo yum install -y yum-utils device-mapper-persistent-data lvm2
+# Step 2: 添加软件源信息
+sudo yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+# Step 3: 更新并安装 Docker-CE
+sudo yum makecache fast
+sudo yum -y install docker-ce
+# Step 4: 开启Docker服务
+sudo service docker start
+
+# 注意：
+# 官方软件源默认启用了最新的软件，您可以通过编辑软件源的方式获取各个版本的软件包。例如官方并没有将测试版本的软件源置为可用，你可以通过以下方式开启。同理可以开启各种测试版本等。
+# vim /etc/yum.repos.d/docker-ee.repo
+#   将 [docker-ce-test] 下方的 enabled=0 修改为 enabled=1
+#
+# 安装指定版本的Docker-CE:
+# Step 1: 查找Docker-CE的版本:
+# yum list docker-ce.x86_64 --showduplicates | sort -r
+#   Loading mirror speeds from cached hostfile
+#   Loaded plugins: branch, fastestmirror, langpacks
+#   docker-ce.x86_64            17.03.1.ce-1.el7.centos            docker-ce-stable
+#   docker-ce.x86_64            17.03.1.ce-1.el7.centos            @docker-ce-stable
+#   docker-ce.x86_64            17.03.0.ce-1.el7.centos            docker-ce-stable
+#   Available Packages
+# Step2 : 安装指定版本的Docker-CE: (VERSION 例如上面的 17.03.0.ce.1-1.el7.centos)
+# sudo yum -y install docker-ce-[VERSION]
+
+安装校验
+
+root@iZbp12adskpuoxodbkqzjfZ:$ docker version
+Client:
+ Version:      17.03.0-ce
+ API version:  1.26
+ Go version:   go1.7.5
+ Git commit:   3a232c8
+ Built:        Tue Feb 28 07:52:04 2017
+ OS/Arch:      linux/amd64
+
+Server:
+ Version:      17.03.0-ce
+ API version:  1.26 (minimum version 1.12)
+ Go version:   go1.7.5
+ Git commit:   3a232c8
+ Built:        Tue Feb 28 07:52:04 2017
+ OS/Arch:      linux/amd64
+ Experimental: false
+
+
+
+####################################################################################################################################
+
+
+
+docker: Docker 的二进制执行文件。
+run:与前面的 docker 组合来运行一个容器。
+ubuntu:15.10指定要运行的镜像，Docker首先从本地主机上查找镜像是否存在，如果不存在，Docker 就会从镜像仓库 Docker Hub 下载公共镜像。
+/bin/echo "Hello world": 在启动的容器里执行的命令
+以上命令完整的意思可以解释为：Docker 以 ubuntu15.10 镜像创建一个新容器，然后在容器里执行 bin/echo "Hello world"，然后输出结果。
+
+
+docker  run  参数 
+-t:在新容器内指定一个伪终端或终端。
+-i:允许你对容器内的标准输入 (STDIN) 进行交互
+-d:让容器在后台运行。
+-P:将容器内部使用的网络端口映射到我们使用的主机上。小写 -p 是端口映射，格式为 [宿主IP:]<宿主端口>:<容器端口>
+-p:标识来绑定指定端口 大写 -P 则是自动映射，将所有定义 EXPOSE 的端口，随机映射到宿主的某个端口。
+
+-f:删除容器时 rm -f
+--restart=always  重启docker后自动运行容器
+--restart=on-failure 当容器退出代码为非0时才自动重启
+--restart=on-failure：5
+--no-cache=ture  不使用缓存
+--tlsverify  -H http://XXXX    TLS 配置参数  配置更安全
+--link 参数才可以让两个容器找到对方
+--add-host  指定容器IP
+--icc=false  没有声明 EXPOSE 的端口，其它容器也可以访问。但是当强制 --icc=false 的时候，那么只有EXPOSE 的端口，其它容器才可以访问
+--mount
+
+--attachable 允许在建立网络的时候声明这个网络是否可以被零散的容器所连接。如果 docker network create 加了 --attachable 的参数，那么在后期，这个网络是可以被普通容器所连接的。
+但是这是在安全模型上开了一个口子，因此，默认不允许普通容器链接，并且不建议使用。
+
+
+
+docker logs [ID或者名字] 可以查看容器内部的标准输出
+docker logs e2f9424a8305
+docker logs -f e2f9424a8305  实时查看 
+
+docker port e2f9424a8305
+使用 docker inspect 来查看Docker的底层信息。它会返回一个 JSON 文件记录着 Docker 容器的配置和状态信息。
+docker rm  e2f9424a8305  删除容器
+docker search 
+docker pull 
+docker top
+docker images
+docker ps   docker ps -f name=nginx
+docker create -it --storage-opt size=100G  fedora /bin/bash   这种形式限制 rootfs 的大小。
+docker exec:进程容器内开启一个终端或执行命令
+
+
+我们可以使用 docker images 来列出本地主机上的镜像。
+REPOSITORY                  TAG                 IMAGE ID            CREATED             SIZE
+docker.io/ubuntu            15.10               9b9cb95443b5        13 months ago       137.2 MB
+docker.io/training/webapp   latest              6fae60ef3446        2 years ago         348.7 MB
+
+各个选项说明:
+REPOSTITORY：表示镜像的仓库源
+TAG：镜像的标签
+IMAGE ID：镜像ID
+CREATED：镜像创建时间
+SIZE：镜像大小
+同一仓库源可以有多个 TAG，代表这个仓库源的不同个版本，如ubuntu仓库源里，有15.10、14.04等多个不同的版本，我们使用 REPOSTITORY:TAG 来定义不同的镜像。
+
+标记镜像
+docker tag friendlyhello john/get-started:part2
+
+####################################################################################################################################
+docker-compose.yml 配置文件
+
+version: "3"
+services:
+  web:
+    # replace username/repo:tag with your name and image details
+    image: username/repo:tag
+    deploy:
+      replicas: 5
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 50M
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "80:80"
+    networks:
+      - webnet
+networks:
+  webnet:
+####################################################################################################################################
+  
+本机防火墙
+
+在 Docker 运行的系统上不应该运行任何防火墙……没错，说你呢，CentOS 的 firewalld 和 Ubuntu 的 ufw 同学。由于 Docker 使用 iptables 规则来进行网络数据流的控制，而那些防火墙总以为只有自己撰写 iptables，从而经常会导致 Docker 设置了一些规则，然后转眼就被 firewalld 或 ufw 给清了，特别是起、停防火墙服务的时候。从而导致 Docker 的网络从外界无法访问。
+
+    为了避免 iptables 的规则干扰，不要在运行 Docker 的服务器上，运行任何防火墙或配置自定义的 iptables 规则，除非你非常清楚你在做什么，并且知道会产生什么后果。另外，关闭防火墙后，记得重启系统，至少是重启 Docker 服务。否则防火墙的起、停、刷新这类行为会导致清空 Docker 设置的网络规则，而导致容器内的网络无法和外部互联。
+
+边界防火墙
+
+如果你使用的是云服务器，那么除了本机防火墙外，云服务的服务商一般会提供边界防火墙服务，比如安全组、安全策略类的东西。有些服务器为了安全起见，默认只开通必需的 22 端口给 SSH 使用，而其它端口屏蔽。这也是可能导致远程访问服务器 -p 端口失败的原因之一。如果你发现你在服务器本地访问服务，比如 curl localhost 没有阻碍，但是远程访问该服务就连接失败的话，那么应该去检查云服务商的安全设置，是否忘记了开启所需的端口。
+
+
+
+网络
+docker run 限定为只可以一次连一个。docker-compose 直接就可以将服务的容器连入多个网络，没有问题。
+
+
+docker run -it --rm \
+    --name wombat \
+    --hostname wombat.example.com \
+    --network example.com \
+    m3adow/nettools
+
+正向解析
+/ # dig +short wombat.example.com
+172.21.0.2
+反向解析
+/ # host 172.21.0.2
+2.0.21.172.in-addr.arpa domain name pointer wombat.example.com.
+
+
+-v或者--volume：由三个字段组成，由冒号字符（:）分隔。字段必须按正确的顺序排列，每个字段的含义并不明显。
+在命名卷的情况下，第一个字段是卷的名称，在给定的主机上是唯一的。对于匿名卷，省略第一个字段。
+第二个字段是将文件或目录安装在容器中的路径。
+第三个字段是可选的，并且是逗号分隔的选项列表，例如ro。这些选项将在下面讨论。
+--mount：由多个键值对组成，由逗号分隔，每个由<key>=<value>元组组成。该--mount语法比更详细的-v或--volume，但按键的顺序并不显著，并且标志的价值更容易理解。
+该type安装件，其可以是bind，volume，或 tmpfs。本主题讨论卷，因此类型将始终为volume。
+该source安装的。对于命名卷，这是卷的名称。对于匿名卷，此字段将被省略。可以指定为source 或src。
+的destination作为其值，其中的文件或目录将被安装在容器的路径。可以指定为destination，dst或target。
+该readonly选项（如果存在）导致绑定安装以只读方式装载到容器中。
+volume-opt可以多次指定的选项采用由选项名称及其值组成的键值对。
+
+
+
+
+挂载宿主目录，结果 Permission denied，没权限
+对宿主目录添加规则
+$ chcon -Rt svirt_sandbox_file_t /var/db

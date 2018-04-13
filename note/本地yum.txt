@@ -1,0 +1,46 @@
+本地yum
+[base]
+name=CentOS-$releasever - Base
+#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=os&infra=$infra
+baseurl=http://yum.pyw.cn/centos/7/os/$basearch/Packages/
+gpgcheck=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+#released updates 
+[updates]
+name=CentOS-$releasever - Updates
+#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=updates&infra=$infra
+baseurl=http://yum.pyw.cn/centos/7/os/$basearch/Packages/
+gpgcheck=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+#additional packages that may be useful
+[extras]
+name=CentOS-$releasever - Extras
+#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=extras&infra=$infra
+baseurl=http://yum.pyw.cn/centos/7/extras/$basearch/Packages/
+gpgcheck=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+#additional packages that extend functionality of existing packages
+[centosplus]
+name=CentOS-$releasever - Plus
+#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=centosplus&infra=$infra
+baseurl=http://yum.pyw.cn/centos/7/os/$basearch/Packages/
+gpgcheck=0
+enabled=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+这个域名要绑定一下，  绑到
+192.168.20.170  yum.pyw.cn
+
+####################################################################################################################################
+报错：There are unfinished transactions remaining. You might consider running yum-complete-transaction first to finish them
+解决：yum -y install yum-utils 
+
+Delta RPMs disabled because /usr/bin/applydeltarpm not installed
+解决： yum install -y deltarpm
+
+
+
+

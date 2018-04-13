@@ -1,0 +1,20 @@
+一、日常运维（发布、分包、巡检、配置备份）
+巡检脚本：跳板机上/home/develop/xunjian/xunjian.sh、/home/develop/xunjian/daily_check.py
+配置备份脚本：/home/develop/xunjian/backup_config.py
+二、52疯玩论坛（bbs.52fengwan.com）,部署在金山chanpin这台服务器上。（admin/wenguang）
+三、内网nextcloud（部署在192.168.20.170，admin/yyft1688）
+四、saltstack测试，使用（测试部署在192.168.20.170）
+五、jumpserver测试。（部署在192.168.20.183，admin/admin）
+六、无价值分包清理。（bj-fxcdn04上的/home/develop/checkdown/checkdown.py。时间较长，大概一小时左右）
+	需要先在一二三组的机器上获取分包列表（执行/home/develop/get_package.py）,将(1|2|3)list.txt复制到bj-fxcdn04的/home/develop/checkdown目录下，
+	执行checkdown.py脚本。自动发邮件给各发行组
+	待发行组确认后删除分包（将邮件附件上传到个发行组服务器的/home/develop/unpack/delold/目录下，重命名为delurl.txt，执行removeapk.sh。时间较长）
+七、内网yum服务器（192.168.20.170，测试yum安装192.168.20.184）
+八、内网FTP服务器（192.168.20.168（win7），administrator/xiaopeng999）
+
+
+
+
+
+
+

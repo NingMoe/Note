@@ -1,0 +1,397 @@
+安装数据库
+ 
+ 
+ 启动数据库
+ ./bin/mysqld_safe &
+ 
+ 修改数据库初始密码
+ mysqladmin -u root -p password 'newpassword'
+ 输入原密码：
+ 
+ 
+ 测试数据库是否连的上
+ <?php 
+$link=mysql_connect("localhost","root","123"); 
+if(!$link) echo "FAILD!连接错误，用户名密码不对"; 
+else echo "OK!可以连接"; 
+?> 
+ 
+ 
+/home/develop/PDO_MYSQL-1.0.2/php_pdo_mysql_int.h:25:19: fatal error: mysql.h: No such file or directory
+解决：是因为缺少链接库，执行如下命名就可以解决问题：yum -y  install libmysqlclient-dev libmysqlclient
+
+
+
+YUM进行install或update时报错：raise KeyboardInterrupt  
+解决方法：  修改文件/usr/lib/python2.7/site-packages/urlgrabber/grabber.py
+在文件的1510行左右找到下面这句代码:    elif errcodein(42,55,56):    ***
+修改为:    elif errcode==42:
+http://blog.163.com/yumin_wang@126/blog/static/36293550201693033153439/
+
+
+
+Warning: The lock file is not up to date with the latest changes in composer.json. You may be getting outdated dependencies. Run update to update them.
+
+
+开启检测后一直卡在检测阶段
+解决：修改目标主机的ssh_config 文件
+UseDNS no
+
+#####################################################################################################################################
+
+Walle 一个web部署系统工具，配置简单、功能完善、界面流畅、开箱即用！支持git、svn版本管理，支持各种web代码发布，PHP，Python，JAVA等代码的发布、回滚，可以通过web来一键完成。
+
+功能列表
+
+* 用户分身份注册、登录
+* 开发者发起上线任务申请、部署
+* 管理者审核上线任务
+* 支持多项目部署
+* 支持多项目多任务并行
+* 快速回滚
+* 项目的用户权限管理
+* 部署前准备任务pre-deploy（前置检查）
+* 代码检出后处理任务post-deploy（如vendor）
+* 同步后更新软链前置任务pre-release
+* 发布完毕后收尾任务post-release（如重启）
+* 执行sql构建（不要担心忘记测试环境sql同步）
+* 线上文件指纹确认
+* 支持git、svn版本管理
+
+
+一、搭建依赖平台
+1、安装ansible
+sudo yum install ansible -y
+
+添加目标主机IP
+sudo vim /etc/ansible/hosts
+192.168.20.128
+192.168.20.129
+192.168.20.130
+
+sudo vim /etc/ansible/ansible.cfg
+sudo_user = develop
+
+
+2、编译安装nginx
+建立nginx安装目录
+sudo mkdir -p /apps/svr/nginx
+
+修改目录属主属组为develop
+sudo chown develop.develop -R /apps
+
+安装nginx所需要的依赖包
+sudo yum install wget gcc perl perl-devel gcc-c++ pcre pcre-devel zlib zlib-devel openssl openssl-devel -y
+
+下载nginx源码包
+wget http://nginx.org/download/nginx-1.10.3.tar.gz
+
+解压缩
+tar -xf nginx-1.10.3.tar.gz
+cd nginx-1.10.3
+
+编译安装
+./configure --prefix=/apps/svr/nginx/ --user=develop --group=develop --with-http_stub_status_module --with-http_ssl_module --with-http_gzip_static_module --with-pcre
+make && make install
+
+对nginx文件修改权限
+sudo chown root.develop /apps/svr/nginx/sbin/nginx
+sudo chmod u+s /apps/svr/nginx/sbin/nginx
+
+设置nginx开机启动
+mkdir /apps/sh
+vim /apps/sh/nginx.sh
+#! /bin/sh
+[[ $EUID -eq 0 ]] && echo 'Error: This script must be run as not root!' && exit 1
+case "$1" in
+start)
+echo -n "starting nginx..."
+/apps/svr/nginx/sbin/nginx -c /apps/svr/nginx/conf/nginx.conf
+;;
+stop)
+echo -n "stoping nginx..."
+/apps/svr/nginx/sbin/nginx -c /apps/svr/nginx/conf/nginx.conf -s stop
+;;
+reload)
+echo -n "reloading nginx..."
+/apps/svr/nginx/sbin/nginx -c /apps/svr/nginx/conf/nginx.conf -s reload
+;;
+*)
+echo "Usage: $0 {start|stop|reload}"
+;;
+esac
+
+chmod +x /apps/sh/nginx.sh
+sudo echo '/usr/bin/su - develop -c "/apps/sh/nginx.sh start &"'>>/etc/rc.local
+
+2、二进制安装mysql
+建立mysql数据存放目录
+mkdir /apps/{conf,data,logs}
+
+安装mysql所需要的依赖包
+sudo yum install unzip ncurses-devel bison gmock perl-Module-Install.noarch libaio -y
+
+下载、解压并修改mysql存放目录
+wget http://mirrors.sohu.com/mysql/MySQL-5.6/mysql-5.6.35-linux-glibc2.5-x86_64.tar.gz
+tar -xf mysql-5.6.35-linux-glibc2.5-x86_64.tar.gz
+mv mysql-5.6.35-linux-glibc2.5-x86_64/ /apps/svr/mysql
+cd /apps/svr/mysql
+
+修改mysql配置文件
+sudo mkdir /etc/my.cnf.d
+sudo vim /etc/my.cnf
+[mysqld]
+basedir=/apps/svr/mysql
+datadir=/apps/data
+socket=/apps/svr/mysql/mysql.sock
+symbolic-links=0
+port=3306
+socket=/apps/svr/mysql/mysql.sock
+pid-file=/apps/svr/mysql/mysql.pid
+log-error=/apps/logs/mysql-error.log
+user=develop
+
+[mysqld_safe]
+log-error=/apps/logs/mysqld_safe-error.log
+pid-file=/apps/svr/mysql/mysql.pid
+
+[client]
+port=3306
+socket=/apps/svr/mysql/mysql.sock
+#
+# include all files from the config directory
+#
+!includedir /etc/my.cnf.d
+
+初始化数据库
+./scripts/mysql_install_db --defaults-file=/etc/my.cnf
+
+添加mysql到开机启动并修改开机启动脚本
+sudo cp /apps/svr/mysql/support-files/mysql.server /etc/rc.d/init.d/mysqld
+sudo chmod 755 /etc/rc.d/init.d/mysqld
+sudo vim /etc/rc.d/init.d/mysqld
+basedir=/apps/svr/mysql
+datadir=/apps/data
+lockdir='/apps/svr'
+lock_file_path="$lockdir/mysql"
+
+sed -i 's@/usr/local@/apps/svr@g' /apps/svr/mysql/bin/mysqld_safe
+
+设置mysql开机启动
+sudo chkconfig mysqld on
+
+启动mysql
+service mysqld start
+
+修改环境变量
+sudo echo 'PATH=$PATH:/apps/svr/mysql/bin' >> /etc/profile
+sudo source /etc/profile
+sudo ln -s /apps/svr/mysql/include/* /usr/local/include/
+
+修改mysql密码，创建walle_db数据库，创建walle数据库用户并授权
+mysql -uroot
+mysql> use mysql
+mysql> update user set password = password('xxxxxxxx');
+mysql> create database walle_db;
+mysql> grant all privileges on walle_db.* to walle@127.0.0.1 identified by 'xxxxxxxx';
+mysql> flush privileges;
+
+3、编译安装php
+安装php所需要的依赖包
+sudo yum install -y bzip2-devel libcurl* t1lib-devel freetype freetype-devel gettext php-mbstring libxml2* zlib-devel openssl openssl-devel libpng*
+autoconf
+
+下载并解压php源码包
+wget http://hk2.php.net/distributions/php-5.6.30.tar.gz
+tar -xf php-5.6.30.tar.gz
+cd php-5.6.30
+
+编译安装php
+./configure --prefix=/apps/svr/php --with-config-file-path=/apps/svr/php/etc --with-mysql=/apps/svr/mysql --with-mysqli=/apps/svr/mysql/bin/mysql_config --with-mysql-sock=/apps/svr/mysql/mysql.sock --with-openssl --with-gd --with-freetype-dir --with-gettext --with-zlib --with-png-dir --with-libxml-dir --with-t1lib --with-iconv --enable-libxml --enable-xml --enable-bcmath --enable-shmop --enable-sysvsem --enable-inline-optimization --enable-opcache --enable-fpm --enable-mbstring --enable-gd-native-ttf --enable-pcntl --enable-sockets --with-xmlrpc --enable-zip --enable-soap --with-pear --enable-session --with-curl --enable-fpm --enable-mbstring --enable-gd-native-ttf --enable-pcntl --enable-sockets --with-xmlrpc --enable-zip
+make && make install
+
+下载并安装pdo_mysql模块
+wget http://pecl.php.net/get/PDO_MYSQL-1.0.2.tgz
+tar -xf PDO_MYSQL-1.0.2.tgz
+cd PDO_MYSQL-1.0.2
+/apps/svr/php/bin/phpize
+./configure --with-php-config=/apps/svr/php/bin/php-config --with-pdo-mysql=/apps/svr/mysql/
+make && make install
+
+修改php配置文件
+cp /home/develop/php-5.6.30/php.ini-production /apps/svr/php/etc/php.ini
+vim /apps/svr/php/etc/php.ini
+在[PHP]模块下增加以下两行
+extension_dir = /apps/svr/php/lib/php/extensions/no-debug-non-zts-20131226/
+extension=pdo_mysql.so
+
+修改php-fpm配置文件
+mv /apps/svr/php/etc/php-fpm.conf.default /apps/svr/php/etc/php-fpm.conf
+vim /apps/svr/php/etc/php-fpm.conf
+[global]
+pid = /apps/logs/php-fpm.pid
+error_log = /apps/logs/php-fpm.log
+log_level = warning
+
+[www]
+user = develop
+group = develop
+listen = 127.0.0.1:9000
+pm = dynamic
+pm.max_children = 5
+pm.start_servers = 2
+pm.min_spare_servers = 1
+pm.max_spare_servers = 3
+
+添加php-fpm到开机启动
+cp /home/develop/php-5.6.30/sapi/fpm/init.d.php-fpm /apps/sh/php-fpm
+chmod +x /apps/sh/php-fpm
+
+vim /apps/sh/php-fpm
+php_fpm_PID=/apps/logs/php-fpm.pid
+
+sudo echo '/usr/bin/su - develop -c "/apps/sh/php-fpm start &"' >>/etc/rc.local
+
+sudo vim /etc/profile
+PATH=$PATH:/apps/svr/mysql/bin:/apps/svr/php/bin
+
+sudo source /etc/profile
+
+二、安装walle
+1、代码检出
+sudo yum install git -y
+cd /apps/svr
+git clone https://github.com/meolu/walle-web.git
+
+2、设置mysql连接和smtp
+vim /apps/svr/walle-web/config/local.php
+<?php
+// Uncomment to enable debug mode. Recommended for development.
+defined('YII_DEBUG') or define('YII_DEBUG', false);
+
+// Uncomment to enable dev environment. Recommended for development
+defined('YII_ENV') or define('YII_ENV', 'prod');
+
+return [
+'components' => [
+'db' => [
+'dsn' => 'mysql:host=127.0.0.1;dbname=walle_db',
+'username' => 'walle',
+'password' => 'xxxxxxxx',
+],
+'mail' => [
+'transport' => [
+'host' => 'smtp.exmail.qq.com', # smtp 发件地址
+'username' => 'rujw@yyft.com', # smtp 发件用户名
+'password' => 'xxxxxxxxxxxx', # smtp 发件人的密码
+'port' => 465, # smtp 端口
+'encryption' => 'ssl', # smtp 协议
+],
+'messageConfig' => [
+'charset' => 'UTF-8',
+'from' => [
+(isset($_ENV['WALLE_MAIL_EMAIL']) ? $_ENV['WALLE_MAIL_EMAIL'] : 'rujw@yyft.com') => (isset($_ENV['WALLE_MAIL_NAME']) ? $_ENV['WALLE_MAIL_NAME'] : '朋友玩'),
+], # smtp 发件用户名(须与mail.transport.username一致)
+],
+],
+'request' => [
+'cookieValidationKey' => 'PdXWDAfV5-gPJJWRar5sEN71DN0JcDRV',
+],
+],
+'language' => isset($_ENV['WALLE_LANGUAGE']) ? $_ENV['WALLE_LANGUAGE'] : 'zh-CN', // zh-CN => 中文, en => English
+];
+
+3、安装composer
+curl -sS https://getcomposer.org/installer | php
+
+4、安装vendor
+cd /apps/svr/walle-web
+php /home/develop/composer.phar install --prefer-dist --no-dev --optimize-autoloader -vvvv
+
+5、初始化项目
+php /apps/svr/walle-web/yii walle/setup
+
+6、配置nginx
+vim /apps/svr/nginx/conf/nginx.conf
+user develop develop;
+worker_processes 1;
+
+error_log /apps/logs/nginx-error.log;
+#error_log logs/error.log notice;
+#error_log logs/error.log info;
+
+pid /apps/svr/nginx/nginx.pid;
+
+events {
+use epoll;
+worker_connections 1024;
+}
+
+http {
+include mime.types;
+default_type application/octet-stream;
+
+log_format log_access '$remote_addr - $remote_user [$time_local] "$request" '
+'$status $body_bytes_sent "$http_referer"'
+'"$http_user_agent" $http_x_forwarded_for $host $hostname $upstream_response_time $request_time';
+access_log /apps/logs/nginx-access.log log_access;
+
+sendfile on;
+#tcp_nopush on;
+
+#keepalive_timeout 0;
+keepalive_timeout 65;
+
+#gzip on;
+
+server {
+listen 80;
+server_name www.test-walle.com;
+root /apps/svr/walle-web/web;
+index index.php;
+#charset koi8-r;
+allow all;
+location / {
+try_files $uri $uri/ /index.php$is_args$args;
+}
+
+location ~ \.php$ {
+try_files $uri = 404;
+fastcgi_pass 127.0.0.1:9000;
+fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+include fastcgi_params;
+}
+access_log /apps/logs/www.test-walle.com_access.log log_access;
+
+}
+
+}
+
+启动nginx
+/apps/sh/nginx.sh start
+
+启动php-fpm
+/apps/sh/php-fpm start
+
+7、git项目配置
+生成rsa格式密钥对
+ssh-keygen -t rsa -P ''
+
+添加机器信任，把宿主机的公钥添加到目标主机
+ssh-copy-id -i /home/develop/.ssh/id_rsa.pub develop@192.168.20.x
+
+在gitlab中，给walle使用的git用户添加公钥，具体过程略
+
+到此，walle搭建完成。
+
+宿主机的公钥都要传给git服务器跟目标机器 并对目标机器目录有读写权限
+
+
+
+
+问题汇总：
+
+
+
+
+

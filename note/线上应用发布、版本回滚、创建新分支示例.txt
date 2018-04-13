@@ -1,0 +1,97 @@
+﻿线上应用发布步骤：
+
+仔细检查发布的分支，检查重启后的进程是否存在，跑的脚本是否正常
+
+[develop@magpie ~]$ cd /proj/web/vipbg_wap
+
+一，查看当前分支 表示当前是master分支（根据文档要求发布在哪个分支）
+[develop@magpie vipbg_wap]$ git branch 
+  Branch_v20160825
+  Branch_v20160909
+  Branch_v20160917
+  Branch_v20161110
+  Branch_v20161121
+  Branch_v20180831
+  branch_v1.0.0
+* master
+
+二，打tag: 方便回退
+[develop@magpie vipbg_wap]$ git tag  v`date +'%Y%m%d_%H%M%S'`
+
+##三，更新
+[develop@magpie vipbg_wap]$ git fetch   更新
+remote: Counting objects: 25, done.
+remote: Compressing objects: 100% (22/22), done.
+remote: Total 25 (delta 17), reused 7 (delta 3)
+Unpacking objects: 100% (25/25), done.
+From http://a.yyft.com:1118/git/vipbg_wap
+ * [new branch]      IOS_PKG_NEW -> origin/IOS_PKG_NEW
+
+ 四，切换到要发布的branch IOS_PKG_NEW
+[develop@magpie vipbg_wap]$ git checkout  IOS_PKG_NEW
+Branch IOS_PKG_NEW set up to track remote branch IOS_PKG_NEW from origin.
+Switched to a new branch 'IOS_PKG_NEW'
+
+五，拉取最新代码：
+[develop@magpie vipbg_wap]$ git pull
+Already up-to-date.
+
+
+
+回滚方式：
+一，如果有打tag，则git checkout 指定的代码
+
+二，采取硬回退：
+git reset HEAD~  在本地仓库回滚到上一次代码，但是远程仓库还是新的代码
+git reset --hard 3c2888787566901bb54a9c56e234a632c147df6c  回滚到指定的代码
+
+git reset --hard $id #恢复到指定的提交版本，该$id之后的版本提交全部会被抛弃，将不出现在工作区
+
+
+
+回滚
+[develop@magpie xiaopeng_sys2_wap]$ git show v20170216_172232
+commit bfeef6c00376f5fb8cbf6511ebcb87a5cc03b775
+Author: rickzheng <158672319@qq.com>
+Date:   Tue Feb 14 11:20:01 2017 +0800
+
+    TECDEV0001-628
+
+diff --git a/web/application/config/constants.php b/web/application/config/constants.php
+index 7337ed3..846c9a3 100755
+--- a/web/application/config/constants.php
++++ b/web/application/config/constants.php
+@@ -104,7 +104,7 @@ define("VIP_PID", -1);// 黑金卡任意充商品ID
+ define("VIP_PNAME", "黑金卡充值");
+ define("PAY_COIN_RATE", 10);// 玩票与金额的对换比例
+ define("PAY_LIMIT_TIME", 180); //重复提交的限制时长
+-define("WX_PAYCHANNEL", 11);// 微信WAP 支付通道 , 具体含义参看 config.php 文件中的wx_paychannel
++define("WX_PAYCHANNEL", 2);// 微信WAP 支付通道 , 具体含义参看 config.php 文件中的wx_paychannel
+ define("UC_API", "http://api.uc.pyw.com");
+ define("WAP_API", "http://api.wap.pyw.com");
+ /********* end *********/
+[develop@magpie xiaopeng_sys2_wap]$ git reset --hard  bfeef6c00376f5fb8cbf6511ebcb87a5cc03b775
+
+
+
+	创建新分支
+
+一，在WAP域中，创建一个线上版本的TAG分支：
+[develop@magpie xiaopeng_sys2_wap]$ git tag v20160927 -m '20160927'
+[develop@magpie xiaopeng_sys2_wap]$ git push origin  v20160927
+Counting objects: 1, done.
+Writing objects: 100% (1/1), 150 bytes | 0 bytes/s, done.
+Total 1 (delta 0), reused 0 (delta 0)
+To git://a.yyft.com/xiaopeng_sys2_admin
+ * [new tag]         v20160927 -> v20160927
+[develop@web02 xiaopeng_sys2_admin]$
+
+
+
+二，在本机的执行：
+
+1,进入master分支---》git pull 拉取最新代码--->执行switch/check--->tag选项--》找到上面创建的tag，并建立分支---》push(确认是不是在当前tag）
+
+
+
+

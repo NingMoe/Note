@@ -1,0 +1,21 @@
+499
+{"index":["logstash-nginx-2017-07-08","logstash-nginx-2017-07-09"],"search_type":"count","ignore_unavailable":true}
+{"size":0,"query":{"filtered":{"query":{"query_string":{"query":"status:499","analyze_wildcard":true}},"filter":{"bool":{"must":[{"range":{"@timestamp":{"gte":1499529600000,"lte":1499615999999,"format":"epoch_millis"}}}],"must_not":[]}}}},"aggs":{"2":{"terms":{"field":"hostname.raw","size":200,"order":{"_count":"desc"}}}}}
+
+500
+{"index":["logstash-nginx-2017-07-08","logstash-nginx-2017-07-09"],"search_type":"count","ignore_unavailable":true}
+{"size":0,"query":{"filtered":{"query":{"query_string":{"query":"status:500","analyze_wildcard":true}},"filter":{"bool":{"must":[{"range":{"@timestamp":{"gte":1499529600000,"lte":1499615999999,"format":"epoch_millis"}}}],"must_not":[]}}}},"aggs":{"2":{"terms":{"field":"hostname.raw","size":200,"order":{"_count":"desc"}}}}}
+
+502
+{"index":["logstash-nginx-2017-07-08","logstash-nginx-2017-07-09"],"search_type":"count","ignore_unavailable":true}
+{"size":0,"query":{"filtered":{"query":{"query_string":{"query":"status:502","analyze_wildcard":true}},"filter":{"bool":{"must":[{"range":{"@timestamp":{"gte":1499529600000,"lte":1499615999999,"format":"epoch_millis"}}}],"must_not":[]}}}},"aggs":{"2":{"terms":{"field":"hostname.raw","size":200,"order":{"_count":"desc"}}}}}
+
+######################################################################
+499
+curl -s -XPOST '10.116.155.217:9200/logstash-nginx-2017-07-09,logstash-nginx-2017-07-10/_search?pretty' -d '{"size":0,"query":{"filtered":{"query":{"query_string":{"query":"status:499","analyze_wildcard":true}},"filter":{"bool":{"must":[{"range":{"@timestamp":{"gte":1499616000000,"lte":1499702399999,"format":"epoch_millis"}}}],"must_not":[]}}}},"aggs":{"2":{"terms":{"field":"hostname.raw","size":200,"order":{"_count":"desc"}}}}}'| grep -E 'key|doc_count'|grep -Ev "doc_count_error|sum_other"|awk 'BEGIN{RS=",\n";ORS=""}1'|awk -F: '{print $2,$NF}'|awk '{print $1,$NF}'|sed 's/"//g'|sed 's/,/  /g'|sed 's/ /,/g'
+
+500
+curl -s -XPOST '10.116.155.217:9200/logstash-nginx-2017-07-09,logstash-nginx-2017-07-10/_search?pretty' -d '{"size":0,"query":{"filtered":{"query":{"query_string":{"query":"status:500","analyze_wildcard":true}},"filter":{"bool":{"must":[{"range":{"@timestamp":{"gte":1499616000000,"lte":1499702399999,"format":"epoch_millis"}}}],"must_not":[]}}}},"aggs":{"2":{"terms":{"field":"hostname.raw","size":200,"order":{"_count":"desc"}}}}}'| grep -E 'key|doc_count'|grep -Ev "doc_count_error|sum_other"|awk 'BEGIN{RS=",\n";ORS=""}1'|awk -F: '{print $2,$NF}'|awk '{print $1,$NF}'|sed 's/"//g'|sed 's/,/  /g'|sed 's/ /,/g'
+
+502
+curl -s -XPOST '10.116.155.217:9200/logstash-nginx-2017-07-09,logstash-nginx-2017-07-10/_search?pretty' -d '{"size":0,"query":{"filtered":{"query":{"query_string":{"query":"status:502","analyze_wildcard":true}},"filter":{"bool":{"must":[{"range":{"@timestamp":{"gte":1499616000000,"lte":1499702399999,"format":"epoch_millis"}}}],"must_not":[]}}}},"aggs":{"2":{"terms":{"field":"hostname.raw","size":200,"order":{"_count":"desc"}}}}}'| grep -E 'key|doc_count'|grep -Ev "doc_count_error|sum_other"|awk 'BEGIN{RS=",\n";ORS=""}1'|awk -F: '{print $2,$NF}'|awk '{print $1,$NF}'|sed 's/"//g'|sed 's/,/  /g'|sed 's/ /,/g'

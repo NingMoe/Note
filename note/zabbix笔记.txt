@@ -1,0 +1,539 @@
+> create database zabbix character set utf8;
+> grant all privileges on zabbix.* to zabbix@localhost identified by 'zabbix';
+> flush privileges;
+
+phpinfo 测试页面
+<?php
+  phpinfo();
+?>
+
+
+数据库连接测试页面
+<?php
+  $link=mysql_connect("localhost","zabbix","zabbix"); 
+  if(!$link) echo "FAILD!连接错误，用户名密码不对"; 
+  else echo "OK!可以连接"; 
+?>
+
+本地连接  用户名  zabbix   密码  zabbix 
+
+server {
+        listen       80;
+        server_name zabbix.pengyouwan.com;
+        root /proj/server/nginx_http2/html/;
+        index  index.html index.php index.htm;
+        location ~ \.php$ {
+                fastcgi_pass   127.0.0.1:9000;
+                fastcgi_index  index.php;
+                #include fcgi.conf;
+                include fastcgi.conf;
+        }
+    location /
+    {
+        # Check if a file or directory index file exists, else route it to index.php.
+        try_files $uri $uri/ /index.php;
+    }
+	
+	
+	
+	
+zabbix报PHP gettext extension missing	
+虽然只是警告，但是还是想处理好，以防以后可能遇到未知的问题，其实就是php的gettext函数库没有加载，重新编译安装进来就行了。
+
+Zabbix error: PHP gettext extension missing (PHP configuration parameter --with-gettext)
+
+在安装zabbix时碰到如下错误：
+PHP gettext extension missing (PHP configuration parameter --with-gettext)
+
+PHP中的getText的用法(getText是一系列的工具和库函数，帮助程序员和翻译人员开发多语言软件的), 从而实现PHP的i18n. 
+
+主要是两个方面造成PHP gettext extension missing (PHP configuration parameter --with-gettext)这个错误的：
+一、PHP编译时没有加--with-gettext选项
+解决方法如下：
+此次安装是动态安装php的gettext扩展模块 在php的源文件中，进入ext/gettext
+	#cd ext/gettext  
+    #/usr/local/php/bin/phpize  
+    #./configure –with-php-config=/usr/local/php/bin/php-config  
+    #make && make install  
+
+
+二、系统缺少gettext-devel工具库，或者已经编译安装了gettext但是在编译php时没找到路径
+vi /usr/local/php/usr/local/zabbix/php.ini
+        找到extensions选项，添加如下项:
+extension = "gettext.so"
+这里记得一定要加上扩展库的路径哦 
+重启php就ok了
+
+
+
+[root@zabbix-server ~]# /usr/local/zabbix/bin/zabbix_get -s 192.168.31.206 -p 10050 -k  "system.uptime"    ##在Server端207使用以下命令测试是否能连接到Agent端
+[root@zabbix-agent zabbix-3.2.3]# /usr/local/zabbix/sbin/zabbix_agentd -c /usr/local/zabbix/usr/local/zabbix/zabbix_agentd.conf -t system.uptime ##测试下zabbix agent是否正常工作
+
+
+zabbix监控系统fping配置 
+1）需要用到fping的支持，系统本身是没有这个工具的，所以需要先安装fping
+由于 zabbix 使用 fping 替代了ping 作为 icmp 的工具，所以要安装 fping
+可以从 http://fping.sourceforge.net/ 上下载 fping 的源代码，解压编译安装。
+进入 fping 解压后的源代码目录
+./configure 
+makeinstall  
+默认是安装到/usr/local/sbin/fping 的  
+修改/usr/local/zabbix/zabbix/zabbix_server.conf
+FpingLocation=/usr/local/sbin/fping  
+2）修改fping的权限  ##这一步很重要
+chown root:root /usr/local/sbin/fping
+chmod u+s /usr/local/sbin/fping
+
+笔者就是在这失误了，笔者直接chmod 777 fping 的 
+结果 su - zabbix后
+运行  /usr/local/sbin/fping -s XX.XX.XX.XX报错了
+/usr/local/sbin/fping: can't create raw socket (must run as root?) : Operation not permitted
+因此还需要大家细心那。
+3）测试
+测试看icmpping是否能够使用，可以在服务器上直接用命令
+su - zabbix
+fping  XX.XX.XX.XX
+如果返回 XX.XX.XX.XX is alive，那说明是OK的了
+4)绘图
+找到zabbix自带模板Template ICMP Ping
+选择Graphs-Create Graph
+
+
+
+
+
+zabbix监控mysql性能
+
+http://blog.csdn.net/mchdba/article/details/51288767
+http://www.ttlsa.com/zabbix/zabbix-monitor-mysql/
+在agent /usr/local/zabbix/my.cnf上添加 
+
+[client]  
+host = "127.0.0.1"                                                                                                                
+password    = "123456"  
+user = "zabbix"   
+port        = 3306  
+socket      = "/var/lib/mysql/mysql.sock" 
+
+
+脚本放在这里
+[root@localhost scripts]# pwd
+/usr/local/zabbix/scripts
+[root@localhost scripts]# ll
+total 8
+-rwxr-xr-x. 1 root   root   3039 May 25 00:18 chk_mysql.sh
+-rwxr-xr-x. 1 zabbix zabbix 2756 May 24 23:44 chk_mysql.sh.bak
+[root@localhost scripts]# cat chk_mysql.sh
+#!/bin/sh
+# -------------------------------------------------------------------------------
+# FileName:    check_mysql.sh
+# Revision:    1.0
+# Date:        2016/04/22
+# Author:      tim
+# Email:       mchdba@sohu.com
+MYSQL_SOCK="/var/lib/mysql/mysql.sock"
+MYSQL_USER='zabbix'
+MYSQL_PWD='123456'
+MYSQL_HOST='127.0.0.1'
+MYSQL_PORT='3306'
+if [ $# -ne 1  ];then
+    echo "Please input one arguement:"
+fi
+case $1 in
+    Uptime)
+        result=`/usr/bin/mysqladmin  -h$MYSQL_HOST  -S $MYSQL_SOCK status|cut -f2 -d":"|cut -f1 -d"T"`
+            echo $result
+            ;;
+        Com_update)
+            result=`/usr/bin/mysqladmin  -h$MYSQL_HOST  -S $MYSQL_SOCK extended-status |grep -w "Com_update"|cut -d"|" -f3`
+            echo $result
+            ;;
+        Slow_queries)
+        result=`/usr/bin/mysqladmin  -h$MYSQL_HOST  -S $MYSQL_SOCK status |cut -f5 -d":"|cut -f1 -d"O"`
+                echo $result
+                ;;
+    Com_select)
+        result=`/usr/bin/mysqladmin  -h$MYSQL_HOST  -S $MYSQL_SOCK extended-status |grep -w "Com_select"|cut -d"|" -f3`
+                echo $result
+                ;;
+    Com_rollback)
+        result=`/usr/bin/mysqladmin  -h$MYSQL_HOST  -S $MYSQL_SOCK extended-status |grep -w "Com_rollback"|cut -d"|" -f3`
+                echo $result
+                ;;
+    Questions)
+        result=`/usr/bin/mysqladmin  -h$MYSQL_HOST  -S $MYSQL_SOCK status|cut -f4 -d":"|cut -f1 -d"S"`
+                echo $result
+                ;;
+    Com_insert)
+        result=`/usr/bin/mysqladmin  -h$MYSQL_HOST  -S $MYSQL_SOCK extended-status |grep -w "Com_insert"|cut -d"|" -f3`
+                echo $result
+                ;;
+    Com_delete)
+        result=`/usr/bin/mysqladmin  -h$MYSQL_HOST  -S $MYSQL_SOCK extended-status |grep -w "Com_delete"|cut -d"|" -f3`
+                echo $result
+                ;;
+    Com_commit)
+        result=`/usr/bin/mysqladmin  -h$MYSQL_HOST  -S $MYSQL_SOCK extended-status |grep -w "Com_commit"|cut -d"|" -f3`
+                echo $result
+                ;;
+    Bytes_sent)
+        result=`/usr/bin/mysqladmin  -h$MYSQL_HOST  -S $MYSQL_SOCK extended-status |grep -w "Bytes_sent" |cut -d"|" -f3`
+                echo $result
+                ;;
+    Bytes_received)
+        result=`/usr/bin/mysqladmin  -h$MYSQL_HOST  -S $MYSQL_SOCK extended-status |grep -w "Bytes_received" |cut -d"|" -f3`
+                echo $result
+                ;;
+    Com_begin)
+        result=`/usr/bin/mysqladmin  -h$MYSQL_HOST  -S $MYSQL_SOCK extended-status |grep -w "Com_begin"|cut -d"|" -f3`
+                echo $result
+                ;;
+                       
+        *)
+        echo "Usage:$0(Uptime|Com_update|Slow_queries|Com_select|Com_rollback|Questions)"
+        ;;
+esac
+[root@localhost scripts]# 
+[root@localhost scripts]# tail -3 /usr/local/zabbix/zabbix/zabbix_agentd.conf
+UserParameter=mysql.version,mysql -V
+UserParameter=mysql.status[*],/usr/local/zabbix/scripts/chk_mysql.sh $1
+UserParameter=mysql.ping,mysqladmin -uzabbix -p123456 -P3306 -h127.0.0.1  ping | grep -c alive 
+[root@localhost scripts]#
+重启agent
+
+在agent 上测试能否获取到数据
+[root@localhost ~]# /usr/bin/mysqladmin -uzabbix -p123456 -h127.0.0.1 -P3306  extended-status |grep -w "Com_insert"|cut -d"|" -f3
+
+在server上测试能否获取到数据
+[root@zabbix ~]# /usr/local/zabbix/bin/zabbix_get  -s 192.168.111.10 -p10050 -k "mysql.status[Com_insert]"
+
+#########################
+方法二：
+[root@iZwz9f32qxgaqe4tqfqw4fZ mysql]# cat my.cnf 
+[client]
+user='zabbix'
+password='Vnao9i!A5b781'
+host='127.0.0.1'
+[root@iZwz9f32qxgaqe4tqfqw4fZ mysql]# pwd
+/usr/local/zabbix-2.4.8/scripts/mysql
+
+[develop@iZwz9f32qxgaqe4tqfqw4fZ zabbix_agentd.conf.d]$ cat mysql_status.conf 
+#mysql_status
+UserParameter=mysql.ping,mysqladmin --defaults-extra-file=/usr/local/zabbix-2.4.8/scripts/mysql/my.cnf ping | grep -c alive
+UserParameter=mysql.version,mysql -V
+UserParameter=mysql.status[*],echo "show global status where Variable_name='$1';" | mysql  --defaults-extra-file=/usr/local/zabbix-2.4.8/scripts/mysql/my.cnf -N | awk '{print $$2}'
+[develop@iZwz9f32qxgaqe4tqfqw4fZ zabbix_agentd.conf.d]$ pwd
+/usr/local/zabbix-2.4.8/etc/zabbix_agentd.conf.d
+
+######################################################
+
+
+
+
+
+
+Zabbix监控nginx性能
+
+
+location /ngx_status {
+stub_status on;
+access_log off;
+allow 127.0.0.1;
+allow 192.168.20.99;
+deny all;
+}
+curl http://127.0.0.1/ngx_status
+
+
+
+
+/usr/local/zabbix/scripts/ngx_status.sh  #脚本放在这里
+
+#!/bin/bash
+ 
+HOST="127.0.0.1"
+PORT="80"
+ 
+# 检测nginx进程是否存在
+function ping {
+    /sbin/pidof nginx | wc -l 
+}
+# 检测nginx性能
+function active {
+    /usr/bin/curl "http://$HOST:$PORT/ngx_status/" 2>/dev/null| grep 'Active' | awk '{print $NF}'
+}
+function reading {
+    /usr/bin/curl "http://$HOST:$PORT/ngx_status/" 2>/dev/null| grep 'Reading' | awk '{print $2}'
+}
+function writing {
+    /usr/bin/curl "http://$HOST:$PORT/ngx_status/" 2>/dev/null| grep 'Writing' | awk '{print $4}'
+}
+function waiting {
+    /usr/bin/curl "http://$HOST:$PORT/ngx_status/" 2>/dev/null| grep 'Waiting' | awk '{print $6}'
+}
+function accepts {
+    /usr/bin/curl "http://$HOST:$PORT/ngx_status/" 2>/dev/null| awk NR==3 | awk '{print $1}'
+}
+function handled {
+    /usr/bin/curl "http://$HOST:$PORT/ngx_status/" 2>/dev/null| awk NR==3 | awk '{print $2}'
+}
+function requests {
+    /usr/bin/curl "http://$HOST:$PORT/ngx_status/" 2>/dev/null| awk NR==3 | awk '{print $3}'
+}
+# 执行function
+$1
+
+agent 测试
+
+UserParameter=nginx.status[*],/usr/local/zabbix/scripts/ngx-status.sh $1
+/usr/local/zabbix/bin/zabbix_get -s 127.0.0.1 -k 'nginx.status[accept]'
+
+/usr/bin/curl "http://127.0.0.1:80/ngx_status/" 2>/dev/null| grep 'Active' | awk '{print $NF}'
+/usr/bin/curl "http://127.0.0.1:80/ngx_status/" 2>/dev/null| awk NR==3 | awk '{print $1}'
+/usr/local/zabbix/scripts/ngx_status.sh requests
+
+server端测试
+/usr/bin/zabbix_get  -s 192.168.20.88 -p10050 -k "mysql.status[Bytes_received]"
+/usr/bin/zabbix_get  -s 192.168.20.88 -p10050 -k 'nginx.status[ping]'
+
+
+
+
+
+zabbix监控php-fpm性能状态
+
+[root@appmon fpm]# cat /usr/local/php-5.6.8/etc/php-fpm.ini | grep status
+pm.status_path = /php/status
+[root@appmon fpm]# ls
+status.html
+[root@appmon fpm]# pwd
+/usr/local/php-5.6.8/php/php/fpm
+
+[root@appmon fpm]# vim /usr/local/nginx/conf/nginx.conf  #nginx 添加location
+
+location ~ ^/php/(status|ping)$
+        {
+            root /usr/local/php-5.6.30/php/php/fpm;
+            include fastcgi_params;
+            fastcgi_pass 127.0.0.1:9000;
+            fastcgi_param SCRIPT_FILENAME $fastcgi_script_name;
+        }
+ ##测试页面
+[root@appmon fpm]# wget --quiet -O - http://127.0.0.1:80/php/status?auto
+
+在zabbix_agentd.conf 添加如下项
+UserParameter=idle.processe,/usr/local/zabbix/scripts/php-fpm_status.sh idle
+UserParameter=total.processes,/usr/local/zabbix/scripts/php-fpm_status.sh total
+UserParameter=active.processes,/usr/local/zabbix/scripts/php-fpm_status.sh active
+UserParameter=max.active.processes,/usr/local/zabbix/scripts/php-fpm_status.sh mactive
+UserParameter=listen.queue.len,/usr/local/zabbix/scripts/php-fpm_status.sh listenqueuelen
+UserParameter=listen.queue,/usr/local/zabbix/scripts/php-fpm_status.sh listenqueue
+UserParameter=start.since,/usr/local/zabbix/scripts/php-fpm_status.sh since
+UserParameter=accepted.conn,/usr/local/zabbix/scripts/php-fpm_status.sh conn
+UserParameter=max.children.reached,/usr/local/zabbix/scripts/php-fpm_status.sh reached
+UserParameter=slow.requests,/usr/local/zabbix/scripts/php-fpm_status.sh requests
+
+
+添加脚本php-fpm_status.sh 
+/usr/local/zabbix/scripts/
+#########################################################################
+# File Name: php-fpm_status.sh
+# Author: kerncai
+# mail: kernkerncai@gmail.com
+# Created Time: 2013年11月13日 星期三 14时02分35秒
+#########################################################################
+#!/bin/bash
+
+listenqueue(){
+        wget --quiet -O - http://127.0.0.1:80/status?auto |grep "listen queue:"|grep -vE "len|max"|awk '{print$3}'
+}
+
+listenqueuelen(){
+        wget --quiet -O - http://127.0.0.1:80/status?auto |grep "listen queue len" |awk '{print$4}'
+}
+
+idle(){
+        wget --quiet -O - http://127.0.0.1:80/status?auto |grep "idle processes" |awk '{print$3}'
+}
+active(){
+        wget --quiet -O - http://127.0.0.1:80/status?auto |grep "active" |awk '{print$3}'|grep -v "process"
+}
+total(){
+        wget --quiet -O - http://127.0.0.1:80/status?auto |grep "total processes" |awk '{print$3}'
+}
+
+mactive(){
+
+        wget --quiet -O - http://127.0.0.1:80/status?auto |grep "max active processes:" |awk '{print$4}'
+}
+
+since(){
+        wget --quiet -O - http://127.0.0.1:80/status?auto |grep "start since: " |awk '{print$3}'
+}
+
+conn(){
+        wget --quiet -O - http://127.0.0.1:80/status?auto |grep "accepted conn" |awk '{print$3}'
+}
+
+reached(){
+        wget --quiet -O - http://127.0.0.1:80/status?auto |grep "max children reached" |awk '{print$4}'
+}
+requests(){
+        wget --quiet -O - http://127.0.0.1:80/status?auto |grep "slow requests" |awk '{print$3}'
+}
+$1
+
+
+
+server端测试
+
+/usr/bin/zabbix_get -s 192.168.20.88 -k 'max.children.reached'
+
+http://blog.csdn.net/a454213722/article/details/51565392
+http://www.ttlsa.com/php/use-php-fpm-status-page-detail/
+
+
+
+
+微信报警部署步骤
+
+
+
+下载程序到你的zabbix server的AlertScriptsPath目录下。不知道什么是AlertScriptsPath目录，不知道怎么配置的，直接看官方文档！！！zabbix server配置文件
+如果之前没有设置过AlertScriptsPath，设置之后要重启zabbix server
+假设我的zabbix server的AlertScriptsPath目录为/usr/local/zabbix/alertscripts
+
+
+
+wget http://dl.cactifans.org/tools/zabbix_weixin.x86_64.tar.gz
+tar zxvf zabbix_weixin.x86_64.tar.gz
+mv zabbix_weixin/weixin .
+chmod a+x weixin
+mv zabbix_weixin/weixincfg.json /etc/
+rm -rf zxvf zabbix_weixin.x86_64.tar.gz
+rm -rf zabbix_weixin/
+接下来一步很重要，编辑/etc/weixincfg.json文件，配置你的企业号corpid，secret，agentid，
+{
+"corp": {
+        "corpid": "wxxxxxx",
+        "secret": "Vn6dxxxx",
+        "agentid": 1
+    }
+}
+
+
+{ALERT.SENDTO}
+{ALERT.SUBJECT}
+{ALERT.MESSAGE}
+
+
+告警主题：
+故障:{TRIGGER.STATUS},服务器:{HOSTNAME1}发生:{TRIGGER.NAME}故障!
+告警内容：
+告警主机: {HOSTNAME1}
+告警时间: {EVENT.DATE}-{EVENT.TIME}
+告警等级: {TRIGGER.SEVERITY}
+当前状态: {TRIGGER.STATUS}: {ITEM.VALUE1}
+告警信息: {TRIGGER.NAME}
+问题详情: {ITEM.NAME}: {ITEM.VALUE}
+
+事件ID: {EVENT.ID}
+------------------------------------------
+
+恢复主题：
+恢复{TRIGGER.STATUS},服务器:{HOSTNAME1}:{TRIGGER.NAME}已恢复!
+恢复内容：
+告警主机: {HOSTNAME1}
+告警时间: {EVENT.DATE}-{EVENT.TIME}
+告警等级: {TRIGGER.SEVERITY}
+当前状态: {TRIGGER.STATUS}: {ITEM.VALUE1}
+告警信息: {TRIGGER.NAME}
+问题详情: {ITEM.NAME}: {ITEM.VALUE}
+
+事件ID: {EVENT.ID}
+------------------------------------------
+
+corpid=wwbf0adaf9649ec910 
+corpsecret=qi4O-S42j_K50sUGryCY3IvfPUk_-HC5Mk-oz9GxDQQ  
+msg="您好,告警测试" 
+user=LiYongBin 
+agentid=1000002
+
+wget http://dl.cactifans.org/tools/zabbix_weixin.x86_64.tar.gz
+wget http://down1.chinaunix.net/distfiles/ttf-arphic-uming_0.0.20050501-1.tar.gz  字体
+
+
+
+
+
+
+zabbix 监控redis 
+
+redis 启动方法
+
+redis-server /usr/local/redis/etc/redis.conf  启动redis服务，并指定配置文件
+redis-cli 启动redis 客户端
+pkill redis-server 关闭redis服务
+redis-cli shutdown 关闭redis客户端
+netstat -tunpl|grep 6379 查看redis 默认端口号6379占用情况
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

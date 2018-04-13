@@ -1,0 +1,64 @@
+ansible  参数详解
+[root@localhost ~]# ansible -h
+Usage: ansible <host-pattern> [options]
+
+Options:
+  -a MODULE_ARGS, --args=MODULE_ARGS    模块的参数,如果执行默认COMMAND的模块，即是命令参数,如：“date”,"pwd"等等
+                        module arguments    模块参数
+  -k, --ask-pass        ask for SSH password  登录密码，提示输入SSH密码而不是假设基于密钥的验证
+  --ask-su-pass         ask for su password    su切换密码
+  -K, --ask-sudo-pass   ask for sudo password  提示密码使用sudo,sudo表示提权操作
+  --ask-vault-pass      ask for vault password
+  -B SECONDS, --background=SECONDS     后台运行超时时间
+                        run asynchronously, failing after X seconds
+                        (default=N/A)
+  -C, --check           don't make any changes; instead, try to predict some    只是测试一下会改变什么内容，不会真正去执行;相反,试图预测一些可能发生的变化
+                        of the changes that may occur
+  -c CONNECTION, --connection=CONNECTION   连接类型使用。可能的选项是paramiko(SSH),SSH和地方。当地主要是用于crontab或启动。
+                        connection type to use (default=smart)
+  -f FORKS, --forks=FORKS   并行任务数。NUM被指定为一个整数,默认是5
+                        specify number of parallel processes to use
+                        (default=5)
+  -h, --help            show this help message and exit   打开帮助文档API
+  -i INVENTORY, --inventory-file=INVENTORY    指定库存主机文件的路径,默认为/etc/ansible/hosts
+                        specify inventory host file
+                        (default=/etc/ansible/hosts)
+  -l SUBSET, --limit=SUBSET    进一步限制所选主机/组模式  --limit=192.168.91.135 只对这个ip执行
+                        further limit selected hosts to an additional pattern
+  --list-hosts          outputs a list of matching hosts; does not execute
+                        anything else
+  -m MODULE_NAME, --module-name=MODULE_NAME   执行模块的名字，默认使用 command 模块，所以如果是只执行单一命令可以不用 -m参数
+                        module name to execute (default=command)
+  -M MODULE_PATH, --module-path=MODULE_PATH    要执行的模块的路径，默认为/usr/share/ansible/
+                        specify path(s) to module library
+                        (default=/usr/share/ansible/)
+  -o, --one-line        condense output      压缩输出，摘要输出.尝试一切都在一行上输出。
+  -P POLL_INTERVAL, --poll=POLL_INTERVAL    调查背景工作每隔数秒。需要- b
+                        set the poll interval if using -B (default=15)
+  --private-key=PRIVATE_KEY_FILE    私钥路径，使用这个文件来验证连接
+                        use this file to authenticate the connection
+  -S, --su              run operations with su    用 su 命令
+  -R SU_USER, --su-user=SU_USER      指定SU的用户，默认是root用户
+                        run operations with su as this user (default=root)
+  -s, --sudo            run operations with sudo (nopasswd)    
+  -U SUDO_USER, --sudo-user=SUDO_USER    sudo到哪个用户，默认为 root  
+                        desired sudo user (default=root)
+  -T TIMEOUT, --timeout=TIMEOUT    指定SSH默认超时时间，  默认是10S
+                        override the SSH timeout in seconds (default=10)
+  -t TREE, --tree=TREE  log output to this directory     将日志内容保存在该输出目录,结果保存在一个文件中在每台主机上。
+  -u REMOTE_USER, --user=REMOTE_USER    远程用户， 默认是root用户
+                        connect as this user (default=root)
+  --vault-password-file=VAULT_PASSWORD_FILE  
+                        vault password file
+  -v, --verbose         verbose mode (-vvv for more, -vvvv to enable    详细信息
+                        connection debugging)
+  --version             show program's version number and exit   输出ansible的版本
+
+
+ansible all -m copy -a "src=/usr/local/zabbix-3.2.6/etc/zabbix_agentd.conf.d/connect.conf dest=/usr/local/zabbix-2.4.5/etc/zabbix_agentd.conf.d/connect.conf"
+
+ansible vpc_hadoop --ask-su-pass -S -R root  -m shell -a "sed -i 's/172.17.2.84/172.16.15.19/g' /etc/rsyslog.conf"
+172.16.15.11  bouncer
+
+
+ansible hadoop --ask-su-pass -S -R root  -m shell -a "echo "172.16.15.11  bouncer" >>/etc/hosts"

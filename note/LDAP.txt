@@ -1,0 +1,158 @@
+ldap url格式说明 https://wenku.baidu.com/view/0aa32d691711cc7931b716c0.html
+
+ldap nginx配置说明 https://github.com/kvspb/nginx-auth-ldap/blob/master/example.conf
+
+
+<?php
+$ldap_host = "ldap://ServerIP";//LDAP 服务器地址
+$ldap_port = "389";//LDAP 服务器端口号
+
+//用户名密码 RDN登录
+$ldap_user = "mail=uid@mail.com;virtualDomain=mail.com;o=Account;dc=org";//设定登录DN
+$ldap_pwd = "123456";//设定密码
+
+$ldap_conn = ldap_connect($ldap_host, $ldap_port);//建立与 LDAP 服务器的连接
+
+$set = ldap_set_option($ldap_conn, LDAP_OPT_PROTOCOL_VERSION, 3);    //设置参数，这个目前还不了解
+
+if(!$ldap_conn)
+{
+    //诊断连接错误
+    die("Can't connect to LDAP server");
+}
+ldap_bind($ldap_conn, $ldap_user, $ldap_pwd) or die("Can't bind to LDAP server.");//与服务器绑定
+/*var_dump($ldap_conn);
+exit;*/
+
+//连接成功
+if(ldap_errno($ldap_conn)!=0)
+{
+  echo "Can't log in! ".ldap_error($ldap_conn)."<br>";
+}
+else
+{
+  echo "Welcome $ldap_user";
+}
+ldap_unbind($ldap_conn) or die("Can't unbind from LDAP server."); //与服务器断开连接
+?>
+
+
+
+http://blog.csdn.net/zhtking120/article/details/72846728
+
+
+
+线上PHP 编译参数 
+./configure  --prefix=/usr/local/php-5.6.8 --with-mysql=mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --enable-mysqlnd --enable-fpm --enable-mbstring --enable-mbregex --with-zlib-dir=/usr --enable-pcntl --enable-sockets --enable-ftp --enable-soap --disable-debug --enable-inline-optimization --disable-rpath --with-mysql --with-libxml-dir=/usr --with-jpeg-dir=/usr --with-iconv-dir=/usr --with-mcrypt=/usr --with-freetype-dir=/usr --with-gd=/usr/local/gd-2.1.1 --with-openssl-dir=/usr --with-curl=/usr --with-curlwrappers --with-png-dir=/usr --with-openssl=/usr --with-bz2 --with-libzip=/usr --enable-bcmath --with-gettext
+
+编译php支持ldap模块 
+http://ask.apelearn.com/question/1328
+
+
+Cannot find autoconf. Please check your autoconf installation and the $PHP_AUTOCONF environment vari 
+解决：yum install m4 autoconf -y
+
+http://www.cnblogs.com/xiangxiaodong/p/3492227.html
+configure: error: Cannot find ldap.h 
+解决：
+yum install openldap  openldap-devel -y
+
+Delta RPMs disabled because /usr/bin/applydeltarpm not installed
+解决： yum install -y deltarpm
+
+
+configure: error: Cannot find ldap libraries in /usr/lib.
+解决：cp -frp /usr/lib64/libldap* /usr/lib/
+
+
+yum install m4 autoconf openldap  openldap-devel  deltarpm -y 
+
+基调网络问题
+PHP Warning:  PHP Startup: Unable to load dynamic library '/usr/local/php-5.6.8/lib/php/extensions/no-debug-non-zts-20131226/networkbench.so' - /usr/local/php-5.6.8/lib/php/extensions/no-debug-non-zts-20131226/networkbench.so: cannot open shared object file: No such file or directory in Unknown on line 0
+
+
+ 
+yum -y install bzip2-devel libcurl
+yum -y install libjpeg-devel
+yum -y install libxslt-devel
+yum -y install libfreetype6-dev  
+
+cd /home/develop/ldapso
+chmod 755 ldap7*
+yum install openldap  openldap-devel deltarpm -y
+tar -xvf php-5.6.8.tar.gz 
+cd php-5.6.8/ext/ldap/
+/usr/local/php-5.6.8/bin/phpize 
+cp -frp /usr/lib64/libldap* /usr/lib/
+./configure --with-php-config=/usr/local/php-5.6.8/bin/php-config --with-ldap 
+make 
+make install
+cp /home/develop/ldapso/ldap7.* /usr/local/php-5.6.8/lib/php/extensions/no-debug-non-zts-20131226/ 
+/sbin/ldconfig  
+\cp -rf /usr/local/php-5.6.8/etc/php.ini /usr/local/php-5.6.8/etc/php.ini.20170707
+cat >> /usr/local/php-5.6.8/etc/php.ini << EOF
+extension_dir = "/usr/local/php-5.6.8/lib/php/extensions/no-debug-non-zts-20131226/"
+;extension = "ldap7.0.so"
+extension = "ldap7.2.so"
+EOF
+tail /usr/local/php-5.6.8/etc/php.ini
+ll  /usr/local/php-5.6.8/lib/php/extensions/no-debug-non-zts-20131226/
+/usr/local/php-5.6.8/bin/php -m | grep ldap
+ps -elf | grep php-fpm
+/proj/sh/php-fpm.sh reload
+ps -elf | grep php-fpm
+/usr/local/php-5.6.8/bin/php -m | grep ldap
+tail /usr/local/php-5.6.8/etc/php.ini 
+
+
+
+重启PHP nginx 查看phpinfo页面
+完~~~~~~~~~~
+
+
+安装过程中会出现的问题：
+
+Cannot find autoconf. Please check your autoconf installation and the $PHP_AUTOCONF environment vari 
+解决：yum install m4 autoconf -y
+
+configure: error: Cannot find ldap.h 
+解决：
+yum install openldap  openldap-devel -y
+
+Delta RPMs disabled because /usr/bin/applydeltarpm not installed
+解决： yum install -y deltarpm
+
+configure: error: Cannot find ldap libraries in /usr/lib.
+解决：cp -frp /usr/lib64/libldap* /usr/lib/
+
+参考文档：
+http://ask.apelearn.com/question/1328
+
+
+
+cd /root/ldapso
+chmod 755 ldap7*
+yum install openldap  openldap-devel deltarpm -y
+tar -xvf php-5.6.8.tar.gz 
+cd php-5.6.8/ext/ldap/
+/usr/local/php-5.6.8/bin/phpize 
+cp -frp /usr/lib64/libldap* /usr/lib/
+./configure --with-php-config=/usr/local/php-5.6.8/bin/php-config --with-ldap 
+make 
+make install
+cp /root/ldapso/ldap7.* /usr/local/php-5.6.8/lib/php/extensions/no-debug-non-zts-20131226/ 
+/sbin/ldconfig  
+cp /usr/local/php-5.6.8/etc/php.ini /usr/local/php-5.6.8/etc/php.ini.2070705
+cat >> /apps/conf/php5/etc/php.ini << EOF
+extension_dir = "/apps/svr/php5/lib/php/extensions/no-debug-non-zts-20131226/"
+;extension = "ldap7.0.so"
+extension = "ldap7.2.so"
+EOF
+tail /usr/local/php-5.6.8/etc/php.ini
+ll  /usr/local/php-5.6.8/lib/php/extensions/no-debug-non-zts-20131226/
+/usr/local/php-5.6.8/bin/php -m | grep ldap
+ps -elf | grep php-fpm
+/proj/sh/php-fpm.sh reload
+ps -elf | grep php-fpm
+/usr/local/php-5.6.8/bin/php -m | grep ldap
+

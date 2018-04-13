@@ -1,0 +1,400 @@
+
+抓9000端口的包
+tcpdump -Xx -i any -nn port 9000
+
+tcpdump -Xx -i lo -nn port 9000
+-nn：直接以 IP 及 port number 顯示，而非主機名與服務名稱
+-X ：可以列出十六進位 (hex) 以及 ASCII 的封包內容，對於監聽封包內容很有用
+
+
+第一种是关于类型的关键字，主要包括host，net，port, 例如 host 210.27.48.2，指明 210.27.48.2是一台主机，net 202.0.0.0 指明 202.0.0.0是一个网络地址，port 23 指明端口号是23。如果没有指定类型，缺省的类型是host.
+
+第二种是确定传输方向的关键字，主要包括src , dst ,dst or src, dst and src ,这些关键字指明了传输的方向。举例说明，src 210.27.48.2 ,指明ip包中源地址是210.27.48.2 , dst net 202.0.0.0 指明目的网络地址是202.0.0.0 。如果没有指明方向关键字，则缺省是src or dst关键字。
+
+第三种是协议的关键字，主要包括fddi,ip,arp,rarp,tcp,udp等类型。Fddi指明是在FDDI(分布式光纤数据接口网络)上的特定 的网络协议，实际上它是"ether"的别名，fddi和ether具有类似的源地址和目的地址，所以可以将fddi协议包当作ether的包进行处理和 分析。其他的几个关键字就是指明了监听的包的协议内容。如果没有指定任何协议，则tcpdump将会监听所有协议的信息包。
+
+ 除了这三种类型的关键字之外，其他重要的关键字如下：gateway, broadcast,less,greater,还有三种逻辑运算，取非运算是 'not ' '! ', 与运算是'and','&&;或运算 是'or' ,'||'；这些关键字可以组合起来构成强大的组合条件来满足人们的需要，下面举几个例子来说明。
+
+
+例： 想要截获主机210.27.48.1 和主机210.27.48.2 或210.27.48.3的通信，使用命令
+：（在命令行中适用　括号时，一定要
+#tcpdump host 210.27.48.1 and / (210.27.48.2 or 210.27.48.3 /)
+
+下面是按功能划分的命令名称。
+监控总体带宽使用――nload、bmon、slurm、bwm-ng、cbm、speedometer和netload
+监控总体带宽使用（批量式输出）――vnstat、ifstat、dstat和collectl
+每个套接字连接的带宽使用――iftop、iptraf、tcptrack、pktstat、netwatch和trafshow
+每个进程的带宽使用――nethogs
+
+
+
+nc -l -p [port]
+參數：
+-l ：作為監聽之用，亦即開啟一個 port 來監聽用戶的連線；
+-p ：開啟的這個 port number
+
+Nginx 0.8.46+PHP 5.2.14(FastCGI)
+缺点：
+因为是多进程，所以比CGI多线程消耗更多的服务器内存，PHP-CGI解释器每进程消耗7至25兆内存，将这个数字乘以50或100就是很大的内存数。
+Nginx 0.8.46+PHP 5.2.14(FastCGI)服务器在3万并发连接下，开启的10个Nginx进程消耗150M内存（15M*10=150M），开启的64个php-cgi进程消耗1280M内存（20M*64=1280M），加上系统自身消耗的内存，总共消耗不到2GB内存。如果服务器内存较小，完全可以只开启25个php-cgi进程，这样php-cgi消耗的总内存数才500M。
+上面的数据摘自Nginx 0.8.x + PHP 5.2.13(FastCGI)搭建胜过Apache十倍的Web服务器(第6版)。
+
+4.Nginx和php－fpm使用的进程线程方式
+Nginx 是非阻塞IO & IO复用模型，通过操作系统提供的类似 epoll 的功能，可以在一个线程里处理多个客户端的请求。
+Nginx 的进程就是线程，即每个进程里只有一个线程，但这一个线程可以服务多个客户端。
+PHP-FPM 是阻塞的单线程模型，pm.max_children 指定的是最大的进程数量，pm.max_requests 指定的是每个进程处理多少个请求后重启(因为 PHP 偶尔会有内存泄漏，所以需要重启).
+PHP-FPM 的每个进程也只有一个线程，但是一个进程同时只能服务一个客户端。
+?Linux 下相对来说创建多进程的开销比较小(写时复制，但也比创建多线程昂贵），而 Linux 的线程功能又不是很强大。使用进程主要是因为采用非阻塞与I/O复用，可以带来比多线程更高的效率，但是代码逻辑会更复杂（参考UNPv1）。
+
+
+[root@localhost run]# memcached -m 32m -p 11211 -d -u root ??-P /var/run/memcached.pid -c 256 ?----------启动memcached进程
+-p ?使用的tcp端口，默认为11211；-m最大内存块，默认为64M；-d 作为守护进程在后台运行；-c最大运行的并发数，默认为1024；-P设置保存memcached的pid文件；
+
+（2） 现在很多人议论或者已经在实践中用radis（泛指nosql）用来替换memcached了，这里我就不长篇大论去说二者的差异了，你可以搜索相关文章资料，
+捡几个重点说，memcached的目标就是做缓存,为了缓解数据库压力诞生的，而radis的目标是做一个数据库的替换方案，这货是建立在内存上的数据库，memcached断电后数据全部丢失（可以用定时器做持久化），radis是持久化的数据库，最重要的一点来了：memcached单一轻量，部署简单，多线程分布式的，radis比较吃配置，且是单线程的，看得出在做大型分布式缓存系统的时候memcached更方便安全，
+
+
+
+lsof -Pnl +M -i4|grep 8888
+
+lsof命令参数解释
+
+　　1) -P :这个选项约束着网络文件的端口号到端口名称的转换。约束转换可以使lsof运行得更快一些。在端口名称的查找不能奏效时，这是很有用的。
+
+　　2) -n : 这个选项约束着网络文件的端口号到主机名称的转换。约束转换可以使lsof的运行更快一些。在主机名称的查找不能奏效???，它非常有用。
+
+　　3) -l :这个选项约束着用户ID号到登录名的转换。在登录名的查找不正确或很慢时，这个选项就很有用。
+
+　　4) +M :此选项支持本地TCP和UDP端口映射程序的注册报告。
+
+　　5) -i4 :仅列示IPv4协议下的端口。
+
+　　6) -i6 : 仅列示IPv6协议下的端口
+
+
+杜绝假死，Tomcat容器做到自我保护，设置最大连接数 
+maxThreads：tomcat起动的最大线程数，即同时处理的任务个数，默认值为200
+acceptCount：当tomcat起动的线程数达到最大时，接受排队的请求个数，默认值为100
+maxThreads 是处理请求的线程数，acceptCount 是等待队列，acceptCount并不是一定要大于等于maxThreads。
+maxThreads 满了，进入acceptCount ，acceptCount 也满了，则 拒绝请求
+原来tomcat最大连接数取决于maxConnections这个值加上acceptCount这个值，在连接数达到了maxConenctions之后，tomcat仍会保持住连接，但是不处理，等待其它请求处理完毕之后才会处理这个请求。
+
+
+
+Host name
+主机名，只允许数字,空格,句号,下划线,非主流符号它不支持。zabbix客户端配置文件中的hostname名称一定要与这个名字一致。
+
+
+
+#!/usr/bin/env bash
+#! Encoding UTF-8
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
+export PATH
+readonly  FILEDIR=$(pwd)
+
+
+
+查看nginx编译参数：/usr/local/nginx/sbin/nginx -V
+[root@zabbix_server ~]# /proj/server/nginx_http2/sbin/nginx -V
+nginx version: nginx/1.11.10
+built by gcc 4.8.5 20150623 (Red Hat 4.8.5-11) (GCC) 
+built with OpenSSL 1.0.2h  3 May 2016
+TLS SNI support enabled
+configure arguments: --prefix=/proj/server/nginx_http2 --user=nginx --group=nginx --with-http_ssl_module --with-http_stub_status_module --with-file-aio --with-http_dav_module --add-module=../ngx_devel_kit-0.3.0 --add-module=../lua-nginx-module-0.10.6 --add-module=../echo-nginx-module-0.60 --with-openssl=../openssl-1.0.2h --with-pcre=../pcre-8.39 --with-zlib=../zlib-1.2.8 --with-http_stub_status_module --without-mail_pop3_module --without-mail_imap_module --without-mail_smtp_module --with-debug --with-threads --with-http_v2_module --add-module=../nginx-sticky-module-1.2.5 --add-module=../ngx_cache_purge-2.3 --add-module=../ngx_http_lower_upper_case-master --with-http_realip_module --with-http_gzip_static_module
+
+
+查看apache编译参数：cat /usr/local/apache2/build/config.nice
+
+查看mysql编译参数：cat /usr/local/mysql/bin/mysqlbug | grep CONFIGURE_LINE
+
+查看php编译参数：/usr/local/php/bin/php -i | grep configure
+[root@zabbix_server etc]# /usr/local/php-5.6.8/bin/php -i | grep configure
+Configure Command =>  './configure'  '--prefix=/usr/local/php-5.6.8' '--with-mysql=mysqlnd' '--with-mysqli=mysqlnd' '--with-pdo-mysql=mysqlnd' '--enable-mysqlnd' '--enable-fpm' '--enable-mbstring' '--enable-mbregex' '--with-zlib-dir=/usr' '--enable-pcntl' '--enable-sockets' '--enable-ftp' '--enable-soap' '--enable-bcmath' '--disable-debug' '--enable-inline-optimization' '--disable-rpath' '--with-mysql' '--with-libxml-dir=/usr' '--with-jpeg-dir=/usr' '--with-iconv-dir=/usr' '--with-mcrypt=/usr' '--with-freetype-dir=/usr' '--with-gd=/usr/local/gd-2.1.1' '--with-openssl-dir=/usr' '--with-curl=/usr/local/curl-7.44' '--with-png-dir=/usr' '--with-openssl=/usr' '--with-icu-dir=/usr' '--enable-zip'
+
+
+
+
+ worker_connections  65535
+web服务器的最大访问客户数 max clients = worker_processes 乘以worker_connections。
+nginx作为反向代理的时候 max clients = worker_processes 乘以worker_connections 再除以4
+
+
+######################https配置#####################################
+
+
+
+
+# HTTPS server configuration
+#
+server {
+    listen       443;
+    server_name  本机的IP地址;
+
+    ssl                  on;
+    ssl_certificate      /etc/nginx/server.crt;
+    ssl_certificate_key  /etc/nginx/server.key;
+
+    ssl_session_timeout  5m;
+
+#    ssl_protocols  SSLv2 SSLv3 TLSv1;
+#    ssl_ciphers  ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP;
+#    ssl_prefer_server_ciphers   on;
+
+    location / {
+        #root   html;
+        #index  testssl.html index.html index.htm;
+     proxy_redirect off;
+     proxy_set_header Host $host;
+     proxy_set_header X-Real-IP $remote_addr;
+     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+     proxy_pass http://IP地址/ssl/;
+    }
+}
+
+
+四、项目需要，将访问目录 \services\ 由http访问 重定向到 https （解决方法：nginx rewrite 加上 location 方式实现）
+location ~ /services/.*$ {
+        if ($server_port ~ "^80$"){
+            set $rule_0 1$rule_0;
+        }
+        if ($rule_0 = "1"){
+            rewrite /(.*) https://IP地址/$1 permanent;                       break;
+        }
+    }
+五，配置结束上传以后用nginx -t 测试下配置无误 就reload一下nginx服务 检查443端口是否在监听
+/usr/local/nginx/sbin/nginx -t
+nginx: the configuration file /usr/local/nginx/conf/nginx.conf syntax is ok  
+nginx: configuration file /usr/local/nginx/conf/nginx.conf test is successful (显示表示配置文件没有错误)
+
+service nginx reload (重新加载nginx服务)  
+netstat -lan | grep 443 (查看443端口)  
+tcp 0 0 0.0.0.0:443 0.0.0.0:* LISTEN (有看到这一行 就表示HTTPS已经在工作了) 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~	
+include /proj/server/nginx_80/conf/vhosts/bouncer.yyft.com;
+实例
+server
+{
+    listen       80;
+    server_name  img.pengyouwan.com;
+    index index.html index.php;
+    root  /proj/web/pyw_images/;
+
+    location ~ .*\.(php|php5)?$
+    {
+      fastcgi_pass  127.0.0.1:9000;
+      fastcgi_index index.php;
+      include fastcgi.conf;
+    }
+
+    location ~ .*\.(gif|jpg|jpeg|png|bmp|swf|flv|ico)$
+    {
+      expires      302400s;
+    }
+
+    location ~ .*\.(js|css)?$
+    {
+      expires      302400s;
+    }
+
+    location ~ .*\.(html|htm|php)$
+    {
+      expires     180s;
+    }
+    access_log /proj/logs/nginx80/imgpengyouwan_access.log log_access;
+}
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+server {
+       # listen       80;
+        listen       443;
+        server_name ioss.pyw.cn;
+        root /proj/web/pyw_ios;
+        index  index.html index.php index.htm;
+        error_page  400 /errpage/400.html;
+        error_page  403 /errpage/403.html;
+        error_page  404 /errpage/404.html;
+        error_page  405 /errpage/405.html;
+        location ~ \.php$ {
+                fastcgi_pass   127.0.0.1:9000;
+                fastcgi_index  index.php;
+                #include fcgi.conf;
+                include fastcgi.conf;
+        }
+
+    ssl on;
+    ssl_certificate /proj/server/nginx_80/conf/ssl/pywcn_godaddy.crt;
+    ssl_certificate_key /proj/server/nginx_80/conf/ssl/pywcn_godaddy.key;
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    ssl_ciphers ALL:!DH:!EXPORT:!RC4:+HIGH:+MEDIUM:!LOW:!aNULL:!eNULL;
+    location /
+    {
+        # Check if a file or directory index file exists, else route it to index.php.
+        try_files $uri $uri/ /index.php;
+    }
+
+    location ~ .*\.(gif|jpg|jpeg|png|bmp|swf|flv|ico)$
+    {
+      expires      302400s;
+    }
+
+    location ~ .*\.(js|css)?$
+    {
+      expires      302400s;
+    }
+
+    location ~ .*\.(html|htm|php)$
+    {
+      expires     180s;
+    }
+    access_log /proj/logs/nginx80/ioss.pyw.cn_access.log log_access;
+}
+
+Nginx有两份fastcgi配置文件，分别是「fastcgi_params」和「fastcgi.conf」，它们没有太大的差异，唯一的区别是后者比前者多了一行「SCRIPT_FILENAME」的定义：
+注意：$document_root 和 $fastcgi_script_name 之间没有 /。
+
+原本Nginx只有「fastcgi_params」，后来发现很多人在定义「SCRIPT_FILENAME」时使用了硬编码的方式，于是为了规范用法便引入了「fastcgi.conf」。
+
+
+
+
+
+
+
+
+
+
+
+语法规则?try_files?[uri] [uri] [uri] ....
+解释下来就是服务器会尝试后面你配置的uri地址，返回第一个能够成功访问的文件就可以了。如果给的uri都没能成功访问可怎么办呢？这时候就要记住最后一个uri啦，就是不论如何，你要保证最后一个uri地址是可以访问的。即如果前面的都出错了，这时候，该命令返回的就是最后一个uri地址啦。
+当然nginx新的改良是可以出现如下的使用形式的
+try_files $uri = 404
+什么意思呢？uri不能成功访问，那好，那就给你个404吧。
+比较完整的例子是这样的:
+try_files $uri $uri/ /index.php?s=$uri&$args;
+如上所解释的，挨个访问$uri $uri/(也就是前一个路径在加上个/)如果这俩都不能访问，那就访问最后一个路径。$args是什么呢，很轻松的查到啦
+This variable is the?GET?parameters in request line, e.g.?foo=123&bar=blahblah; This variable could be changed.
+所以不难理解上面地址的意思喽。
+
+
+
+
+MySQL提示:The server quit without updating PID file问题的解决办法
+
+1、可能是/usr/local/mysql/data/mysql.pid文件没有写的权限
+解决方法 ：给予权限，执行 “chown -R mysql:mysql /var/data” “chmod -R 755 /usr/local/mysql/data”? 然后重新启动mysqld！
+
+2、可能进程里已经存在mysql进程
+解决方法：用命令“ps -ef|grep mysqld”查看是否有mysqld进程，如果有使用“kill -9? 进程号”杀死，然后重新启动mysqld！
+
+3、可能是第二次在机器上安装mysql，有残余数据影响了服务的启动。
+解决方法：去mysql的数据目录/data看看，如果存在mysql-bin.index，就赶快把它删除掉吧，它就是罪魁祸首了。本人就是使用第三条方法解决的 ！
+
+4、mysql在启动时没有指定配置文件时会使用/etc/my.cnf配置文件，请打开这个文件查看在[mysqld]节下有没有指定数据目录(datadir)。
+解决方法：请在[mysqld]下设置这一行：datadir = /usr/local/mysql/data
+
+5、skip-federated字段问题
+解决方法：检查一下/etc/my.cnf文件中有没有没被注释掉的skip-federated字段，如果有就立即注释掉吧。
+
+6、错误日志目录不存在
+解决方法：使用“chown” “chmod”命令赋予mysql所有者及权限
+
+7、selinux惹的祸，如果是centos系统，默认会开启selinux
+解决方法：关闭它，打开/etc/selinux/config，把SELINUX=enforcing改为SELINUX=disabled后存盘退出重启机器试试。
+
+
+iftop 命令安装 
+
+wget http://www.ex-parrot.com/~pdw/iftop/download/iftop-0.17.tar.gz
+
+
+yum install -y iftop
+安装依赖
+yum install flex byacc  libpcap ncurses ncurses-devel libpcap-devel
+
+
+dstat -lcdngm  --disk-util -D dm-0 -N eth0 1
+curl http://www.pubyun.com/dyndns/getip   查看出口地址
+
+http://mirror.oasis.onnetcorp.com/centos/镜像源
+
+
+120.92.43.98
+120.92.17.197
+120.92.17.143
+120.92.142.142
+120.92.138.25
+120.77.77.180
+120.77.59.78
+120.76.43.161
+120.76.40.37
+120.76.218.243
+120.76.217.45
+120.76.159.212
+120.76.156.171
+120.25.214.207
+120.25.194.131
+120.25.125.19
+120.24.84.233
+120.24.5.46
+120.24.18.22
+119.23.143.228
+112.74.78.202
+112.74.124.216
+100.98.3.111
+
+
+-A INPUT -i eth1 -p tcp -m tcp --dport 60432 -j REJECT --reject-with icmp-port-unreachable 
+-A INPUT -i eth1 -p tcp -m tcp --dport 20048 -j REJECT --reject-with icmp-port-unreachable 
+-A INPUT -i eth1 -p tcp -m tcp --dport 2049 -j REJECT --reject-with icmp-port-unreachable 
+-A INPUT -i eth1 -p tcp -m tcp --dport 111 -j REJECT --reject-with icmp-port-unreachable 
+
+iptables -I INPUT 16 -i eth1 -p tcp -m tcp --dport 20048 -j REJECT --reject-with icmp-port-unreachable 
+iptables -I INPUT 2 -i eth1 -p tcp -m tcp --dport 111 -j REJECT --reject-with icmp-port-unreachable
+iptables -I INPUT 2 -i eth1 -p udp -m udp --dport 111 -j REJECT --reject-with icmp-port-unreachable
+
+
+
+
+error: Failed to initialize NSS library There was a problem importing one of the Python modules required to run yum. The error leading to this problem was:
+
+   cannot import name ts
+error: Failed to initialize NSS library
+
+个人尝试源码编译重装nss、gcc、python、yum都不管用，就差重装系统了。
+最后解决方案：
+1、下载nspr（nspr-4.13.1-1.0.el7_3.x86_64.rpm）包，链接：http://mirror.centos.org/centos/7/os/x86_64/Packages/nspr-4.13.1-1.0.el7_3.x86_64.rpm
+2、执行命令：rpm2cpio nspr-4.13.1-1.0.el7_3.x86_64.rpm | cpio -idmv
+3、执行命令：LD_PRELOAD=./usr/lib64/libnspr4.so yum update nspr
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

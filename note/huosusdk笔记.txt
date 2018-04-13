@@ -1,0 +1,171 @@
+增加huosusdk这台机器的zabbix基础监控和nginx,php日志推送
+内网
+10.30.253.15
+
+外网
+39.108.192.60
+
+elk 内网
+10.116.155.217
+
+
+#允许10.116.155.217连接本地10050端口
+iptables -I INPUT  2 -s 10.116.155.217 -p tcp --dport 10050 -j ACCEPT
+
+#允许10.116.155.217 的800~900端口数据包进来
+iptables -I INPUT  2 -s 10.116.155.217 -p tcp --sport 800:900  -j ACCEPT
+
+#允许10.116.155.217 的10051端口数据包进来
+iptables -I INPUT  2 -s 10.116.155.217 -p tcp --sport 10051  -j ACCEPT
+
+#允许向10.116.155.217 的 800~900、10051 建立新连接
+iptables -I INPUT  11 -s 10.116.155.217 -p tcp --sport 800:900  -m state --state NEW -j ACCEPT 
+iptables -I INPUT  11 -s 10.116.155.217 -p tcp --sport 10051  -m state --state NEW -j ACCEPT
+
+
+*filter
+:INPUT DROP [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [23902099:8155797514]
+:syn-flood - [0:0]
+-A INPUT -p tcp -m tcp --dport 443 -j ACCEPT 
+-A INPUT -p tcp -m tcp --dport 21 -j ACCEPT 
+-A INPUT -p tcp -m tcp --dport 80 -j ACCEPT 
+-A INPUT -p tcp -m tcp --dport 20000:20500 -m state --state NEW -j ACCEPT 
+-A INPUT -i lo -j ACCEPT 
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT 
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT 
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT 
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 443 -j ACCEPT 
+-A INPUT -p icmp -m limit --limit 1/sec --limit-burst 10 -j ACCEPT 
+-A INPUT -f -m limit --limit 100/sec --limit-burst 100 -j ACCEPT 
+-A INPUT -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -j syn-flood 
+-A INPUT -j REJECT --reject-with icmp-host-prohibited 
+-A syn-flood -p tcp -m limit --limit 3/sec --limit-burst 6 -j RETURN 
+-A syn-flood -j REJECT --reject-with icmp-port-unreachable 
+COMMIT
+
+192.168.111.128
+192.168.111.10
+
+iptables -I INPUT  2 -s 192.168.111.128 -p tcp --dport 10050 -j ACCEPT
+iptables -I INPUT  2 -s 192.168.111.128 -p tcp --sport 800:900  -j ACCEPT
+iptables -I INPUT  2 -s 192.168.111.128 -p tcp --sport 10051  -j ACCEPT
+iptables -I INPUT  11 -s 192.168.111.128 -p tcp --sport 800:900  -m state --state NEW -j ACCEPT
+iptables -I INPUT  11 -s 192.168.111.128 -p tcp --sport 10051  -m state --state NEW -j ACCEPT
+
+
+huosusdk
+iptables -I INPUT  2 -s 10.116.155.217 -p tcp --dport 10050 -j ACCEPT
+iptables -I INPUT  2 -s 10.116.155.217 -p tcp --sport 800:900  -j ACCEPT
+iptables -I INPUT  2 -s 10.116.155.217 -p tcp --sport 10051  -j ACCEPT
+iptables -I INPUT  11 -s 10.116.155.217 -p tcp --sport 800:900  -m state --state NEW -j ACCEPT 
+iptables -I INPUT  11 -s 10.116.155.217 -p tcp --sport 10051  -m state --state NEW -j ACCEPT
+iptables -I INPUT  11 -s 10.116.155.217 -p tcp --dport 10050  -m state --state NEW -j ACCEPT
+
+nmap  -sT -v -p10050 10.30.253.15
+
+iptables -D INPUT   -s 10.116.155.217 -p tcp --dport 10050 -j ACCEPT
+iptables -D INPUT   -s 10.116.155.217 -p tcp --sport 10051  -j ACCEPT
+iptables -D INPUT   -s 10.116.155.217 -p tcp --sport 10051  -m state --state NEW -j ACCEPT
+iptables -D INPUT   -s 10.116.155.217 -p tcp --dport 10050  -m state --state NEW -j ACCEPT
+
+iptables -I INPUT  2 -s 10.116.132.238 -p tcp --dport 10050 -j ACCEPT
+iptables -I INPUT  2 -s 10.116.132.238 -p tcp --sport 10051  -j ACCEPT
+iptables -I INPUT  11 -s 10.116.132.238 -p tcp --sport 10051  -m state --state NEW -j ACCEPT
+iptables -I INPUT  11 -s 10.116.132.238 -p tcp --dport 10050  -m state --state NEW -j ACCEPT
+
+
+
+端口扫描命令
+nmap -F -sT -v 192.168.111.10
+nmap  -sT -v -p800-900 192.168.111.10
+-p  指定端口
+
+
+NMap，也就是Network Mapper，是Linux下的网络扫描和嗅探工具包。
+nmap是在网络安全渗透测试中经常会用到的强大的扫描器。功能之强大，不言而喻。下面介绍一下它的几种扫描命令。具体的还是得靠大家自己学习，因为实在太强大了。
+1) 获取远程主机的系统类型及开放端口
+nmap -sS -P0 -sV -O <target>
+这里的 < target > 可以是单一 IP, 或主机名，或域名，或子网
+-sS TCP SYN 扫描 (又称半开放,或隐身扫描)
+-P0 允许你关闭 ICMP pings.
+-sV 打开系统版本检测
+-O 尝试识别远程操作系统
+其它选项:
+-A 同时打开操作系统指纹和版本检测
+-v 详细输出扫描情况.
+nmap -sS -P0 -A -v < target >
+2) 列出开放了指定端口的主机列表
+nmap -sT -p 80 -oG – 192.168.1.* | grep open
+3) 在网络寻找所有在线主机
+nmap -sP 192.168.0.*
+或者也可用以下命令:
+nmap -sP 192.168.0.0/24
+指定 subnet
+4) Ping 指定范围内的 IP 地址
+nmap -sP 192.168.1.100-254
+5) 在某段子网上查找未占用的 IP
+nmap -T4 -sP 192.168.2.0/24 && egrep “00:00:00:00:00:00″ /proc/net/arp
+6) 在局域网上扫找 Conficker 蠕虫病毒
+nmap -PN -T4 -p139,445 -n -v –script=smb-check-vulns –script-args safe=1 192.168.0.1-254
+7) 扫描网络上的恶意接入点 （rogue APs）.
+nmap -A -p1-85,113,443,8080-8100 -T4 –min-hostgroup 50 –max-rtt-timeout 2000 –initial-rtt-timeout 300 –max-retries 3 –host-timeout 20m –max-scan-delay 1000 -oA wapscan 10.0.0.0/8
+8 ) 使用诱饵扫描方法来扫描主机端口
+sudo nmap -sS 192.168.0.10 -D 192.168.0.2
+9) 为一个子网列出反向 DNS 记录
+nmap -R -sL 209.85.229.99/27 | awk ‘{if($3==”not”)print”(“$2″) no PTR”;else print$3″ is “$2}’ | grep ‘(‘
+10) 显示网络上共有多少台 linux 及 Win 设备?
+sudo nmap -F -O 192.168.0.1-255 | grep “Running: ” > /tmp/os; echo “$(cat /tmp/os | grep Linux | wc -l) Linux
+device(s)”; echo “$(cat /tmp/os | grep Windows | wc -l) Window(s) device”
+
+
+
+
+
+210.21.31.28 - - [05/Jul/2017:20:32:23 +0800] "POST /api/v7/system/startup HTTP/1.1" 200 64 "-" "hfh/1.7.1 CFNetwork/811.4.18 Darwin/16.5.0"
+210.21.31.28 - - [07/Jul/2017:16:54:04 +0800] "POST /api/v7/cp/user/check HTTP/1.1" 500 29831 "-" "-"
+
+
+
+正常
+100.97.15.7 - - [09/Jul/2017:15:30:39 +0800] "GET /%2527%2522%252f%253E%253C%252fscript%253E%253Cscript%253Ealert%2528%2529%253C%252fscript%253E/?.tmp=t HTTP/1.0" 404 16 "http://yunyoufeitian.com/""Mozilla/4.0 +(compatible; MSIE 6.0; Windows NT 5.1;Alibaba.Security.Heimdall.3993703)" 140.205.225.190 yunyoufeitian.com magpie 0.000 0.000 -
+
+100.97.15.13 - - [11/May/2017:11:31:08 +0800] "GET /js/jquery-2.1.0.js HTTP/1.0" 200 129960 "http://www.yunyoufeitian.com/""Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36" 180.153.214.197 www.yunyoufeitian.com magpie - 0.011
+
+119.129.120.173 - - [30/Jun/2017:11:23:30 +0800] "GET /admin.php/Sdk/Member/edit/id/19.html HTTP/1.1" 200 3166 "http://qhios.xpeng.com/admin.php/Sdk/Member/edit/id/19.html" "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36"
+
+119.129.120.173 - - [30/Jun/2017:11:33:45 +0800] "GET /admin.php/Sdk/Member/edit/id/19.html HTTP/1.1" 200 3166 "http://qhios.xpeng.com/admin.php/Sdk/Member/edit/id/19.html" "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36"
+
+119.129.120.173 - - [30/Jun/2017:11:33:44 +0800] "POST /admin.php/Sdk/Member/respective_edit_post.html HTTP/1.1" 200 85 "http://qhios.xpeng.com/admin.php/Sdk/Member/edit/id/19.html" "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36"
+
+$host $hostname $upstream_response_time $request_time $request_body
+if [type] == "nginx_log"{
+    grok { 
+      match => { "message" => "(?:%{NOTSPACE:remote_addr}|-) - (?:%{USER:user}|-) \[%{HTTPDATE:log_timestamp}\] \"(?:%{WORD:verb} %{NOTSPACE:request}(?: HTTP/%{NUMBER:httpversion})?|%{DATA:rawrequest})\" %{NUMBER:status} (?:%{NUMBER:body_bytes_sent}|-) %{QS:referrer}%{QS:agent} (?:%{IP3:http_x_forwarded_for}|%{IP2:http_x_forwarded_for}|%{IP:http_x_forwarded_for}|-) %{NOTSPACE:http_head} %{NOTSPACE:hostname} %{NOTSPACE:upstream_response_time} %{NUMBER:request_time} %{NOTSPACE:post_part}" }
+
+      match => { "message" => "(?:%{NOTSPACE:remote_addr}|-) - (?:%{USER:user}|-) \[%{HTTPDATE:log_timestamp}\] \"(?:%{WORD:verb} %{NOTSPACE:request}(?: HTTP/%{NUMBER:httpversion})?|%{DATA:rawrequest})\" %{NUMBER:status} (?:%{NUMBER:body_bytes_sent}|-) %{QS:referrer}%{QS:agent} (?:%{IP3:http_x_forwarded_for}|%{IP2:http_x_forwarded_for}|%{IP:http_x_forwarded_for}|-) %{NOTSPACE:http_head} %{NOTSPACE:hostname} %{NOTSPACE:upstream_response_time} %{NUMBER:request_time}" }
+    }
+    if [request] {
+    ruby {
+      init => "@kname = ['uri','url_args']"
+      code => "new_event = LogStash::Event.new(Hash[@kname.zip(event['request'].split('?'))]); new_event.remove('@timestamp');event.append(new_event)"
+      remove_field => ["request","message","@version","host","user"]
+        }
+    }
+	    mutate {
+      convert => [
+      "status" , "integer",
+      "body_bytes_sent" , "integer",
+      "request_time", "float",
+      "upstream_response_time", "float"
+      ]
+    }
+    date {
+      match => ["timestamp" , "ISO8601"]
+    }
+    mutate {  gsub => [ "post_part", "password=[^&]+", "password=@@@@@@@" ] }
+  }
+
+
+

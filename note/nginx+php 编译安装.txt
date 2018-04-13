@@ -1,0 +1,105 @@
+操作系统： centos7.0 64bit
+nginx版本： 1.8.0
+安装方式： 编译安装
+软件准备： zlib-1.2.8 openssl-1.0.2a pcre-8.36 源码安装包
+软件安装：
+
+nginx 编译安装
+
+安装前准备
+yum install gcc gcc-c++ automake pcre pcre-devel zlip zlib-devel openssl openssl-devel  make gcc gcc-c++  flex bison file libtool libtool-libs autoconf kernel-devel libjpeg libjpeg-devel libpng libpng-devel   gd gd-devel freetype freetype-devel libxml2 libxml2-devel zlib zlib-devel glib2 glib2-devel bzip2 bzip2-devel libevent libevent-devel ncurses ncurses-devel curl curl-devel e2fsprogs e2fsprogs-devel krb5 krb5-devel libidn libidn-devel openssl openssl-devel gettext gettext-devel ncurses-devel gmp-devel  unzip libcap lsof
+
+
+tar  xvf nginx-1.8.1.tar.gz
+cd nginx-1.8.1
+
+1 配置
+./configure --prefix=/proj/server/nginx_80 --with-pcre=../pcre-8.36 --with-zlib=../zlib-1.2.8 --with-openssl=../openssl-1.0.2a --with-http_ssl_module --with-http_stub_status_module --without-mail_pop3_module --without-mail_imap_module --without-mail_smtp_module
+
+make&&make install
+
+
+php 编译安装
+
+操作系统版本： centos7.0 64bit
+Php版本： 5.6.8
+安装方式：编译安装
+安装前准备软件：
+yum install -y libpng.x86_64 freetype.x86_64 libpng-devel.x86_64 freetype-devel.x86_64 openssl-devel libXpm libjpeg libjpeg-devel libmcrypt libmcrypt-devel libtool-ltdl freetds freetds-devel libxml2 libxml2-devel libXpm-devel.x86_64 libXfont.x86_64 libXfont-devel.x86_64 fontconfig.x86_64 fontconfig-devel.x86_64 bzip2-devel libcurl libxslt-devel libjpeg-devel libzip libzip-devel lzip 
+
+如果需要安装memcached.so扩展，则需要安装 yum install -y libmemcached libmemcached-devel
+
+编译之前需要用源包安装curl 7.44版本 到/proj/lib/curl-7.44目录
+
+需要用源包安装libgd-gd-2.1.1版本 到/usr/local/gd-2.1.1目录
+
+php安装过程如下：
+
+1 配置
+
+./configure --prefix=/usr/local/php-5.6.8 --with-mysql=mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --enable-mysqlnd --enable-fpm --enable-mbstring --enable-mbregex --with-zlib-dir=/usr --enable-pcntl --enable-sockets --enable-ftp --enable-soap --enable-bcmath --disable-debug --enable-inline-optimization --disable-rpath --with-mysql --with-libxml-dir=/usr --with-jpeg-dir=/usr --with-iconv-dir=/usr --with-mcrypt=/usr --with-freetype-dir=/usr --with-gd=/usr/local/gd-2.1.1 --with-openssl-dir=/usr --with-curl=/proj/lib/curl-7.44 --with-png-dir=/usr --with-openssl --with-icu-dir=/usr --enable-zip --with-gettext  
+
+2 编译 
+make
+3 编译安装
+make install
+
+configure: error: Don't know how to define struct flock on this system, set --enable-opcache=no
+解决：
+原因：有可能是因为找不到动态函数库了，可以进行下面尝试，将指定目录下的动态函数库加载到内存中
+vim /etc/ld.so.conf                  # 编辑库文件
+/usr/local/lib64                     # 添加该行
+/usr/local/lib                       # 添加该行
+/usr/lib                             # 添加该行
+/usr/lib64                           # 添加该行
+
+ldconfig -v                          
+# 使之生效
+
+cp php.ini-production /usr/local/php/etc/php.ini
+cp /usr/local/php/etc/php-fpm.conf.default   php-fpm.conf
+
+保存配置文件后，检验配置是否正确的方法为:
+
+/usr/local/php/sbin/php-fpm -t
+
+如果出现诸如 “test is successful” 字样，说明配置没有问题。
+
+启动php-fpm
+
+cp /usr/local/src/php-5.3.27/sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
+chmod 755 /etc/init.d/php-fpm
+service php-fpm start
+
+如果想让它开机启动，执行:
+
+chkconfig php-fpm on
+
+检测是否启动:
+
+ps aux |grep php-fpm
+
+netstat -ant |grep 9000
+
+看看是不是有很多个进程（大概20多个）还有你的9000端口开启了么？。
+
+
+#测试php-fpm配置
+/usr/local/php/sbin/php-fpm -t
+/usr/local/php/sbin/php-fpm -c /usr/local/php/etc/php.ini -y /usr/local/php/etc/php-fpm.conf -t
+?
+#启动php-fpm
+/usr/local/php/sbin/php-fpm
+/usr/local/php-5.6.30/sbin/php-fpm -c /usr/local/php-5.6.30/etc/php.ini -y /usr/local/php-5.6.30/etc/php-fpm.conf
+	
+?
+#关闭php-fpm
+kill -INT `cat /usr/local/php/var/run/php-fpm.pid`
+?
+#重启php-fpm
+kill -USR2 `cat /usr/local/php/var/run/php-fpm.pid`
+kill -SIGUSR2  11818  平滑重启
+
+
+提示缺少GD库
+https://centos.pkgs.org/7/remi-x86_64/gd-last-2.2.3-1.el7.remi.x86_64.rpm.html

@@ -1,0 +1,75 @@
+
+NFS(network file system)网络文件系统，类似Windows中的文件夹共享，将本地文件通过网络共享的方式挂载至其它主机。
+?
+1、安装NFS服务器所需软件包
+yum install -y nfs-utils????
+（实际上需要安装两个包nfs-utils和rpcbind, 不过当使用yum安装nfs-utils时会把rpcbind一起安装上）
+?
+2、服务端配置
+配件文件文件放在?/etc/exports
+[develop@bouncer ~]$ cat /etc/exports
+/proj/web/pyw_download tg(sync,rw) web02(sync,rw) magpie(sync,rw) hippo(sync,rw) adminportal1(sync,rw) adminportal2(sync,rw) package1(sync,rw) package2(sync,rw) package3(sync,rw) package4(sync,rw)
+??配置文件说明
+/proj/web/pyw_download为共享目录；
+tg、 web02、magie、hippo...??允许访问的主机，可以为一个网段，一个IP，也可以是主机名，域名，域名支持通配符；
+sync 文件同时写入硬盘和内存；
+rw：read-write，可读写?；
+?
+######其它参数说明#####
+async：文件暂存于内存，而不是直接写入内存；
+ro：read-only，只读；
+no_root_squash：NFS客户端连接服务端时如果使用的是root的话，那么对服务端分享的目录来说，也拥有root权限。显然开启这项是不安全的，一般不使用。
+root_squash：NFS客户端连接服务端时如果使用的是root的话，那么对服务端分享的目录来说，拥有匿名用户权限，通常他将使用nobody或nfsnobody身份；
+all_squash：不论NFS客户端连接服务端时使用什么用户，对服务端分享的目录来说都是拥有匿名用户权限；
+anonuid：匿名用户的UID值，可以在此处自行设定。
+anongid：匿名用户的GID值
+?
+3、启动服务
+NFS服务器需要启动两个服务??rpcbind?与nfs
+先启rpcbind服务???????systemctl start rpcbind.service
+接着启动nfs服务???? ??systemctl start nfs-server.service
+（两个启动先后顺序有要求?，如果先启动nfs，可能会有问题，Linux使用核心级的支持和守护进程的组合来提供NFS文件共享.NFS依靠远程过程调用(RPC)在客户端和服务器端路由请求。在Linux下RPC服务由rpcbind服务控制，所以需先启动?rpcbind服务)
+确认NFS服务器启动成功： ??
+[develop@bouncer ~]$ rpcinfo -p ? ?
+通过查看service列中是否有nfs服务来确认NFS是否启动。确认NFS服务器启动成功：???
+启动了服务后查看共享的目录命令：
+[develop@bouncer ~]$ exportfs
+?
+让修改过的配置文件生效
+exportfs –arv
+使用exportfs命令，当改变/etc/exports配置文件后，不用重启nfs服务直接用这个exportfs即可，它的常用选项为[-aruv]. ? ??
+-a ：全部挂载或者卸载； ? ? ?
+-r ：重新挂载； ? ? ?
+-u ：卸载某一个目录； ? ? ?
+-v ：显示共享的目录；
+?
+###################################################
+客户端配置
+安装服务
+yum install -y nfs-utils????
+启动服务
+systemctl start rpcbind.service
+（ 注意：客户端不需要启动nfs服务）
+?
+检查 NFS 服务器端是否有目录共享：
+[develop@web02 ~]$ showmount -e bouncer 
+Export list for bouncer:
+/proj/web/pyw_download package4,package3,package2,package1,adminportal2,adminportal1,hippo,magpie,web02,tg
+?
+使用 mount 挂载服务器端的目录/proj/web/pyw_download到客户端某个目录下
+(注意nfs服务器的iptables是否阻止了端口)
+mkdir /data
+mount -t nfs4 10.116.132.238:/proj/web/pyw_download?? /data
+df -h 查看是否挂载成功
+想在客户机上实现开机挂载，则需要编辑/etc/fstab：
+#########################################################################################
+?
+?
+注意要将服务设置开机自启与防火墙
+?
+
+
+
+
+
+

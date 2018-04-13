@@ -1,0 +1,3548 @@
+﻿/proj/web/pyw_download
+		tg
+
+		web02
+
+		magpie
+
+		hippo
+
+		adminportal1
+
+		adminportal2
+
+		package1
+
+		package2
+
+		package3
+
+		package4
+		
+		
+bouncer:
+		/proj/web/pyw_download
+		/mnt/magpie/wiki
+		/mnt/magpie/download
+		/mnt/magpie/images
+magpie:
+		/proj/data/vipbgweb/archive 
+		
+		
+		
+		
+		
+		
+		
+[beats]
+name=Elastic Beats Repository
+baseurl=https://packages.elastic.co/beats/yum/el/$basearch
+enabled=1
+gpgkey=https://packages.elastic.co/GPG-KEY-elasticsearch
+gpgcheck=1
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+
+		
+		curl -XGET 'http://192.168.111.128:9200/topbeat-*/_search?pretty'
+		
+set from=liyb@yyft.com smtp=smtp.exmail.qq.com
+set smtp-auth-user=liyb@yyft.com smtp-auth-password=Li123456
+set smtp-auth=logon
+		
+		
+故障:{TRIGGER.STATUS},服务器:{HOSTNAME1}发生:{TRIGGER.NAME}故障!	
+		
+		
+告警主机:{HOSTNAME1}
+告警时间:{EVENT.DATE} {EVENT.TIME}
+告警等级:{TRIGGER.SEVERITY}
+告警信息:{TRIGGER.NAME}
+告警项目:{TRIGGER.KEY1}
+问题详情:{ITEM.NAME}:{ITEM.VALUE}
+当前状态:{TRIGGER.STATUS}:{ITEM.VALUE1}
+事件ID:{EVENT.ID}
+
+告警主机:{HOSTNAME1}
+告警时间:{EVENT.DATE} {EVENT.TIME}
+告警等级:{TRIGGER.SEVERITY}
+告警信息: {TRIGGER.NAME}
+告警项目:{TRIGGER.KEY1}
+问题详情:{ITEM.NAME}:{ITEM.VALUE}
+当前状态:{TRIGGER.STATUS}:{ITEM.VALUE1}
+事件ID:{EVENT.ID}
+		
+恢复{TRIGGER.STATUS},服务器:{HOSTNAME1}:{TRIGGER.NAME}已恢复!	
+
+告警主机:{HOSTNAME1}
+告警时间:{EVENT.DATE} {EVENT.TIME}
+告警等级:{TRIGGER.SEVERITY}
+告警信息:{TRIGGER.NAME}
+告警项目:{TRIGGER.KEY1}
+问题详情:{ITEM.NAME}:{ITEM.VALUE}
+当前状态:{TRIGGER.STATUS}:{ITEM.VALUE1}
+事件ID:{EVENT.ID}
+		
+		
+		
+告警主机:&nbsp;{HOSTNAME1}<br/>
+告警时间:&nbsp;{EVENT.DATE}{EVENT.TIME}<br/>
+告警等级:&nbsp;{TRIGGER.SEVERITY}<br/>
+告警信息:&nbsp;{TRIGGER.NAME}<br/>
+告警项目:&nbsp;{TRIGGER.KEY1}<br/>
+问题详情:&nbsp;{ITEM.NAME}:&nbsp;{ITEM.VALUE}<br/>
+当前状态:&nbsp;{TRIGGER.STATUS}:&nbsp;{ITEM.VALUE1}<br/>
+事件ID:&nbsp;{EVENT.ID}<br/>		
+		
+AgentId  1000002
+Secret   qi4O-S42j_K50sUGryCY3IvfPUk_-HC5Mk-oz9GxDQQ
+CorpID   wwbf0adaf9649ec910 
+./weixin --corpid=wwbf0adaf9649ec910 --corpsecret=qi4O-S42j_K50sUGryCY3IvfPUk_-HC5Mk-oz9GxDQQ   --msg="您好,告警测试" --user=641874105 --agentid=1000002
+返回数据:
+		
+--corpid=wwbf0adaf9649ec910 --corpsecret=qi4O-S42j_K50sUGryCY3IvfPUk_-HC5Mk-oz9GxDQQ  --msg="您好,告警测试" --user=LiYongBin --agentid=1000002
+
+
+
+
+
+Event ID: {EVENT.ID}
+Event value: {EVENT.VALUE}
+Event status: {EVENT.STATUS}
+Level:{TRIGGER.SEVERITY}
+Hostname: {HOST.NAME}
+Event date: {EVENT.DATE}
+Event time: {EVENT.TIME}
+Event age: {EVENT.AGE}
+Event acknowledgment: {EVENT.ACK.STATUS}
+Event acknowledgment history: {EVENT.ACK.HISTORY}
+Message:{TRIGGER.NAME}
+
+
+Event ID: {EVENT.RECOVERY.ID}
+Event value: {EVENT.RECOVERY.VALUE}
+Event status: {EVENT.RECOVERY.STATUS}
+Hostname: {HOST.NAME}
+Event date: {EVENT.DATE}
+Event time: {EVENT.TIME}
+Event age: {EVENT.AGE}
+Message:{TRIGGER.NAME}
+
+
+[root@zabbix-6 sendEmail-v1.56]# cd /usr/lib/zabbix/alertscripts/
+[root@zabbix-6 alertscripts]# cat mail.sh 
+#!/bin/bash
+
+To=$1
+Subject=$2
+Body=$3
+
+/usr/local/bin/sendEmail -f [发送者地址] -t "$To" -s [你的smtp服务器地址] -u "$Subject" -xu [smtp验证登陆名] -xp [你的邮箱密码] -m "$Body"
+ 2>&1 >>/var/log/sendEmail.log 
+
+ 
+ 
+#!/bin/bash
+to=$1
+subject=$2
+body=$3
+
+from=liyb@yyft.com
+smtp=smtp.exmail.qq.com
+passwd=Li123456
+/usr/local/bin/sendEmail  -f "$from" -t "$to" -s "$smtp" -u "$subject" -o message-content-type=html -o message-charset=utf8 -xu "$from"  -xp "$passwd" -m "$body" 2>&1 >>/var/log/sendEmail.log
+
+
+
+部署步骤
+
+下载程序到你的zabbix server的AlertScriptsPath目录下。不知道什么是AlertScriptsPath目录，不知道怎么配置的，直接看官方文档！！！zabbix server配置文件
+如果之前没有设置过AlertScriptsPath，设置之后要重启zabbix server
+假设我的zabbix server的AlertScriptsPath目录为/usr/local/zabbix/alertscripts
+
+
+
+wget http://dl.cactifans.org/tools/zabbix_weixin.x86_64.tar.gz
+tar zxvf zabbix_weixin.x86_64.tar.gz
+mv zabbix_weixin/weixin .
+chmod a+x weixin
+mv zabbix_weixin/weixincfg.json /etc/
+rm -rf zxvf zabbix_weixin.x86_64.tar.gz
+rm -rf zabbix_weixin/
+接下来一步很重要，编辑/etc/weixincfg.json文件，配置你的企业号corpid，secret，agentid，
+{
+"corp": {
+        "corpid": "wxxxxxx",
+        "secret": "Vn6dxxxx",
+        "agentid": 1
+    }
+}
+
+
+
+告警主题：
+[{TRIGGER.SEVERITY}]服务器:{HOSTNAME1}发生:{TRIGGER.NAME}故障！
+告警内容：
+告警主机: {HOSTNAME1}
+主机分组: {TRIGGER.HOSTGROUP.NAME}
+告警时间: {EVENT.DATE}-{EVENT.TIME}
+告警等级: {TRIGGER.SEVERITY}
+告警信息: {TRIGGER.NAME}
+问题详情: {ITEM.NAME}: {ITEM.VALUE}
+当前状态: {TRIGGER.STATUS}: {ITEM.VALUE1}
+事件ID: {EVENT.ID}
+----------------------------------
+
+
+恢复主题：
+[{TRIGGER.SEVERITY}]服务器:{HOSTNAME1} {TRIGGER.NAME}已恢复！
+恢复内容：
+告警主机: {HOSTNAME1}
+主机分组: {TRIGGER.HOSTGROUP.NAME}
+告警时间: {EVENT.DATE} {EVENT.TIME}
+告警等级: {TRIGGER.SEVERITY}
+告警信息: {TRIGGER.NAME}
+告警项目: {TRIGGER.KEY1}<br\>
+问题详情: {ITEM.NAME}:{ITEM.VALUE}
+当前状态: {TRIGGER.STATUS}
+事件ID: {EVENT.ID}
+----------------------------------
+
+
+
+
+corpid=wwbf0adaf9649ec910 
+corpsecret=qi4O-S42j_K50sUGryCY3IvfPUk_-HC5Mk-oz9GxDQQ  
+msg="您好,告警测试" 
+user=LiYongBin 
+agentid=1000002
+
+wget http://dl.cactifans.org/tools/zabbix_weixin.x86_64.tar.gz
+wget http://down1.chinaunix.net/distfiles/ttf-arphic-uming_0.0.20050501-1.tar.gz  字体
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+192.168.10.39  master
+192.168.10.25  1
+192.168.10.32  2
+
+
+
+
+grep rptdb /usr/local/php-5.6.8/etc/php-fpm.ini
+grep rptdb /proj/sh/setenv.sh 
+
+
+
+
+
+[develop@magpie ~]$ grep rptdb /usr/local/php-5.6.8/etc/php-fpm.ini
+env[DB_RPT_SLAVE_HOST] = rptdb
+[develop@magpie ~]$ grep rptdb /proj/sh/setenv.sh
+export DB_RPT_SLAVE_HOST=rptdb
+[develop@magpie ~]$ 
+
+
+[develop@web02 ~]$ grep rptdb /usr/local/php-5.6.8/etc/php-fpm.ini
+env[DB_RPT_SLAVE_HOST] = rptdb
+[develop@web02 ~]$ grep rptdb /proj/sh/setenv.sh
+export DB_RPT_SLAVE_HOST=rptdb
+[develop@web02 ~]$
+
+[develop@adminportal1 ~]$ grep rptdb /usr/local/php-5.6.8/etc/php-fpm.ini
+env[DB_RPT_SLAVE_HOST] = rptdb
+[develop@adminportal1 ~]$ grep rptdb /proj/sh/setenv.sh 
+export DB_RPT_SLAVE_HOST=rptdb
+[develop@adminportal1 ~]$ 
+
+
+[develop@adminportal2 ~]$ grep rptdb /usr/local/php-5.6.8/etc/php-fpm.ini
+env[DB_RPT_SLAVE_HOST] = rptdb
+[develop@adminportal2 ~]$ grep rptdb /proj/sh/setenv.sh 
+export DB_RPT_SLAVE_HOST=rptdb
+[develop@adminportal2 ~]$ 
+
+
+[develop@uc1 ~]$ grep rptdb /usr/local/php-5.6.8/etc/php-fpm.ini
+env[DB_RPT_SLAVE_HOST] = rptdb
+[develop@uc1 ~]$ grep rptdb /proj/sh/setenv.sh 
+export DB_RPT_SLAVE_HOST=rptdb
+[develop@uc1 ~]$ 
+
+
+[develop@uc2 ~]$ grep rptdb /usr/local/php-5.6.8/etc/php-fpm.ini
+env[DB_RPT_SLAVE_HOST] = rptdb
+[develop@uc2 ~]$ grep rptdb /proj/sh/setenv.sh 
+export DB_RPT_SLAVE_HOST=rptdb
+[develop@uc2 ~]$ 
+
+[develop@appapi01 ~]$ grep rptdb /usr/local/php-5.6.8/etc/php-fpm.ini
+env[DB_RPT_SLAVE_HOST] = rptdb
+[develop@appapi01 ~]$ grep rptdb /proj/sh/setenv.sh 
+export DB_RPT_SLAVE_HOST=rptdb
+[develop@appapi01 ~]$ 
+
+
+[develop@fxweb ~]$ grep rptdb /usr/local/php-5.6.8/etc/php-fpm.ini
+env[DB_RPT_SLAVE_HOST] = rptdb 
+[develop@fxweb ~]$ grep rptdb /proj/sh/setenv.sh 
+export DB_RPT_SLAVE_HOST=rptdb
+export DB_FXADM_SLAVE_HOST=rptdb
+[develop@fxweb ~]$ 
+
+
+[develop@package1 ~]$ grep rptdb /usr/local/php-5.6.8/etc/php-fpm.ini
+env[DB_RPT_SLAVE_HOST] = rptdb
+[develop@package1 ~]$ grep rptdb /proj/sh/setenv.sh 
+export DB_RPT_SLAVE_HOST=rptdb
+[develop@package1 ~]$ 
+
+
+[develop@package2 ~]$ grep rptdb /usr/local/php-5.6.8/etc/php-fpm.ini
+env[DB_RPT_SLAVE_HOST] = rptdb
+[develop@package2 ~]$ grep rptdb /proj/sh/setenv.sh 
+export DB_RPT_SLAVE_HOST=rptdb
+[develop@package2 ~]$ 
+
+
+[develop@package3 ~]$ grep rptdb /usr/local/php-5.6.8/etc/php-fpm.ini
+env[DB_RPT_SLAVE_HOST] = rptdb
+[develop@package3 ~]$ grep rptdb /proj/sh/setenv.sh 
+export DB_RPT_SLAVE_HOST=rptdb
+[develop@package3 ~]$ 
+
+
+[develop@package4 ~]$ grep rptdb /usr/local/php-5.6.8/etc/php-fpm.ini
+env[DB_RPT_SLAVE_HOST] = rptdb
+[develop@package4 ~]$ grep rptdb /proj/sh/setenv.sh 
+export DB_RPT_SLAVE_HOST=rptdb
+[develop@package4 ~]$ 
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+[hduser@hadoopmaster ~]$  /home/hduser/hadoop-2.3.0/bin/yarn application -list|awk '{print $2}'|grep -E "AppPointAndQuota|GameInsideRole|NewPubBackClick|GamePublishBaseKpi|GamePublishKpi|GamePublishActive|GamePublishLogin|centurioncardGameAcc"
+17/06/14 14:56:47 INFO client.RMProxy: Connecting to ResourceManager at hadoopmaster/10.46.133.57:18040
+AppPointAndQuota
+com.xiaopeng.bi.gameinside.GameInsideRole
+com.xiaopeng.bi.gamepublish.NewPubBackClick
+GamePublishBaseKpi
+com.xiaopeng.bi.gamepublish.GamePublishKpi
+GamePublishActive
+GamePublishLogin
+com.org.proj.sql.centurioncardGameAcc
+
+
+AppPointAndQuota
+GameInsideRole
+NewPubBackClick
+GamePublishBaseKpi
+GamePublishKpi
+GamePublishActive
+GamePublishLogin
+centurioncardGameAcc
+
+
+[root@elk conf]# cat auth.conf 
+admin:$apr1$7ODiOtQt$wTXVmIote3d0LuP3vQIy01
+[root@elk conf]# htpasswd -D auth.conf admin
+Deleting password for user admin
+[root@elk conf]# htpasswd -b auth.conf admin yyft@2017
+Adding password for user admin
+[root@elk conf]# cat auth.conf 
+admin:$apr1$8YQQwBcn$Ez/iLUnbP4rPVKYjgaH6F.
+
+
+
+
+
+/proj/logs/nginx80
+
+api.uc.pyw.com_access.log
+error.log
+localhost_access.log
+access.log
+pengyouwan.com_access_443.log
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+magpie
+
+#module(load="imfile")
+input(
+    type="imfile"
+    File="/proj/logs/nginx80/*_access*.log"
+    freshStartTail="off"
+    addMetadata="off"
+    Severity="info"
+    Facility="user"
+    tag="nginx"
+    ruleset="nginx_forward"
+)
+
+template(name="nginx_access" type="string" string="%msg%\n")
+ruleset( name="nginx_forward" ){
+    action(type="omfwd" Target="10.116.155.217" Port="801" Protocol="tcp" template="nginx_access" )
+    stop
+}
+
+
+
+
+/home/hduser/hd_progress.txt
+
+
+
+
+
+
+yyft:$apr1$TuDWP3xv$7vwXMvSoCGDQGgfpjcTVC/
+
+
+1 管理后台 http://xppyw2.pengyouwan.com/   yyft/yyft2017y
+
+
+2 跳板机监控 https://bouncer.pengyouwan.com/zabbix  yyft/yyft@2017
+
+3 phpmyadmin https://bouncer.pengyouwan.com/phpmyadmin yyft/yyft@2017pyw
+
+
+4 logview.pengyouwan.com admin/yyft@2017
+
+5 zentao.pengyouwan.com yyft/yyft2017y
+
+6 wiki1.pengyouwan.com  yyft/yyft2017y
+
+7 zabbix.pyw.cn  yyft/yyft@2017
+
+8 http://devadmin.pengyouwan.com/ yyft/yyft2017y
+
+9 http://fx.pengyouwan.com/  yyft/yyft2017y
+
+
+
+
+
+nohup bin/flume-ng agent -c . -f conf/channel_mutiplxing_sink.conf -n a1 >>channel_mutiplxing_sink.log &
+nohup bin/flume-ng agent -c . -f conf/sdk_multiplexing_sink.conf -n a1 >>sdk_multiplexing_sink.log &
+nohup bin/flume-ng agent -c . -f conf/commsdk_multiplexing_sink.conf -n a1 >>commsdk_multiplexing_sink.log &
+nohup bin/flume-ng agent -c . -f conf/xiaopeng_wap_sink.conf -n a1 >>xiaopeng_wap_sink.log &
+nohup bin/flume-ng agent -c . -f conf/xiaopeng_backend_sink.conf -n a1 >>xiaopeng_backend_sink.log &
+nohup bin/flume-ng agent -c . -f conf/request_multiplexing_sink.conf -n a1 >>request_multiplexing_sink.log &
+nohup bin/flume-ng agent -c . -f conf/channel_put_multiplexing_sink.conf -n a1 >>channel_put_multiplexing_sink.log &
+
+nohup bin/flume-ng agent -c . -f conf/order.conf -n a1 >>order.log &
+nohup bin/flume-ng agent -c . -f conf/regi.conf -n a1 >>regi.log &
+nohup bin/flume-ng agent -c . -f conf/logon.conf -n a1 >>login.log &
+nohup bin/flume-ng agent -c . -f conf/active.conf -n a1 >>active.log &
+
+
+location ^~ /.git
+    { 
+      return 403; 
+    } 
+
+
+/proj/server/nginx_http2/sbin/nginx -c /proj/server/nginx_http2/conf/nginx.conf -t
+
+nmap  -sT -v -p800-900 192.168.111.10
+iptables -D INPUT  -s 10.116.116.211 -p tcp --dport 44445   -m state --state NEW -j ACCEPT
+iptables -I INPUT  6 -s 10.116.116.211 -p tcp --dport 44444:44449   -m state --state NEW -j ACCEPT
+iptables -I INPUT  6 -s 10.116.116.211 -p tcp --dport 50001:50009  -m state --state NEW -j ACCEPT
+ps -elf | grep -v grep | grep  flume | awk '{print $22}'| awk -F'/' '{print $2}'
+
+export HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S  `whoami` "
+export PROMPT_COMMAND='{ dd=$(date "+%F %T");host=$(hostname);who_tty="$(whoami)@${SSH_TTY}";ssh_add="$(echo ${SSH_CONNECTION})";command=$(history 1|awk "{\$1=\"\";print}");logger -p local2.debug : $dd $host $who_tty $ssh_add "$command" ;}'
+
+vi /etc/rsyslog.conf
+
+local2.debug           /var/log/command.log
+
+
+
+
+
+
+
+
+
+
+grep "MC_SDK_1_HOST" /usr/local/php-5.6.8/etc/php-fpm.ini
+grep "MC_SDK_1_PORT" /usr/local/php-5.6.8/etc/php-fpm.ini
+
+
+* * * * *  /apps/svr/redis-col/bin/redis-cli info  /tmp/redisstat
+
+/apps/svr/redis-col/bin/redis-cli -h localhost -p 26379 info
+/apps/svr/redis-col/bin/redis-cli -h 127.0.0.1 -p 26379 ping |grep -c PONG
+
+
+/apps/svr/redis-col/bin/redis-cli -h 10.26.3.189 -p 4501  info
+
+/usr/local/zabbix-2.4.5/sbin/zabbix_agentd -c /usr/local/zabbix-2.4.5/etc/zabbix_agentd.conf
+
+
+access_log /proj/logs/nginx_http2/sdkdata_access.log log_access;
+   
+sdk1.xpeng.com   
+sdk1.pengyouwan.com
+qhios.xpeng.com
+
+
+
+cd /usr/local/zabbix-2.4.5/etc/
+ll
+cd zabbix_agent.conf.d/
+ll
+cd ..
+mv zabbix_agent.conf* /tmp/
+cp zabbix_agentd.conf zabbix_agentd.conf20170727
+
+
+ps -elf | grep zabbix
+pkill -9 zabbix_agentd
+/usr/local/zabbix-2.4.5/sbin/zabbix_agentd -c /usr/local/zabbix-2.4.5/etc/zabbix_agentd.conf
+ps -elf | grep zabbix
+
+
+ps -elf | grep flume | awk '{print $22}'|awk -F'/' '{print $2}'
+cat /usr/local/zabbix-2.4.5/scripts/flume/check_process_flume.txt
+ll /usr/local/zabbix-2.4.5/scripts/flume/check_process_flume
+
+
+把/home内容备份，然后将/home文件系统所在的逻辑卷删除，扩大/root文件系统，新建/home：
+tar cvf /tmp/home.tar /home #备份/home
+umount /home #卸载/home，如果无法卸载，先终止使用/home文件系统的进程
+lvremove /dev/centos/home #删除/home所在的lv
+lvextend -L +50G /dev/centos/root #扩展/root所在的lv，增加50G
+xfs_growfs /dev/centos/root #扩展/root文件系统
+lvcreate -L 56G -n home centos #重新创建home lv
+mkfs.xfs /dev/centos/home #创建文件系统
+mount /dev/centos/home /home #挂载
+df -h 
+
+
+/proj/sh/check_pywpackage.sh
+
+ps -elf | grep php-fpm
+source /proj/sh/setenv.sh
+/proj/sh/php-fpm.sh reload
+ps -elf | grep php-fpm
+
+xiaopeng@2017
+xiaopeng@2017
+
+ps -elf | grep -v grep | grep  flume | awk '{print $22}'| awk -F'/' '{print $2}'
+
+  conf_pid=`ps -elf |grep -v grep |grep -c $i`
+    if [ conf_pid == 0 ];then
+
+cp /usr/local/php-5.6.8/etc/php-fpm.ini /usr/local/php-5.6.8/etc/php-fpm.ini20170804
+
+###############################################################
+magpie web02
+
+env[REDIS_ALI_WAP_HOST]=r-wz9d805d63d4f684.redis.rds.aliyuncs.com
+env[REDIS_ALI_WAP_PORT]=6379
+env[REDIS_ALI_WAP_PASSWORD]=Swqtb87up
+
+env[REDIS_ALI_APPAPI_HOST]=r-wz9d805d63d4f684.redis.rds.aliyuncs.com
+env[REDIS_ALI_APPAPI_PASSWORD]=Swqtb87up
+env[REDIS_ALI_APPAPI_PORT]=6379
+
+env[REDIS_ALI_DC_HOST]=r-wz9d805d63d4f684.redis.rds.aliyuncs.com
+env[REDIS_ALI_DC_PORT]=6379
+env[REDIS_ALI_DC_PASSWORD]=Swqtb87up
+
+env[REDIS_ALI_VIPBG_HOST]=r-wz9d805d63d4f684.redis.rds.aliyuncs.com
+env[REDIS_ALI_VIPBG_PORT]=6379
+env[REDIS_ALI_VIPBG_PASSWORD]=Swqtb87up
+
+env[REDIS_ALI_DEV_HOST]=r-wz9d805d63d4f684.redis.rds.aliyuncs.com
+env[REDIS_ALI_DEV_PORT]=6379
+env[REDIS_ALI_DEV_PASSWORD]=Swqtb87up
+
+##################################################################
+export REDIS_ALI_WAP_HOST=r-wz9d805d63d4f684.redis.rds.aliyuncs.com
+export REDIS_ALI_WAP_PORT=6379
+export REDIS_ALI_WAP_PASSWORD=Swqtb87up
+
+
+export REDIS_ALI_APPAPI_HOST=r-wz9d805d63d4f684.redis.rds.aliyuncs.com
+export REDIS_ALI_APPAPI_PORT=6379
+export REDIS_ALI_APPAPI_PASSWORD=Swqtb87up
+
+export REDIS_ALI_DC_HOST=r-wz9d805d63d4f684.redis.rds.aliyuncs.com
+export REDIS_ALI_DC_PORT=6379
+export REDIS_ALI_DC_PASSWORD=Swqtb87up
+
+export REDIS_ALI_VIPBG_HOST=r-wz9d805d63d4f684.redis.rds.aliyuncs.com
+export REDIS_ALI_VIPBG_PORT=6379
+export REDIS_ALI_VIPBG_PASSWORD=Swqtb87up
+
+export REDIS_ALI_DEV_HOST=r-wz9d805d63d4f684.redis.rds.aliyuncs.com
+export REDIS_ALI_DEV_PORT=6379
+export REDIS_ALI_DEV_PASSWORD=Swqtb87up
+
+fxweb
+#############
+env[REDIS_ALI_FXADMIN_HOST]=r-wz9d805d63d4f684.redis.rds.aliyuncs.com
+env[REDIS_ALI_FXADMIN_PORT]=6379
+env[REDIS_ALI_FXADMIN_PASSWORD]=Swqtb87up
+
+export REDIS_ALI_FXADMIN_HOST=r-wz9d805d63d4f684.redis.rds.aliyuncs.com
+export REDIS_ALI_FXADMIN_PORT=6379
+export REDIS_ALI_FXADMIN_PASSWORD=Swqtb87up
+
+pywsdkweb01
+;;;;;;;alis redis configure start;;;;;;;;;
+
+env[REDIS_ALI_SDKAPI_HOST]=r-wz9d805d63d4f684.redis.rds.aliyuncs.com
+env[REDIS_ALI_SDKAPI_PORT]=6379
+env[REDIS_ALI_SDKAPI_PASSWORD]=Swqtb87up
+
+;;;;;;;alis redis configure end;;;;;;;;;
+
+######################
+
+;;;;;;;alis redis configure start;;;;;;;;;
+export REDIS_ALI_SDKAPI_HOST=r-wz9d805d63d4f684.redis.rds.aliyuncs.com
+export REDIS_ALI_SDKAPI_PORT=6379
+export REDIS_ALI_SDKAPI_PASSWORD=Swqtb87up
+
+;;;;;;;alis redis configure end;;;;;;;;;
+
+
+
+
+
+
+dtweb01
+#####################
+env[REDIS_ALI_DC_HOST]=r-wz9d805d63d4f684.redis.rds.aliyuncs.com
+env[REDIS_ALI_DC_PORT]=6379
+env[REDIS_ALI_DC_PASSWORD]=Swqtb87up
+
+env[REDIS_ALI_DEV_HOST]=r-wz9d805d63d4f684.redis.rds.aliyuncs.com
+env[REDIS_ALI_DEV_PORT]=6379
+env[REDIS_ALI_DEV_PASSWORD]=Swqtb87up
+
+######################
+export REDIS_ALI_DC_HOST=r-wz9d805d63d4f684.redis.rds.aliyuncs.com
+export REDIS_ALI_DC_PORT=6379
+export REDIS_ALI_DC_PASSWORD=Swqtb87up
+
+export REDIS_ALI_DEV_HOST=r-wz9d805d63d4f684.redis.rds.aliyuncs.com
+export REDIS_ALI_DEV_PORT=6379
+export REDIS_ALI_DEV_PASSWORD=Swqtb87up
+
+
+
+
+
+
+xiaopeng@2017
+
+ps -elf | grep msgQueue.php
+kill -9 20201
+/proj/sh/FxMsgQueue.sh
+
+
+
+    location ^~ /.git
+    {
+      return 403;
+	}
+	
+http://192.168.20.36/server/huosdk_server.git
+http://gitpull:gitpull123456@a.yyft.com:1118/server/huosdk_server.git
+
+
+
+
+预发布
+#################################
+
+env[REDIS_ALI_APPNOTIFY_HOST]=localhost
+env[REDIS_ALI_APPNOTIFY_PORT]=6379
+env[REDIS_ALI_APPNOTIFY_PASSWORD]=xiaopeng99
+
+env[REDIS_ALI_SDKAPI_HOST]=localhost
+env[REDIS_ALI_SDKAPI_PORT]=6379
+env[REDIS_ALI_SDKAPI_PASSWORD]=xiaopeng99
+
+env[REDIS_ALI_FXADMIN_HOST]=localhost
+env[REDIS_ALI_FXADMIN_PORT]=6379
+env[REDIS_ALI_FXADMIN_PASSWORD]=xiaopeng99
+
+env[REDIS_ALI_WAP_HOST]=localhost
+env[REDIS_ALI_WAP_PORT]=6379
+env[REDIS_ALI_WAP_PASSWORD]=xiaopeng99
+
+env[REDIS_ALI_APPAPI_HOST]=localhost
+env[REDIS_ALI_APPAPI_PORT]=6379
+env[REDIS_ALI_APPAPI_PASSWORD]=xiaopeng99
+
+env[REDIS_ALI_DC_HOST]=localhost
+env[REDIS_ALI_DC_PORT]=6379
+env[REDIS_ALI_DC_PASSWORD]=xiaopeng99
+
+env[REDIS_ALI_VIPBG_HOST]=localhost
+env[REDIS_ALI_VIPBG_PORT]=6379
+env[REDIS_ALI_VIPBG_PASSWORD]=xiaopeng99
+
+env[REDIS_ALI_DEV_HOST]=localhost
+env[REDIS_ALI_DEV_PORT]=6379
+env[REDIS_ALI_DEV_PASSWORD]=xiaopeng99
+
+env[REDIS_ALI_IOSPKG_HOST]=localhost
+env[REDIS_ALI_IOSPKG_PORT]=6379
+env[REDIS_ALI_IOSPKG_PASSWORD]=xiaopeng99
+
+env[REDIS_ALI_XPADMIN_HOST]=localhost
+env[REDIS_ALI_XPADMIN_PORT]=6379
+env[REDIS_ALI_XPADMIN_PASSWORD]=xiaopeng99
+
+env[REDIS_ALI_UC_HOST]=localhost
+env[REDIS_ALI_UC_PORT]=6379
+env[REDIS_ALI_UC_PASSWORD]=xiaopeng99
+
+env[REDIS_ALI_PKG_HOST]=localhost
+env[REDIS_ALI_PKG_PORT]=6379
+env[REDIS_ALI_PKG_PASSWORD]=xiaopeng99 
+
+
+#############################################
+export REDIS_ALI_APPNOTIFY_HOST=localhost
+export REDIS_ALI_APPNOTIFY_PORT=6379
+export REDIS_ALI_APPNOTIFY_PASSWORD=xiaopeng99
+
+export REDIS_ALI_SDKAPI_HOST=localhost
+export REDIS_ALI_SDKAPI_PORT=6379
+export REDIS_ALI_SDKAPI_PASSWORD=xiaopeng99
+
+export REDIS_ALI_FXADMIN_HOST=localhost
+export REDIS_ALI_FXADMIN_PORT=6379
+export REDIS_ALI_FXADMIN_PASSWORD=xiaopeng99
+
+export REDIS_ALI_WAP_HOST=localhost
+export REDIS_ALI_WAP_PORT=6379
+export REDIS_ALI_WAP_PASSWORD=xiaopeng99
+
+export REDIS_ALI_APPAPI_HOST=localhost
+export REDIS_ALI_APPAPI_PORT=6379
+export REDIS_ALI_APPAPI_PASSWORD=xiaopeng99
+
+export REDIS_ALI_DC_HOST=localhost
+export REDIS_ALI_DC_PORT=6379
+export REDIS_ALI_DC_PASSWORD=xiaopeng99
+
+export REDIS_ALI_VIPBG_HOST=localhost
+export REDIS_ALI_VIPBG_PORT=6379
+export REDIS_ALI_VIPBG_PASSWORD=xiaopeng99
+
+export REDIS_ALI_DEV_HOST=localhost
+export REDIS_ALI_DEV_PORT=6379
+export REDIS_ALI_DEV_PASSWORD=xiaopeng99
+
+export REDIS_ALI_IOSPKG_HOST=localhost
+export REDIS_ALI_IOSPKG_PORT=6379
+export REDIS_ALI_IOSPKG_PASSWORD=xiaopeng99
+
+export REDIS_ALI_XPADMIN_HOST=localhost
+export REDIS_ALI_XPADMIN_PORT=6379
+export REDIS_ALI_XPADMIN_PASSWORD=xiaopeng99
+
+export REDIS_ALI_UC_HOST=localhost
+export REDIS_ALI_UC_PORT=6379
+export REDIS_ALI_UC_PASSWORD=xiaopeng99
+
+export REDIS_ALI_PKG_HOST=localhost
+export REDIS_ALI_PKG_PORT=6379
+export REDIS_ALI_PKG_PASSWORD=xiaopeng99 
+#######################################################
+
+  
+  
+  
+  
+  
+  
+  
+  
+20.60
+
+#################################
+
+env[REDIS_ALI_APPNOTIFY_HOST]=192.168.20.60
+env[REDIS_ALI_APPNOTIFY_PORT]=6379
+env[REDIS_ALI_APPNOTIFY_PASSWORD]=xiaopeng99
+
+env[REDIS_ALI_SDKAPI_HOST]=192.168.20.60
+env[REDIS_ALI_SDKAPI_PORT]=6379
+env[REDIS_ALI_SDKAPI_PASSWORD]=xiaopeng99
+
+env[REDIS_ALI_FXADMIN_HOST]=192.168.20.60
+env[REDIS_ALI_FXADMIN_PORT]=6379
+env[REDIS_ALI_FXADMIN_PASSWORD]=xiaopeng99
+
+env[REDIS_ALI_WAP_HOST]=192.168.20.60
+env[REDIS_ALI_WAP_PORT]=6379
+env[REDIS_ALI_WAP_PASSWORD]=xiaopeng99
+
+env[REDIS_ALI_APPAPI_HOST]=192.168.20.60
+env[REDIS_ALI_APPAPI_PORT]=6379
+env[REDIS_ALI_APPAPI_PASSWORD]=xiaopeng99
+
+env[REDIS_ALI_DC_HOST]=192.168.20.60
+env[REDIS_ALI_DC_PORT]=6379
+env[REDIS_ALI_DC_PASSWORD]=xiaopeng99
+
+env[REDIS_ALI_VIPBG_HOST]=192.168.20.60
+env[REDIS_ALI_VIPBG_PORT]=6379
+env[REDIS_ALI_VIPBG_PASSWORD]=xiaopeng99
+
+env[REDIS_ALI_DEV_HOST]=192.168.20.60
+env[REDIS_ALI_DEV_PORT]=6379
+env[REDIS_ALI_DEV_PASSWORD]=xiaopeng99
+
+env[REDIS_ALI_IOSPKG_HOST]=192.168.20.60
+env[REDIS_ALI_IOSPKG_PORT]=6379
+env[REDIS_ALI_IOSPKG_PASSWORD]=xiaopeng99
+
+env[REDIS_ALI_XPADMIN_HOST]=192.168.20.60
+env[REDIS_ALI_XPADMIN_PORT]=6379
+env[REDIS_ALI_XPADMIN_PASSWORD]=xiaopeng99
+
+env[REDIS_ALI_UC_HOST]=192.168.20.60
+env[REDIS_ALI_UC_PORT]=6379
+env[REDIS_ALI_UC_PASSWORD]=xiaopeng99
+
+env[REDIS_ALI_PKG_HOST]=192.168.20.60
+env[REDIS_ALI_PKG_PORT]=6379
+env[REDIS_ALI_PKG_PASSWORD]=xiaopeng99 
+
+
+#############################################
+export REDIS_ALI_APPNOTIFY_HOST=192.168.20.60
+export REDIS_ALI_APPNOTIFY_PORT=6379
+export REDIS_ALI_APPNOTIFY_PASSWORD=xiaopeng99
+
+export REDIS_ALI_SDKAPI_HOST=192.168.20.60
+export REDIS_ALI_SDKAPI_PORT=6379
+export REDIS_ALI_SDKAPI_PASSWORD=xiaopeng99
+
+export REDIS_ALI_FXADMIN_HOST=192.168.20.60
+export REDIS_ALI_FXADMIN_PORT=6379
+export REDIS_ALI_FXADMIN_PASSWORD=xiaopeng99
+
+export REDIS_ALI_WAP_HOST=192.168.20.60
+export REDIS_ALI_WAP_PORT=6379
+export REDIS_ALI_WAP_PASSWORD=xiaopeng99
+
+export REDIS_ALI_APPAPI_HOST=192.168.20.60
+export REDIS_ALI_APPAPI_PORT=6379
+export REDIS_ALI_APPAPI_PASSWORD=xiaopeng99
+
+export REDIS_ALI_DC_HOST=192.168.20.60
+export REDIS_ALI_DC_PORT=6379
+export REDIS_ALI_DC_PASSWORD=xiaopeng99
+
+export REDIS_ALI_VIPBG_HOST=192.168.20.60
+export REDIS_ALI_VIPBG_PORT=6379
+export REDIS_ALI_VIPBG_PASSWORD=xiaopeng99
+
+export REDIS_ALI_DEV_HOST=192.168.20.60
+export REDIS_ALI_DEV_PORT=6379
+export REDIS_ALI_DEV_PASSWORD=xiaopeng99
+
+export REDIS_ALI_IOSPKG_HOST=192.168.20.60
+export REDIS_ALI_IOSPKG_PORT=6379
+export REDIS_ALI_IOSPKG_PASSWORD=xiaopeng99
+
+export REDIS_ALI_XPADMIN_HOST=192.168.20.60
+export REDIS_ALI_XPADMIN_PORT=6379
+export REDIS_ALI_XPADMIN_PASSWORD=xiaopeng99
+
+export REDIS_ALI_UC_HOST=192.168.20.60
+export REDIS_ALI_UC_PORT=6379
+export REDIS_ALI_UC_PASSWORD=xiaopeng99
+
+export REDIS_ALI_PKG_HOST=192.168.20.60
+export REDIS_ALI_PKG_PORT=6379
+export REDIS_ALI_PKG_PASSWORD=xiaopeng99 
+#######################################################
+
+ps -elf | grep php-fpm
+source /proj/sh/setenv.sh
+/proj/sh/php-fpm.sh reload
+ps -elf | grep php-fpm
+
+
+
+export DB_HUOSU_MASTER_HOST=skunk
+export DB_HUOSU_MASTER_DB=db_sdk
+export DB_HUOSU_MASTER_USER=huosu
+export DB_HUOSU_MASTER_PWD=xiaopeng99
+
+env[DB_HUOSU_MASTER_HOST]=skunk
+env[DB_HUOSU_MASTER_DB]=db_sdk
+env[DB_HUOSU_MASTER_USER]=huosu
+env[DB_HUOSU_MASTER_PWD]=xiaopeng99
+
+
+
+hdfs dfs -rm -r /home/user/spark/spark-1.6.1eckpointdir/member
+
+
+ls | grep -v [0-9]$|xargs grep root| awk -F"/" '{print "/"$2"/"$3"/"$4}'|sort -nr|uniq -c |awk '{print $NF}'
+
+/proj/web/yyft.com
+/proj/web/yunyoufeitian
+/proj/web/xpeng.com
+/proj/web/xiaopeng_sys2_wap
+/proj/web/xiaopeng_sys2_admin
+/proj/web/xiaopeng_appapi_v2.0
+/proj/web/xiaopeng2_usercenter
+/proj/web/vipbg_web
+/proj/web/vipbg_wap
+/proj/web/tg
+/proj/web/tcz.pyw.com;
+/proj/web/pyw_ios;
+/proj/web/pyw_download
+/proj/web/chengji1859
+
+
+/proj/web/yyft_com
+/proj/web/yunyoufeitian
+/proj/web/xpeng.com
+/proj/web/xiaopeng_sys2_wap
+/proj/web/xiaopeng_sys2_app
+/proj/web/xiaopeng_sys2_admin
+/proj/web/xiaopeng_appapi_v2.0
+/proj/web/xiaopeng_appapi_prerelease
+/proj/web/xiaopeng_appapi
+/proj/web/xiaopeng2_usercenter
+/proj/web/wiki;
+/proj/web/vipbg_web
+/proj/web/vipbg_wap
+/proj/web/tg
+/proj/web/tcz.pyw.com;
+/proj/web/tcz1.pyw.com
+/proj/web/pyw_ios;
+/proj/web/pyw_images
+/proj/web/pyw_download
+/proj/web/pengyouwan.me;
+/proj/web/chengji1859
+
+ldap.conf;
+img.pengyouwan.com;
+imgs.pengyouwan.com;
+wiki.pengyouwan.com;
+appt.pengyouwan.com;
+xppyw2.pengyouwan.com;
+pengyouwan.com;
+app.pengyouwan.com;
+pyw.pengyouwan.com;
+dl.pengyouwan.com;
+api.xiaopeng2.pyw.com;
+api.app.pyw.cn;
+api2.app.pyw.cn;
+pyw.cn;
+worker1.wap.pyw.com;
+api.wap.pyw.com;
+pay.pyw.cn;
+m.pyw.cn;
+www.pyw.cn;
+dls.pyw.cn;
+imgs.pyw.cn;
+api.uc.pyw.com;
+v.pyw.cn;
+v.m.pyw.cn;
+tg.pyw.cn;
+ioss.pyw.cn;
+pkgdl.pyw.cn;
+yunyoufeitian.com;
+chengji1859.com;
+localhost;
+e.pyw.cn;
+pengyouwan.me;
+tg.yunyoufeitian.com_ssl;
+xpeng.com;
+tcz.pyw.com;
+tcz1.pyw.com;
+
+for i in `cat ../nginx.conf| grep "include /proj/" | grep -v "#" |awk -F'/' '{print $NF}' |  awk -F';' '{print $1}'`;do grep root $i | awk -F"/" '{print "/"$2"/"$3"/"$4}'|sort -nr|uniq -c |awk '{print $NF}';done;
+
+/proj/web/xiaopeng_sys2_admin
+/proj/web/xiaopeng_appapi_v2.0
+/proj/web/xiaopeng_sys2_wap
+/proj/web/xiaopeng2_usercenter
+/proj/web/vipbg_web
+/proj/web/vipbg_wap
+/proj/web/tg
+/proj/web/pyw_ios;
+/proj/web/pyw_download
+/proj/web/yunyoufeitian
+/proj/web/chengji1859
+/proj/web/yyft.com
+/proj/web/xpeng.com
+/proj/web/tcz.pyw.com;
+
+
+
+
+for i in `cat ../nginx.conf| grep "include /proj/" | grep -v "#" |awk -F'/' '{print $NF}' |  awk -F';' '{print $1}'`;do grep root $i | awk -F"/" '{print "/"$2"/"$3"/"$4}'|sort -nr|uniq -c |awk '{print $NF}';done;
+
+
+/proj/web/pyw_images
+/proj/web/wiki;
+/proj/web/xiaopeng_appapi_prerelease
+/proj/web/xiaopeng_sys2_admin
+/proj/web/yyft_com
+/proj/web/xiaopeng_sys2_app
+/proj/web/xiaopeng_sys2_wap
+/proj/web/pyw_download
+/proj/web/xiaopeng_appapi
+/proj/web/xiaopeng_appapi_v2.0
+/proj/web/pyw_download
+/proj/web/xiaopeng2_usercenter
+/proj/web/vipbg_web
+/proj/web/vipbg_wap
+/proj/web/tg
+/proj/web/pyw_ios;
+/proj/web/pyw_download
+/proj/web/yunyoufeitian
+/proj/web/chengji1859
+/proj/web/xiaopeng_sys2_admin
+/proj/web/pengyouwan.me;
+/proj/web/xpeng.com
+/proj/web/tcz.pyw.com;
+/proj/web/tcz1.pyw.com
+
+
+
+ dtweb01
+ for i in `cat ../nginx.conf| grep "include /proj/" | grep -v "#" |awk -F'/' '{print $NF}' |  awk -F';' '{print $1}'`;do grep root $i | awk -F"/" '{print "/"$2"/"$3"/"$4}'|sort -nr|uniq -c |awk '{print $NF}';done;
+ 
+/proj/web/xiaopeng_datacenter
+/proj/web/opensdk_light_web
+/proj/web/opensdk
+/proj/web/xiaopeng_opensdk_admin
+/proj/web/xiaopeng_sys2_admin
+/proj/web/xiaomeng1235;
+/proj/web/xuandou
+/proj/web/lianshou0508;
+
+
+adminportal1
+
+/proj/web/xiaopeng_sys2_admin
+/proj/web/pyw_download
+/proj/web/slbtest;
+
+
+pywsdkweb01
+/proj/web/pywsdk_api
+/proj/web/pywsdk_api_prerelease
+/proj/web/pywsdkweb01;
+/proj/web/phpMyAdmin-4.4.11-all-languages;
+/proj/web/sdkdev_pyw_cn
+/proj/web/PYWUnitySDK-sever
+/proj/web/sdk_server
+
+
+
+kafka-topics.sh  --describe --zookeeper hadoopmaster:2181,hadoopslave1:2181,hadoopslaves2:2181 --topic active
+
+
+
+nohup bin/flume-ng agent -n a1 -c . -f conf/xiaopeng_backend_sink.conf -Dflume.monitoring.type=http -Dflume.monitoring.port=30000>>xiaopeng_backend_sink.conf.out &
+
+curl  http://localhost:30000/metrics 2>/dev/null|sed -e 's/\([,]\)\s*/\1\n/g' -e  's/[{}]/\n/g' -e 's/[",]//g'| grep AppendBatchReceivedCount
+
+
+
+
+
+
+
+2017-08-25 14:46:09,776 [INFO] root: bi_order ||O1708256N2169698|2|88367|pyw129733174|2017-08-25 14:46:09|65|17|0|1699|1699|1699|0|3||0|0|28348|0|||6||352284040670808&9909b78b2ac9ac7b&FC:AA:14:C4:7B:A0||0||
+2017-08-25 14:50:49,994 [INFO] root: bi_order ||O1708256N2169699|2|88367|pyw129733195|2017-08-25 14:50:49|132|17|0|199|199|199|0|3||0|0|28348|0|||6||352284040670808&9909b78b2ac9ac7b&FC:AA:14:C4:7B:A0||0||
+2017-08-25 15:27:17,600 [INFO] root: bi_order ||P1708256N2169700|2|88397|pyw129733259|2017-08-25 15:27:17|132|17|0|1288|1288|1288|0|3||0|0|88375|0|||6||864394100965443&9909b78b2ac9ac7b&FC:AA:14:C4:7B:A0||0||
+2017-08-25 15:29:18,220 [INFO] root: bi_order ||P1708256N2169701|2|88397|pyw129733259|2017-08-25 15:29:18|132|17|0|1288|1288|1288|0|3||0|0|88375|0|||6||864394100965443&9909b78b2ac9ac7b&FC:AA:14:C4:7B:A0||0||
+2017-08-25 15:31:59,187 [INFO] root: bi_order ||P1708256N2169702|2|88397|pyw129733274|2017-08-25 15:31:59|65|17|0|1000|1000|1000|0|3||0|0|88375|0|||6||864394100965443&9909b78b2ac9ac7b&FC:AA:14:C4:7B:A0||0||
+
+/home/hduser/sqoop-1.4.5/bin/sqoop job --delete channel_pkg
+hdfs dfs -rmr /user/hduser/channel_pkg
+hive -e "drop table yyft.channel_pkg"
+/home/hduser/sqoop-1.4.5/bin/sqoop job --create channel_pkg -- import --connect jdbc:mysql://$xiaopeng2DbIp:3306/xiaopeng2_faxing --username $xiaopeng2User \
+--password $xiaopeng2Pwd --table channel_pkg --hive-import -m 2 \
+--split-by id --columns 'id,main_id,channel_id,game_id,game_main_id,pkg_code,spid,os,status,create_time,manager,update_time'  \
+--hive-database yyft --hive-table channel_pkg \
+--hive-overwrite --fields-terminated-by '\t' --null-string '\\N' --null-non-string '\\N' --hive-drop-import-delims
+/home/hduser/sqoop-1.4.5/bin/sqoop job -exec channel_pkg 
+/home/hduser/sqoop-1.4.5/bin/sqoop job --delete medium_package
+hdfs dfs -rmr /user/hduser/medium_package
+hive -e "drop table yyft.medium_package"
+/home/hduser/sqoop-1.4.5/bin/sqoop job --create medium_package -- import --connect jdbc:mysql://$xiaopeng2DbIp:3306/xiaopeng2_faxing --username $xiaopeng2User\
+--password $xiaopeng2Pwd --table medium_package --hive-import -m 2 \
+--split-by id --columns 'id,game_id,main_game_id,subpackage_id,user_id,merchant_id,status,type,os,medium_tag,ad_tag' \
+--hive-database yyft --hive-table medium_package \
+--hive-overwrite --fields-terminated-by '\t' --null-string '\\N' --null-non-string '\\N' --hive-drop-import-delims
+/home/hduser/sqoop-1.4.5/bin/sqoop job -exec medium_package
+
+
+source.r1           AppendBatchReceivedCount
+
+curl  http://localhost:34545/metrics 2>/dev/null|sed -e 's/\([,]\)\s*/\1\n/g' -e  's/[{}]/\n/g' -e 's/[",]//g'| grep -C 3 AppendBatchReceivedCount
+
+
+SINK.kn=kn+kkn      BatchCompleteCount
+sink
+curl  http://localhost:34545/metrics 2>/dev/null|sed -e 's/\([,]\)\s*/\1\n/g' -e  's/[{}]/\n/g' -e 's/[",]//g'| grep -C 3 BatchCompleteCount
+
+
+CHANNEL=channel1+channel2+channeln   EventPutSuccessCount
+
+curl  http://localhost:34545/metrics 2>/dev/null|sed -e 's/\([,]\)\s*/\1\n/g' -e  's/[{}]/\n/g' -e 's/[",]//g'| grep EventPutSuccessCount
+
+
+输入订单
+
+echo "2017-08-25 15:31:59,187 [INFO] root: bi_order ||P1708256N2169702|2|88397|pyw129733274|2017-08-25 15:31:59|65|17|0|1000|1000|1000|0|3||0|0|88375|0|||6||864394100965443&9909b78b2ac9ac7b&FC:AA:14:C4:7B:A0||0||" >>/proj/logs/app/backend/xiaopeng_wap_2017-08-28.log
+
+kafka-run-class.sh kafka.tools.ConsumerOffsetChecker  hadoopmaster:2181,hadoopslave1:2181,hadoopslave2:2181 --group KafkaImportToredisGroup1
+
+
+
+
+iptables -I INPUT 9 -i eth1 -p udp -m udp --dport 2049 -j REJECT --reject-with icmp-port-unreachable 
+iptables -I INPUT 9 -i eth1 -p udp -m udp --dport 111 -j REJECT --reject-with icmp-port-unreachable 
+
+A INPUT -i eth1 -p tcp -m tcp --dport 60432 -j REJECT --reject-with icmp-port-unreachable 
++-A INPUT -i eth1 -p tcp -m tcp --dport 20048 -j REJECT --reject-with icmp-port-unreachable 
++-A INPUT -i eth1 -p tcp -m tcp --dport 2049 -j REJECT --reject-with icmp-port-unreachable 
++-A INPUT -i eth1 -p tcp -m tcp --dport 111 -j REJECT --reject-with icmp-port-unreachable 
+
+120.25.125.19
+
+iptables -A INPUT -s 120.25.125.19 -p tcp --dport 2048 -j ACCEPT
+iptables -A INPUT -p tcp --dport 2048 -j reject 
+
+iptables -I INPUT 6 -s 10.45.46.248 -p tcp -m tcp --sport 111 -j ACCEPT
+iptables -I INPUT 7 -s 10.45.46.248 -p udp -m udp --sport 111 -j ACCEPT
+iptables -I INPUT 8 -s 10.45.46.248 -p tcp -m tcp --sport 2049 -j ACCEPT 
+iptables -I INPUT 9 -s 10.45.46.248 -p udp -m udp --sport 2049 -j ACCEPT
+
+iptables -I INPUT 16 -s 10.45.46.248 -p tcp -m tcp --sport 111 -m state --state NEW -j ACCEPT
+iptables -I INPUT 17 -s 10.45.46.248 -p udp -m udp --sport 111 -m state --state NEW -j ACCEPT
+iptables -I INPUT 18 -s 10.45.46.248 -p tcp -m tcp --sport 2049 -m state --state NEW -j ACCEPT
+iptables -I INPUT 19 -s 10.45.46.248 -p udp -m udp --sport 2049 -m state --state NEW -j ACCEPT
+
+iptables -A INPUT -s 10.30.3.17/32 -p tcp -m tcp --dport 6379 -j ACCEPT
+iptables -A INPUT -s 10.30.3.17/32 -p tcp -m tcp --dport 6379  -m state --state NEW -j ACCEPT
+
+
+iptables -A INPUT -s 10.116.116.211/32 -p tcp -m tcp --sport 6379 -j ACCEPT
+iptables -A INPUT -s 10.116.116.211/32 -p tcp -m tcp --sport 6379  -m state --state NEW -j ACCEPT
+
+ps -elf | grep -v grep | grep  flume | awk '{print $22}'| awk -F'/' '{print $2}'
+  
+nohup bin/flume-ng agent -n a1 -c . -f conf/xiaopeng_wap_sink.conf -Dflume.monitoring.type=http -Dflume.monitoring.port=34545 &
+
+curl  http://localhost:34545/metrics 2>/dev/null|sed -e 's/\([,]\)\s*/\1\n/g' -e  's/[{}]/\n/g' -e 's/[",]//g'
+
+
+prerelease
+channel_mutiplxing_sink.conf
+sdk_multiplexing_sink.conf
+commsdk_multiplexing_sink.conf
+xiaopeng_backend_sink.conf
+request_multiplexing_sink.conf
+channel_put_multiplexing_sink.conf
+xiaopeng_usercenter_sink.con
+  
+magpie
+xiaopeng_wap_sink.conf
+xiaopeng_backend_sink.conf
+request_multiplexing_sink.conf
+channel_put_multiplexing_sink.conf
+backend_multiplexing_sink.conf
+vipbg_wap_sink.conf
+vipbg_web_sink.conf
+xiaopeng_usercenter_sink.conf
+
+curl  http://localhost:34545/metrics 2>/dev/null|sed -e 's/\([,]\)\s*/\1\n/g' -e  's/[{}]/\n/g' -e 's/[",]//g'
+
+nohup bin/flume-ng agent -n a1 -c . -f conf/xiaopeng_wap_sink.conf -Dflume.monitoring.type=http -Dflume.monitoring.port=34545>>xiaopeng_wap_sink.conf.out &
+nohup bin/flume-ng agent -n a1 -c . -f conf/xiaopeng_backend_sink.conf -Dflume.monitoring.type=http -Dflume.monitoring.port=34546>>xiaopeng_backend_sink.conf.out &   
+
+之前
+ps -elf | grep -v grep | grep  flume | awk '{print $22}'| awk -F'/' '{print $2}'
+
+for i in `ps -elf | grep -v grep | grep  flume | awk '{print $4}'`;do kill -9 $i;done; 
+
+之后
+ps -elf | grep -v grep | grep  flume | awk -F'/' '{print $NF}'
+  
+
+{zabbix:system.cpu.load[all,avg1].min(5m)}>2 and {zabbix:system.cpu.load[all,avg1].time()}>000000 and {zabbix:system.cpu.load[all,avg1].time()}<060000
+只有在凌晨0点到6点整，最后5分钟内cpu load大于2，触发器的状态才会变更为PROBLEM
+  
+sdk_multiplexing_sink.conf
+channel_mutiplxing_sink.conf
+sdk_common_multiplexing_sink.conf
+
+ps -elf | grep zabbix
+pkill -9 zabbix_agentd
+/usr/local/zabbix-2.4.5/sbin/zabbix_agentd -c /usr/local/zabbix-2.4.5/etc/zabbix_agentd.conf
+ps -elf | grep zabbix
+
+
+kafka-console-consumer.sh  --zookeeper hadoopmaster:2181 --topic thirddata --from-beginning
+
+
+kafka-run-class.sh kafka.tools.ConsumerOffsetChecker  hadoopmaster:2181,hadoopslave1:2181,hadoopslave2:2181 --group KafkaImportToredisGroup1
+
+
+cat test.log | grep active|awk '{print $2,$4}'|awk '{sum[$1]+=$2} END{for(i in sum)print sum[i]}'
+
+kafka-run-class.sh kafka.tools.ConsumerOffsetChecker  hadoopmaster:2181,hadoopslave1:2181,hadoopslave2:2181 --group KafkaImportToredisGroup1 |grep -E 'active|member|order|regi'|awk '{print $2,$4}'|awk '{sum[$1]+=$2} END{for(i in sum)print i,sum[i]}'
+
+
+
+for i in ....;do;
+  for x in ....;do;
+    if ...
+	  else
+	fi
+  done
+done
+
+
+
+http://cdp.pyw.cn/
+
+
+
+
+cd /usr/local/zabbix-2.4.5/scripts/bi_order/
+sed -i 's/AppendBatchReceivedCount/EventAcceptedCount/g' *
+cd ../../etc/zabbix_agentd.conf.d/
+sed -i 's/AppendBatchReceivedCount/EventAcceptedCount/g' *
+ps -elf | grep zabbix
+pkill -9 zabbix_agentd
+/usr/local/zabbix-2.4.5/sbin/zabbix_agentd -c /usr/local/zabbix-2.4.5/etc/zabbix_agentd.conf
+ps -elf | grep zabbix
+
+
+cd /proj/server/apache-flume-1.6.0-bin/conf
+grep -r REPLACE *
+sed -i 's/REPLACE/IGNORE/g'   *
+grep -r IGNORE *
+
+
+#################faxing admin#####################
+export DB_FXADM_SLAVE_HOST=rptdb
+export DB_FXADM_SLAVE_USER=xiaopeng2r
+export DB_FXADM_SLAVE_PASSWORD=59ff73414!9fca4e
+export DB_FXADM_SLAVE_DB=xiaopeng2_faxing
+
+
+#################faxing admin#####################
+env[DB_FXADM_SLAVE_HOST]=rptdb
+env[DB_FXADM_SLAVE_USER]=xiaopeng2r
+env[DB_FXADM_SLAVE_PASSWORD]="59ff73414!9fca4e"
+env[DB_FXADM_SLAVE_DB]=xiaopeng2_faxing
+
+ps -elf | grep php-fpm
+source /proj/sh/setenv.sh
+/proj/sh/php-fpm.sh reload
+ps -elf | grep php-fpm
+/proj/server/nginx_http2/sbin/nginx -c /proj/server/nginx_http2/conf/nginx.conf -t
+
+
+
+
+
+
+export REDIS_ALI_MMSPROMO_HOST=r-wz9d805d63d4f684.redis.rds.aliyuncs.com
+export REDIS_ALI_MMSPROMO_PORT=6379
+export REDIS_ALI_MMSPROMO_PASSWORD=Swqtb87up
+ 
+export MYSQL_MMSPROMO_HOST=10.116.123.113
+export MYSQL_MMSPROMO_PORT=3306
+export MYSQL_MMSPROMO_DB=xiaopeng2_mmspromo
+export MYSQL_MMSPROMO_DBUSER=hadoop
+export MYSQL_MMSPROMO_DBPWD=hadoopmaster2016abt
+export MYSQL_XIAOPENG2_HOST=10.116.123.113
+export MYSQL_XIAOPENG2_PORT=3306
+export MYSQL_XIAOPENG2_DB=xiaopeng2
+export MYSQL_XIAOPENG2_DBUSER=hadoop
+export MYSQL_XIAOPENG2_DBPWD=hadoopmaster2016abt
+
+
+
+
+
+
+nohup java -classpath "lib/kafka_2.10-0.8.1.1.jar:lib/scala-library-2.10.1.jar:lib/slf4j-api-1.7.2.jar:lib/slf4j-log4j12-1.7.21.jar:lib/snappy-java-1.0.5.jar:lib/zkclient-0.3.jar:lib/log4j-1.2.15.jar:lib/zookeeper-3.3.4.jar:lib/metrics-core-2.2.0.jar:lib/commons-pool2-2.4.2.jar:lib/jedis-2.9.0.jar:lib/json-lib-2.4-jdk15.jar:lib/ezmorph-1.0.6.jar:lib/commons-logging-1.1.1.jar:lib/commons-lang-2.5.jar:./mmspromobi.jar:lib/mysql-connector-java-5.1.32-bin.jar" cn.com.yyft.MmsPromoBi >>logs/MmsPromoBi.log &
+
+
+
+ps -elf | grep -v grep | grep  flume | awk -F'/' '{print $NF}'
+
+
+
+
+http://www.cnblogs.com/dyllove98/p/3157370.html
+
+
+
+
+
+template(name="xiaopeng_mmspromoadmin_log" type="list"){
+property(name="hostname") constant(value="#xiaopeng_mmspromoadmin_log")
+constant(value="#") property(name="msg" position.from="1" position.to="23")
+constant(value="#") property(name="msg" field.delimiter="32" field.number="3")
+constant(value="#") property(name="msg" position.from="32" position.to="9999")
+}
+input(
+    type="imfile"
+    File="/proj/logs/app/mmspromo/xiaopeng_mmspromoadmin_201*.log"
+    startmsg.regex="^201"
+    freshStartTail="off"
+    addMetadata="on"
+    Severity="info"
+    Facility="user"
+    tag="nginx_access"
+    ruleset="xiaopeng_mmspromoadmin_log"
+)
+ruleset( name="xiaopeng_mmspromoadmin_log" ){
+    action(type="omfwd" Target="10.116.155.217" Port="800" Protocol="tcp" template="xiaopeng_mmspromoadmin_log" )
+    stop
+}
+
+LD_PRELOAD=/usr/local/glibc-2.14/lib/libc-2.14.so ln -s /usr/local/glibc-2.14/lib/libc-2.14.so /lib64/libc.so.6
+
+
+
+template(name="xiaopeng_tg_bi_log" type="list"){
+property(name="hostname") constant(value="#xiaopeng_tg_bi_log")
+constant(value="#") property(name="msg" position.from="1" position.to="23")
+constant(value="#") property(name="msg" field.delimiter="32" field.number="3")
+constant(value="#") property(name="msg" position.from="32" position.to="9999")
+}
+input(
+    type="imfile"
+    File="/proj/logs/app/tg/bi/tg_bi_2017-09-15.log"
+    startmsg.regex="^201"
+    freshStartTail="off"
+    addMetadata="on"
+    Severity="info"
+    Facility="user"
+    tag="nginx_access"
+    ruleset="xiaopeng_tg_bi_log"
+)
+ruleset( name="xiaopeng_tg_bi_log" ){
+    action(type="omfwd" Target="10.116.155.217" Port="800" Protocol="tcp" template="xiaopeng_tg_bi_log" )
+    stop
+}
+
+
+
+
+
+<!DOCTYPE html
+<html
+<head
+<titleWelcome to iis7</title
+<style
+  body { 
+    width: 35em; 
+	margin: 0 auto; 
+	font-family: Tahoma, Verdana, Arial, sans-serif; 
+  }
+</style
+</head
+<body
+<h1Welcome to iis7</h1
+<pIf you see this page, the iis web server is successfully installed and
+working. Further configuration is required.</p
+
+</body
+</html
+
+
+
+#! /bin/sh
+PHP_SCRIPT="php admin/index.php countyue"
+pid=`ps -ef | grep -v grep | grep -c "$PHP_SCRIPT"`
+if [ "$pid" = "0" ];then
+source /proj/sh/setenv.sh 
+
+cd /proj/web/xiaopeng_sys2_admin
+/usr/local/php-5.6.8/bin/php admin/index.php countyue >> /proj/logs/app/countyue.log &
+else
+echo "countyue exists:"$pid
+fi
+
+
+ntpdate ntp1.aliyun.com 
+
+
+
+
+iptables -I INPUT 5 -s 120.241.64.18/32 -p tcp -m tcp --dport 10051 -j ACCEPT
+
+iptables -I INPUT 5 -s 120.241.64.18/32 -p tcp -m tcp --dport 10051 -m state --state NEW -j ACCEPT
+
+iptables -I INPUT 4
+
+#! /bin/sh
+PHP_SCRIPT="php admin/index.php CountYue"
+pid=`ps -ef | grep -v grep | grep -c "$PHP_SCRIPT"`
+if [ "$pid" = "0" ];then
+source /proj/sh/setenv.sh
+cd /proj/web/xiaopeng_sys2_admin
+/usr/local/php-5.6.8/bin/php admin/index.php CountYue >> /proj/logs/app/countyue.log &
+else
+echo "countyue exists:"$pid
+fi
+
+
+http://wake-on-lan-sender.soft112.com/download.html
+
+
+iptables -I INPUT 2 -i eth1 -p tcp -m tcp --dport 34545 -j REJECT --reject-with icmp-port-unreachable 
+iptables -I INPUT 2 -i eth1 -p tcp -m tcp --dport 34560 -j REJECT --reject-with icmp-port-unreachable
+
+
+
+iptables -I INPUT 4 -i eth1 -p tcp -m tcp --dport 34546 -j REJECT --reject-with icmp-port-unreachable
+iptables -I INPUT 7 -i eth1 -p tcp -m tcp --dport 34547 -j REJECT --reject-with icmp-port-unreachable
+iptables -I INPUT 7 -i eth1 -p tcp -m tcp --dport 34548 -j REJECT --reject-with icmp-port-unreachable
+iptables -I INPUT 4 -i eth1 -p tcp -m tcp --dport 34546 -j REJECT --reject-with icmp-port-unreachable
+service iptables  save
+
+
+iptables -I INPUT 7 -i eth1 -p tcp -m tcp --dport 34557 -j REJECT --reject-with icmp-port-unreachable
+iptables -I INPUT 7 -i eth1 -p tcp -m tcp --dport 34558 -j REJECT --reject-with icmp-port-unreachable
+iptables -I INPUT 7 -i eth1 -p tcp -m tcp --dport 34559 -j REJECT --reject-with icmp-port-unreachable
+iptables -I INPUT 7 -i eth1 -p tcp -m tcp --dport 34561 -j REJECT --reject-with icmp-port-unreachable
+
+iptables -I INPUT 2 -i eth1 -p tcp -m tcp --dport 34545 -j REJECT --reject-with icmp-port-unreachable 
+iptables -I INPUT 2 -i eth1 -p tcp -m tcp --dport 34560 -j REJECT --reject-with icmp-port-unreachable
+
+
+iptables -I INPUT 2 -i eth1 -p tcp -m tcp --dport 34552 -j REJECT --reject-with icmp-port-unreachable
+service iptables  save
+iptables -L --line-number
+
+#######LDAP修改密码变量##########
+
+export LDAP_FXADMIN_SERVER_MASTER="ldap://120.241.64.18:389"  
+export LDAP_FXADMIN_SERVER_SLAVE="ldap://10.116.132.238:389"
+
+export LDAP_XP2ADMIN_SERVER_MASTER="ldap://120.241.64.18:389" 
+export LDAP_XP2ADMIN_SERVER_SLAVE="ldap://10.116.132.238:389"
+
+
+env[LDAP_XP2ADMIN_SERVER_MASTER]="ldap://120.241.64.18:389"
+env[LDAP_XP2ADMIN_SERVER_SLAVE]="ldap://10.116.132.238:389"
+#######LDAP修改密码变量##########
+env[LDAP_FXADMIN_SERVER_MASTER]="ldap://120.241.64.18:389"
+env[LDAP_FXADMIN_SERVER_SLAVE]="ldap://10.116.132.238:389" 
+
+
+主： 120.241.64.18 公司映射
+这个ip 不能泄露的
+从： 120.25.125.19   阿里
+
+ps -elf | grep php-fpm
+source /proj/sh/setenv.sh
+/proj/sh/php-fpm.sh reload
+ps -elf | grep php-fpm
+/proj/server/nginx_http2/sbin/nginx -c /proj/server/nginx_http2/conf/nginx.conf -t
+
+
+UCAPP="php admin/index.php AdvUcApp/sentToUcApp"
+ucapp_pid=`ps -ef | grep -v grep | grep -c "$UCAPP"`
+if [ "$ucapp_pid" = "0" ];then
+    source /proj/sh/setenv.sh 
+
+    cd /proj/web/xiaopeng_datacenter
+    /usr/local/php-5.6.8/bin/php admin/index.php AdvUcApp/sentToUcApp&
+else
+    echo "cu_app call back working:"$ucapp_pid
+fi
+
+
+
+#! /bin/sh
+PHP_SCRIPT="php admin/index.php CountYue companyQuota"
+pid=`ps -ef | grep -v grep | grep -c "$PHP_SCRIPT"`
+if [ "$pid" = "0" ];then
+source /proj/sh/setenv.sh
+cd /proj/web/xiaopeng_sys2_admin
+/usr/local/php-5.6.8/bin/php admin/index.php CountYue companyQuota
+else
+echo "companyQuota exists:"$pid
+fi
+
+
+GDTREGI="php admin/index.php AdvGuangDianTong/sentToGDTRegi"
+gdtregi_pid=`ps -ef | grep -v grep | grep -c "$GDTREGI"`
+if [ "$gdtregi_pid" = "0" ];then
+source /proj/sh/setenv.sh 
+
+cd /proj/web/xiaopeng_datacenter
+/usr/local/php-5.6.8/bin/php admin/index.php AdvGuangDianTong/sentToGDTRegi&
+else
+echo "gdtregi call back working:"$gdtregi_pid
+fi
+
+GDTORDER="php admin/index.php AdvGuangDianTong/sentToGDTOrder"
+gdtorder_pid=`ps -ef | grep -v grep | grep -c "$GDTORDER"`
+if [ "$gdtorder_pid" = "0" ];then
+source /proj/sh/setenv.sh 
+
+cd /proj/web/xiaopeng_datacenter
+/usr/local/php-5.6.8/bin/php admin/index.php AdvGuangDianTong/sentToGDTOrder&
+else
+echo "gdtorder call back working:"$gdtorder_pid
+fi
+
+
+
+报警 
+
+告警主机：{HOST.NAME1}
+Trigger名：{TRIGGER.NAME}
+报警级别: {TRIGGER.SEVERITY}
+当前状态：{TRIGGER.STATUS}：{ITEM.VALUE1}
+告警时间：{EVENT.DATE}-{EVENT.TIME}
+ITEM详情：{ITEM.NAME}：{ITEM.VALUE}
+
+事件ID：{EVENT.ID}
+
+
+
+恢复
+
+
+告警主机：{HOST.NAME1}
+Trigger名：{TRIGGER.NAME}
+报警级别: {TRIGGER.SEVERITY}
+当前状态：{TRIGGER.STATUS}：{ITEM.VALUE1}
+告警时间：{EVENT.DATE}-{EVENT.TIME}
+ITEM详情：{ITEM.NAME}：{ITEM.VALUE}
+
+事件ID：{EVENT.ID}
+
+alarmName:{TRIGGER.NAME}
+entityName:{HOSTNAME}
+entityId:{IPADDRESS}
+value:{TRIGGER.VALUE}
+eventId:{EVENT.ID}
+priority:{TRIGGER.SEVERITY}
+alarmContent:{IPADDRESS} {ITEM.NAME}:{ITEM.VALUE}
+
+
+
+120.241.64.18 - - [17/Oct/2017:15:20:14 +0800] "POST /api/v7/sms/send HTTP/1.1" 200 393 "-""huosdkProject/1 CFNetwork/808.2.16 Darwin/16.3.0" - sdk1.pengyouwan.com pywsdkweb01 6.060 6.062 key=bEV6lBjYZCyi9wlHoYi0tgf9e8F8wzaojx1EMS3P8VYH6AQguwjVVrGewfN6XTpquXJhgWbZRiShSq4Tha37UFswzS9QkmxZuq8lDEY3ubAj5xIfCXSoD8EhkNXNZmAI0OfapktwCTGORCIfhYxbufiazjiqqbCY87FMCEiuECk%3D&data=61c2flA3PChEPxRyQHRXIiNVOScbby8UXF1Ofnc4Knd%2BTQgYc1hIdzNtJQljahsWFCxsNDM4OR40QAMmZSQSN0oVFAY5WWM7CWwhB0FBSBkEE1YPcwhRIUxgP3JvFhlIbiUCXSAeOHF%2FSBFNTmc4Vl5AJggbHHRvZE5lEw5CAxljb25PDwl%2BC1lGJm81Z0I3MwERRB5sbgEjY1MMbzt3TVl1EUFsGBprKkJ8KGgeRw4cLlMlHyNWViZZJ2hRCh0QdyR%2FKWkudSUBKTU5AhAiGTpmAwBHAQEpBXdxYl9VOzw3TUUJeVxiHTIqZRceY1BXSWFrIjhRaAtSYikoPCp5dkwHPTwEFChbIEsNJWEeV0xJCxxqSHwcTSN0X2MKPxFNez5oBAA%2BVE5oVSwaHxBcdRR4JgNOeXk1Ol99Og9ke3srbTNMYH85QEN6azMxaxxmIhR%2BejVXMHdQRQALTRJIJh9GVSNBAHEnEgFwYiZ%2BVzcUNFQzeyA2Kn0DIAYUcy1ECCQiL2EUEgZKPSAyTRM3dTRoeSEkAxs5YEt9HhFTXUQEWz5XHVlaQg8xRwEAWXMmaUs2NwF0BBpWXBo3bHljEHpYDzxPfGNnaU5SbQ1rWlgmQB9wc1QPZhghakdQD397XzwNMTgdUX9XERcyCWBxCk0WLTJ7ZTQRPhlYASJHXwQTKi4QE3Bjfn9pSgppFGYJZxNrcyQUKHRac15XLRJBOzgyFWBZYHV4aV5rfxMTSykwLChdSH43MkZvDT0ICDd1QCQfaEtJOkhhLy5OVyAaL0RxQAUXZCQNR2sfO0MLXyxMfRw7MTQHXgtWbSJtdyw9GQtDdg4SVi5SIm1pGQE9fC5VF2gNXRVQODZPLzNhJwM%2BRwVHHEhaI1R6eExHfw9cGQNYCXsnbRBLTB91Ix9kTU1CMzdWLFwwEV9ZEhhNWjRDPFFyaWh4MxJ8KkJrRxxIFBsFNiQEcSdsUWceC0MkZ0pIDkVANEsRexExLB8WDxIxUApHXVBXVwxfAApSbkRUF28RbV4
+120.241.64.18 - - [17/Oct/2017:15:23:41 +0800] "POST /api/v7/system/startup HTTP/1.1" 200 749 "-""huosdkProject/1 CFNetwork/808.2.16 Darwin/16.3.0" - sdk1.pengyouwan.com pywsdkweb01 6.081 6.084 key=jPHKXOGNDVZNitwwd4MszPUdcxwCDAR1YS8Ipc4xGWWCgQmGs1X8i8DiFi8SrrTOOykiCeO5c20weJVTpYdn3k6YfDuyEBRjStdFNAQ1aUJvMO4IpszRzsjJaiE%2Bqoxj2HEuCaB08ZCbj0eBgteiECm2Zj66UA0heKCoc9qQVf4%3D&data=5665N0VmUlk1ZU0dDisWFloddVlRRiYsZ2dJVy8zE1olC3cDbTF0TEdHdS5FfAQuUn4bGRI1OU8%2FXXxpLlZyMgc%2FMwwzPiEGeQMsBkwAHwoVO2ZnQC89ZQ4XZ3Nzdl0XInAVGyMGVCoOBTtkBUcgDwcFcDhOOA8kH2V6HHgff3ViYUELKCJUO18UcTxxNktKGX4CXhcxPjhtan4YYUVhCQxcSGQsaHY9TQ40TRFFSmxAdzhFY0QjZypvdDRSRw16Nnd6Fl9KLWILEh8HGFh0UGEKHg4ga1Y9LGlreQVPcwkuQyMWUlhEaWJEFDdtX0ZGQFpWA1onVhZMYVs1bDAKaQh8HCIHE11hGRxRdy4wHkQIRAtMU28sHFs1TDo1LjRUZl1iCm11H0wFJkF4dTlrFHFfeFN3LiweOWY2EGUhVnlXeyVGRnUnHCkRVixKBVA7EAobUVVkagQCDTxAchc3TGpDakhyAUd%2FNANKPBENSCwCDkQaGwJXXgVTNzdnX1wmXxEcQmwye0phOgBgJllTJ2tjZ2BOf0JaLWpgPEkuByIfB0xZHHZOFjg8CV9hVXtTZS5FMGEJAQtqRUlZKQsJFGwWIHxlX1gKFGE3XwlRZw0GKkVHXm9xQAEnbQcRUGB3JWcqfGQlemk4W3ImGxsScw4sL01NWl5yDk9ERW1HfXh%2BfRp8IG9%2BHDB5AXUdU30YWgNzNHsLCkMbMUwWY2orGwoBfEIfc1AwEgxsDDEsbWtKBHlzH1lvJwQDAnELEV8GGSJrX3VzO2oqRB0bSUYmEhAlRFg0JSRvSSszKGsgG3MUXXwiT1Y4XydyByFzblcuSTgyDnICNU49AUpIFkUdIV48IgtyQQxCPRY9QFR2JWc
+120.241.64.18 - - [17/Oct/2017:15:23:51 +0800] "POST /api/v7/sms/send HTTP/1.1" 200 393 "-""huosdkProject/1 CFNetwork/808.2.16 Darwin/16.3.0" -
+sdk1.pengyouwan.com pywsdkweb01 6.057 6.059 key=sp%2B1R%2B6F4UKYlyGyTMoPx0M3LMQYZHK3ZzOE2Mlm0M0G6L3hpjPbT%2BPkjApvqjnC%2Bfea9qvlqmn58rTvuMFTPHNvy8XP1N7EohnqHlMvKd3l1gU2nZawiab2J%2BYFoN5PClaxX%2Fy85P2hiplxZIoHAJspibNp8X9vA0wWoYws8LU%3D&data=8a0dSwINdSlAORx%2FEyFOOwhfHBF%2BDgtUDw5%2FI2tRChlBQE12c1FbZmojAgMUWWl6fjpTb1tnKD1aY0soLS90egpARF1dA34RKGZyKElYD3M8dE0AXnxnXz0MXjUCeltxBxghRhIGS1VeMH1%2BB0AsFn4%2FHEAIWFkTQT5aByBrPQ0lbBB1Dzt%2BWUoBcDlOBmMsDT08TAcxPhcoEFYqXUY2CSpeTDgMIzA4PTI2JBNtFiluQjkORWJ9enB0LC0uBAIKW3JHWBUpDSlwQXIFaQAyNBESHwkUHWFfLkpqSBJ5RBQeHSQqGSgIVnV6E3BsRGkaLmFeBXooI2p3PTNmG082VFVPWUoZKAh8USU1THkfJWpraDJadUlMSkREaBNtfx99AUIRXwVjTkBPcgdbD14VJ0Ihbj0SeWQHG0RCF34kHGNoEX5ISmB3dkQEaWcXLBVTcH8OeD4pOEZzFRoCTFkIcndBBH4MCXBVdWANcChuayBPGzpsTlV7eHEodm8oEwpBRHsQRkFVCmY6PUVLFRJpMSpucnx8bVEuEkUDUXJjdhtmLhJpeCITPgIjFxUhRAECQytobFUbOEFGDHt9KVwqFX4iGlZbFT9pRCwHfEJ5QT9Ce0ApQ0wHfnxoB1ZgSWFrY3VRD0ckVUg1KDUWZQUQTxBSUS82Py4AHxYEOXM2AS8oLBh5cjZjCAUfGQcYH2FxEGBAT3NMHRVydDFQPXluY24PJwBgAlR2cD1%2BRlIaSTwBCg4TL2k7OUFkeDdnYSZbQ0waR3sKR2xiSHRQSjMkA3AbLSwePjA3CCwFIlkyGXd7MjYbEHxFBAY6PBR2BF9IOVhNPA1oCRx%2BLXNyZyMhAi0nIhRYXRxNfQdDfVFZBxV5aA4td0QialAhZnp2DC8KAkB1ZworS0cjXQotKFEcVhR9Xg1GaX8NVlNxbVZIXlRDeAxeBjgyDhhiYH0UcXsuIA8VODsxIWN%2BWjEdDn47H3lPTEk9NzRFYH1zDEQ7C1tzIyNyR3NRWCI3L1xBezpEWh0SD1U
+
+
+
+
+
+[ 2017-10-17T15:33:05+08:00 ] 120.24.169.160 120.241.64.18 POST /api/v7/pay/preorder
+[ log ] sdk1.pengyouwan.com/api/v7/pay/preorder [运行时间：0.004277s][吞吐率：233.81req/s] [内存消耗：786.93kb] [文件加载：36]
+[ error ] paytype=alipay&orderid=15082255840611421220001&paytoken=807aaabd65529255446b99cb32ed1162&randnum=0.28908765004433934&v=06109752367108435
+
+---------------------------------------------------------------
+[ 2017-10-17T15:33:05+08:00 ] 120.24.169.160 120.241.64.18 POST /api/v7/pay/preorder
+[ log ] sdk1.pengyouwan.com/api/v7/pay/preorder [运行时间：0.016655s][吞吐率：60.04req/s] [内存消耗：1,079.45kb] [文件加载：55]
+
+#huosusdk_log#hostname#[ 2017-10-17T15:33:05+08:00 ]#120.24.169.160#120.24.169.160#POST#/api/v7/pay/preorder#
+
+template(name="huosusdk_log" type="list"){
+constant(value="#huosusdk_log") property(name="hostname") 
+constant(value="#") property(name="msg" position.from="1" position.to="29")
+constant(value="#") property(name="msg" field.delimiter="32" field.number="2")
+constant(value="#") property(name="msg" field.delimiter="32" field.number="3")
+constant(value="#") property(name="msg" field.delimiter="32" field.number="4")
+constant(value="#") property(name="msg" field.delimiter="32" field.number="5")
+constant(value="#") property(name="msg" position.from="10" position.to="9999")
+}
+input(
+    type="imfile"
+    File="/proj/logs/sdk.log"
+    startmsg.regex="\\[ 201"
+    freshStartTail="off"
+    addMetadata="on"
+    Severity="info"
+    Facility="user"
+    tag="nginx_access"
+    ruleset="huosusdk_log"
+)
+ruleset( name="huosusdk_log" ){
+    action(type="omfwd" Target="192.168.20.83" Port="810" Protocol="tcp" template="huosusdk_log" )
+    stop
+}
+
+
+tcp{
+    port=810
+    type=sdklog
+    host="10.116.155.217"
+    codec="json"
+  }
+
+
+grok {
+        match={ "message"="%{DATA:t%{IP:serverIp}\|%{IP:clientIp}\|%{DATA:logSource}\|%{DATA:userId}\|%{DATA:reqUrl}\|%{DATA:reqUri}\|%{DATA:refer}\|%{DATA:device}\|%{DATA:textDuring}\|%{DATA:duringTime:int}\|\|"}
+  }
+
+  
+[ 2017-10-17T15:33:05+08:00 ] 120.24.169.160 120.241.64.18 POST /api/v7/pay/preorder
+[ log ] sdk1.pengyouwan.com/api/v7/pay/preorder [运行时间：0.004277s][吞吐率：233.81req/s] [内存消耗：786.93kb] [文件加载：36]
+[ error ] paytype=alipay&orderid=15082255840611421220001&paytoken=807aaabd65529255446b99cb32ed1162&randnum=0.28908765004433934&v=06109752367108435
+
+match={ "message"="\[ %{TIMESTAMP_ISO8601:log_timestamp} \] %{NOTSPACE:remote_addr} %{NOTSPACE:remote_addr} (?:%{WORD:verb} %{NOTSPACE:request} ) \[ %{WORD:log} \] 
+" }
+
+
+
+match={ "message"="(?:%{NOTSPACE:remote_addr}|-) - (?:%{USER:user}|-) \[%{HTTPDATE:log_timestamp}\] \"(?:%{WORD:verb} %{NOTSPACE:request}(?: HTTP/%{NUMBER:httpversion})?|%{DATA:rawrequest})\" %{NUMBER:status} (?:%{NUMBER:body_bytes_sent}|-) %{QS:referrer}%{QS:agent} (?:%{IP3:http_x_forwarded_for}|%{IP2:http_x_forwarded_for}|%{IP:http_x_forwarded_for}|-) %{NOTSPACE:http_head} %{NOTSPACE:hostname} %{NOTSPACE:upstream_response_time} %{NUMBER:request_time}" }
+
+
+
+120.241.64.18 - - [17/Oct/2017:15:23:51 +0800] "POST /api/v7/sms/send HTTP/1.1" 200 393 "-""huosdkProject/1 CFNetwork/808.2.16 Darwin/16.3.0" - sdk1.pengyouwan.com pywsdkweb01 6.057 6.059 key=sp%2B1R%2B6F4UKYlyGyTMoPx0M3LMQYZHK3ZzOE2Mlm0M0G6L3hpjPbT%2BPkjApvqjnC%2Bfea9qvlqmn58rTvuMFTPHNvy8XP1N7EohnqHlMvKd3l1gU2nZawiab2J%2BYFoN5PClaxX%2Fy85P2hiplxZIoHAJspibNp8X9vA0wWoYws8LU%3D&data=8a0dSwINdSlAORx%2FEyFOOwhfHBF%2BDgtUDw5%2FI2tRChlBQE12c1FbZmojAgMUWWl6fjpTb1tnKD1aY0soLS90egpARF1dA34RKGZyKElYD3M8dE0AXnxnXz0MXjUCeltxBxghRhIGS1VeMH1%2BB0AsFn4%2FHEAIWFkTQT5aByBrPQ0lbBB1Dzt%2BWUoBcDlOBmMsDT08TAcxPhcoEFYqXUY2CSpeTDgMIzA4PTI2JBNtFiluQjkORWJ9enB0LC0uBAIKW3JHWBUpDSlwQXIFaQAyNBESHwkUHWFfLkpqSBJ5RBQeHSQqGSgIVnV6E3BsRGkaLmFeBXooI2p3PTNmG082VFVPWUoZKAh8USU1THkfJWpraDJadUlMSkREaBNtfx99AUIRXwVjTkBPcgdbD14VJ0Ihbj0SeWQHG0RCF34kHGNoEX5ISmB3dkQEaWcXLBVTcH8OeD4pOEZzFRoCTFkIcndBBH4MCXBVdWANcChuayBPGzpsTlV7eHEodm8oEwpBRHsQRkFVCmY6PUVLFRJpMSpucnx8bVEuEkUDUXJjdhtmLhJpeCITPgIjFxUhRAECQytobFUbOEFGDHt9KVwqFX4iGlZbFT9pRCwHfEJ5QT9Ce0ApQ0wHfnxoB1ZgSWFrY3VRD0ckVUg1KDUWZQUQTxBSUS82Py4AHxYEOXM2AS8oLBh5cjZjCAUfGQcYH2FxEGBAT3NMHRVydDFQPXluY24PJwBgAlR2cD1%2BRlIaSTwBCg4TL2k7OUFkeDdnYSZbQ0waR3sKR2xiSHRQSjMkA3AbLSwePjA3CCwFIlkyGXd7MjYbEHxFBAY6PBR2BF9IOVhNPA1oCRx%2BLXNyZyMhAi0nIhRYXRxNfQdDfVFZBxV5aA4td0QialAhZnp2DC8KAkB1ZworS0cjXQotKFEcVhR9Xg1GaX8NVlNxbVZIXlRDeAxeBjgyDhhiYH0UcXsuIA8VODsxIWN%2BWjEdDn47H3lPTEk9NzRFYH1zDEQ7C1tzIyNyR3NRWCI3L1xBezpEWh0SD1U
+
+
+env[DB_PYW_ALERT_HOST]=192.168.20.60
+env[DB_PYW_ALERT_USER]=xiaopengr
+env[DB_PYW_ALERT_PASSWORD]=xiaopeng99
+env[DB_PYW_ALERT_DB]=zabbix
+
+ps -elf | grep php-fpm
+source /proj/sh/setenv.sh
+/proj/sh/php-fpm.sh reload
+ps -elf | grep php-fpm
+
+
+/proj/sh/pkgclean.sh
+
+#!/usr/bin/env bash
+#! Encoding UTF-8
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/usr/local/java/bin
+export PATH
+source ~/.bash_profile
+
+
+cd /proj/java/pyw_package
+java -Dconsole=true -Dspring.profiles.active=pkgcleanup -classpath pyw_package.jar com.pyw.pck.PackageTerminator $1 $2 $3
+
+
+
+YOUKU="php admin/index.php AdvYouKu/sentToYouKu"
+youku_pid=`ps -ef | grep -v grep | grep -c "$YOUKU"`
+if [ "$youku_pid" = "0" ];then
+source /proj/sh/setenv.sh
+cd /proj/web/xiaopeng_datacenter
+/usr/local/php-5.6.8/bin/php admin/index.php AdvYouKu/sentToYouKu&
+else
+echo "youku call back working:"$youku_pid
+fi
+
+INMOBI="php admin/index.php AdvInMobi/sentToInMobi"
+inmobi_pid=`ps -ef | grep -v grep | grep -c "$INMOBI"`
+if [ "$inmobi_pid" = "0" ];then
+source /proj/sh/setenv.sh
+cd /proj/web/xiaopeng_datacenter
+/usr/local/php-5.6.8/bin/php admin/index.php AdvInMobi/sentToInMobi&
+else
+echo "inmobi call back working:"$inmobi_pid
+fi
+
+
+
+正常启动java
+
+java -jar /tmp/Notepad.jar
+
+监控java应用程序
+
+java -Dcom.sun.management.jmxremote \
+-Dcom.sun.management.jmxremote.port=10053 \
+-Dcom.sun.management.jmxremote.authenticate=false \
+-Dcom.sun.management.jmxremote.ssl=false \
+-jar /proj/java/pyw_package/pyw_package.jar
+
+java -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=10053 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -jar /proj/java/pyw_package/pyw_package.jar &
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+sh  ZabbixAlertAppApi.sh "liyb@yyft.com" "OK,服务器:Zabbix_server: More than 100 items having missing data for more than 10 minutes已恢复" "server_name->阿里##host_name->Zabbix_server##event_date->2017.10.25##event_time->14:57:51##level->Warning##status_desc->OK##status_code->110##event_title->More than 100 items having missing data for more than 10 minutes##event_detail->Zabbix queue over 10m##event_val->110##event_id->772818##user_name->pyw_alertuser1,pyw_alertuser2,pyw_alertuser3,pyw_alertuser4,pyw_alertuser5,123456781,zhangt##end->end"
+
+sh -x ZabbixAlertAppApi.sh "liyb@yyft.com" "PROBLEM,阿里服务器:test1发生: Zabbix agent on test1 is unreachable for 5 minutes" 
+
+
+"server_name->阿里##host_name->test1##event_date->2017.10.24##event_time->18:38:30##level->Average##status_desc->PROBLEM##status_code->*UNKNOWN*##event_title->Zabbix agent on test1 is unreachable for 5 minutes##event_detail->Agent ping##event_val->*UNKNOWN*##event_id->767610##user_name->pyw_alertuser1,pyw_alertuser2,pyw_alertuser3,pyw_alertuser4,pyw_alertuser5,123456781,zhangt##end->end"
+
+server_name->阿里##host_name->rptdb##event_date->2017.11.10##event_time->06:03:01##level->Warning##status_desc->PROBLEM##status_code->94.6 %##event_title->Disk IO util is too HIGH##event_detail->IO_Stats util on xvdc##event_val->94.6 %##event_id->1207362##user_name->pengpx,liyb##end->end
+
+sh  ZabbixAlertAppApi.sh "liyb@yyft.com" "PROBLEM,阿里服务器:bouncer发生: pywqueue.promoappfilesdata more than 100 in 5 min
+" "server_name->阿里##host_name->bouncer##event_date->2017.11.10##event_time->13:06:31##level->High##status_desc->PROBLEM##status_code->500##event_title->pywqueue.promoappfilesdata more than 100 in 5 min##event_detail->promoappfilesdata##event_val->500##event_id->1223226##user_name->pengpx,liyb##end->end"
+
+
+sh  ZabbixAlertAppApi.sh "liyb@yyft.com" "PROBLEM,金山服务器:lhtl-11发生: 烈火屠龙ap11: luajit_ 16667 check_port" "server_name->金山##host_name->lhtl-11##event_date->2017.11.11##event_time->14:21:03##level->Average##status_desc->PROBLEM##status_code->0##event_title->烈火屠龙ap11: luajit_ 16667 check_port##event_detail->check_port_luajit##event_val->0##event_id->2375109##user_name->wuzh,ligd,haungp,wugl,liyb##end->end"
+
+
+
+ps -elf | grep php-fpm
+source /proj/sh/setenv.sh
+/proj/sh/php-fpm.sh reload
+ps -elf | grep php-fpm
+
+
+
+
+export KAFKA_PYW_ALERT_PRODUCER_BROKER_LIST="10.46.133.57:9092,10.46.133.56:9092,10.46.133.69:9092"
+export KAFKA_PYW_ALERT_CONSUMER_BROKER_LIST="10.46.133.57:2181,10.46.133.56:2181,10.46.133.69:2181"
+
+env[KAFKA_PYW_ALERT_PRODUCER_BROKER_LIST] = "10.46.133.57:9092,10.46.133.56:9092,10.46.133.69:9092"
+env[KAFKA_PYW_ALERT_CONSUMER_BROKER_LIST] = "10.46.133.57:2181,10.46.133.56:2181,10.46.133.69:2181"
+
+
+export MC_PYW_ALERT_HOST=mc-col-1
+export MC_PYW_ALERT_PORT=11211
+
+env[MC_PYW_ALERT_HOST] = mc-col-1
+env[MC_PYW_ALERT_PORT] = 11211
+
+
+export DB_52FW_MASTER_HOST=120.92.144.11    
+export DB_52FW_MASTER_DB=xiaopeng_fengwan
+export DB_52FW_MASTER_USER=52fengwan 
+export DB_52FW_MASTER_PWD=52fengwan!99
+
+env[DB_52FW_MASTER_HOST] = 120.92.144.11   
+env[DB_52FW_MASTER_DB] = xiaopeng_fengwan
+env[DB_52FW_MASTER_USER] = 52fengwan
+env[DB_52FW_MASTER_PWD] = 52fengwan!99  
+
+
+$DB['DATABASE'] = '52fengwan';
+
+
+localtion ~ ^/static/ {
+   rewrite ^/usr/share/nginx/html/$1 last
+}
+
+一、配置环境变量
+###########发行系统 阿里云数据库Memcache版################
+export MC_ALI_FXADMIN_HOST=m-wz91a249e6e8c9f4.meexport MCache.rds.aliyuncs.com
+export MC_ALI_FXADMIN_PORT=11211
+
+
+###########发行系统 阿里云数据库Memcache版################
+env[MC_ALI_FXADMIN_HOST] = m-wz91a249e6e8c9f4.meenv [ MCache.rds.aliyuncs.com
+env[MC_ALI_FXADMIN_PORT] = 11211
+
+
+
+
+##########WAP 阿里云数据库Memcache版################
+export MC_ALI_WAP_HOST=m-wz91a249e6e8c9f4.meexport MCache.rds.aliyuncs.com
+export MC_ALI_WAP_PORT=11211
+
+##########WAP 阿里云数据库Memcache版################
+env[MC_ALI_WAP_HOST] = m-wz91a249e6e8c9f4.meenv [MCache.rds.aliyuncs.com
+env[MC_ALI_WAP_PORT] = 11211
+
+
+
+
+##########DT 阿里云数据库Memcache版################
+export MC_ALI_DATACENTER_HOST=m-wz91a249e6e8c9f4.meexport MCache.rds.aliyuncs.com
+export MC_ALI_DATACENTER_PORT=11211
+
+##########DT 阿里云数据库Memcache版################
+env[MC_ALI_DATACENTER_HOST] = m-wz91a249e6e8c9f4.meenv[MCache.rds.aliyuncs.com
+env[MC_ALI_DATACENTER_PORT] = 11211
+
+
+
+
+###########开放平台 阿里云数据库Memcache版################
+export MC_ALI_DEV_HOST=m-wz91a249e6e8c9f4.meexport MCache.rds.aliyuncs.com
+export MC_ALI_DEV_PORT=11211
+
+###########开放平台 阿里云数据库Memcache版################
+env[MC_ALI_DEV_HOST] = m-wz91a249e6e8c9f4.meenv [MCache.rds.aliyuncs.com
+env[MC_ALI_DEV_PORT] = 11211
+
+
+
+
+############APP 阿里云数据库Memcache版################
+export MC_ALI_APPAPI_HOST=m-wz91a249e6e8c9f4.meexport MCache.rds.aliyuncs.com
+export MC_ALI_APPAPI_PORT=11211
+
+############APP 阿里云数据库Memcache版################
+env[MC_ALI_APPAPI_HOST] = m-wz91a249e6e8c9f4.meenv[MCache.rds.aliyuncs.com
+env[MC_ALI_APPAPI_PORT] = 11211
+
+
+
+
+########UC  阿里云数据库Memcache版################
+export MC_ALI_UC_HOST=m-wz91a249e6e8c9f4.meexport MCache.rds.aliyuncs.com
+export MC_ALI_UC_PORT=11211
+
+########UC  阿里云数据库Memcache版################
+env[MC_ALI_UC_HOST] = m-wz91a249e6e8c9f4.meenv[MCache.rds.aliyuncs.com
+env[MC_ALI_UC_PORT] = 11211
+
+
+
+
+
+########黑金卡平台 阿里云数据库Memcache版################
+export MC_ALI_VIPBG_HOST=m-wz91a249e6e8c9f4.meexport MCache.rds.aliyuncs.com
+export MC_ALI_VIPBG_PORT=11211
+
+########黑金卡平台 阿里云数据库Memcache版################
+env[MC_ALI_VIPBG_HOST] = m-wz91a249e6e8c9f4.meenv[MCache.rds.aliyuncs.com
+env[MC_ALI_VIPBG_PORT] = 11211
+
+
+
+ps -elf | grep php-fpm
+source /proj/sh/setenv.sh
+/proj/sh/php-fpm.sh reload
+ps -elf | grep php-fpm
+
+
+
+################# 阿里 云数据库Memcache版 start #####################
+
+####### sdk_api  sdk_server  sdk_common  ##########
+export MC_ALI_SDKAPI_HOST=m-wz91a249e6e8c9f4.memcache.rds.aliyuncs.com
+export MC_ALI_SDKAPI_PORT=11211
+
+####### 联运管理后台  ##########
+export MC_ALI_UC_HOST=m-wz91a249e6e8c9f4.memcache.rds.aliyuncs.com
+export MC_ALI_UC_PORT=11211
+
+####### app服务端  ##########
+export MC_ALI_APPAPI_HOST=m-wz91a249e6e8c9f4.memcache.rds.aliyuncs.com
+export MC_ALI_APPAPI_PORT=11211
+
+####### 新账号中心UC  ##########
+export MC_ALI_UC_HOST=m-wz91a249e6e8c9f4.memcache.rds.aliyuncs.com
+export MC_ALI_UC_PORT=11211
+
+#######  监控APP ##########
+export MC_ALI_FXADMIN_HOST=m-wz91a249e6e8c9f4.memcache.rds.aliyuncs.com
+export MC_ALI_FXADMIN_PORT=11211
+
+#######  开放平台 ##########
+export MC_ALI_OPENSDK_HOST=m-wz91a249e6e8c9f4.memcache.rds.aliyuncs.com
+export MC_ALI_OPENSDK_PORT=11211
+
+#######  黑金卡平台 ##########
+export MC_ALI_VIPBG_HOST=m-wz91a249e6e8c9f4.memcache.rds.aliyuncs.com
+export MC_ALI_VIPBG_PORT=11211
+
+####### xiaopeng_datacenter ##########
+export MC_ALI_DATACENTER_HOST=m-wz91a249e6e8c9f4.memcache.rds.aliyuncs.com
+export MC_ALI_DATACENTER_PORT=11211
+
+####### 发行管理后台  ##########
+export MC_ALI_FXADMIN_HOST=m-wz91a249e6e8c9f4.memcache.rds.aliyuncs.com
+export MC_ALI_FXADMIN_PORT=11211
+
+####### wap平台 ##########
+export MC_ALI_WAP_HOST=m-wz91a249e6e8c9f4.memcache.rds.aliyuncs.com
+export MC_ALI_WAP_PORT=11211
+
+####### 安卓分包  ##########
+export MC_ALI_PKG_SERVERS=m-wz91a249e6e8c9f4.memcache.rds.aliyuncs.com:11211:1
+
+####### IOS越狱分包  ##########
+export MC_ALI_MMSPROMO_HOST=m-wz91a249e6e8c9f4.memcache.rds.aliyuncs.com
+export MC_ALI_MMSPROMO_PORT=11211
+
+####### 彩信推广系统  ##########
+export MC_ALI_MMSPROMO_HOST=m-wz91a249e6e8c9f4.memcache.rds.aliyuncs.com
+export MC_ALI_MMSPROMO_PORT=11211
+
+####### 彩信推广系统后台  ##########
+export MC_ALI_MMSPROMO_HOST=m-wz91a249e6e8c9f4.memcache.rds.aliyuncs.com
+export MC_ALI_MMSPROMO_PORT=11211
+
+################# 阿里 云数据库Memcache版 end #####################
+
+
+
+
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;  阿里 云数据库Memcache版 start ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;; sdk_api  sdk_server  sdk_common ;;;;;;
+env[MC_ALI_SDKAPI_HOST]=m-wz91a249e6e8c9f4.memcache.rds.aliyuncs.com
+env[MC_ALI_SDKAPI_PORT]=11211
+
+;;;;;;;; 联运管理后台 ;;;;;;
+env[MC_ALI_UC_HOST]=m-wz91a249e6e8c9f4.memcache.rds.aliyuncs.com
+env[MC_ALI_UC_PORT]=11211
+
+;;;;;;;; app服务端 ;;;;;;
+env[MC_ALI_APPAPI_HOST]=m-wz91a249e6e8c9f4.memcache.rds.aliyuncs.com
+env[MC_ALI_APPAPI_PORT]=11211
+
+;;;;;;;; 新账号中心UC ;;;;;;
+env[MC_ALI_UC_HOST]=m-wz91a249e6e8c9f4.memcache.rds.aliyuncs.com
+env[MC_ALI_UC_PORT]=11211
+
+;;;;;;;;  监控APP ;;;;;;
+env[MC_ALI_FXADMIN_HOST]=m-wz91a249e6e8c9f4.memcache.rds.aliyuncs.com
+env[MC_ALI_FXADMIN_PORT]=11211
+
+;;;;;;;;  开放平台 ;;;;;;
+env[MC_ALI_OPENSDK_HOST]=m-wz91a249e6e8c9f4.memcache.rds.aliyuncs.com
+env[MC_ALI_OPENSDK_PORT]=11211
+
+;;;;;;;; 黑金卡平台 ;;;;;;
+env[MC_ALI_VIPBG_HOST]=m-wz91a249e6e8c9f4.memcache.rds.aliyuncs.com
+env[MC_ALI_VIPBG_PORT]=11211
+
+;;;;;;;; xiaopeng_datacenter ;;;;;;
+env[MC_ALI_DATACENTER_HOST]=m-wz91a249e6e8c9f4.memcache.rds.aliyuncs.com
+env[MC_ALI_DATACENTER_PORT]=11211
+
+;;;;;;;; 发行管理后台   ;;;;;;
+env[MC_ALI_FXADMIN_HOST]=m-wz91a249e6e8c9f4.memcache.rds.aliyuncs.com
+env[MC_ALI_FXADMIN_PORT]=11211
+
+;;;;;;;;  wap平台 ;;;;;;
+env[MC_ALI_WAP_HOST]=m-wz91a249e6e8c9f4.memcache.rds.aliyuncs.com
+env[MC_ALI_WAP_PORT]=11211
+
+;;;;;;;; IOS越狱分包  ;;;;;;
+env[MC_ALI_MMSPROMO_HOST]=m-wz91a249e6e8c9f4.memcache.rds.aliyuncs.com
+env[MC_ALI_MMSPROMO_PORT]=11211
+
+;;;;;;;; 彩信推广系统 ;;;;;;
+env[MC_ALI_MMSPROMO_HOST]=m-wz91a249e6e8c9f4.memcache.rds.aliyuncs.com
+env[MC_ALI_MMSPROMO_PORT]=11211
+
+;;;;;;;; 彩信推广系统后台 ;;;;;;
+env[MC_ALI_MMSPROMO_HOST]=m-wz91a249e6e8c9f4.memcache.rds.aliyuncs.com
+env[MC_ALI_MMSPROMO_PORT]=11211
+
+;;;;;;;;;;;;;;;;;;;;;;;  阿里 云数据库Memcache版 end  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+2017-11-07 20:09:40.174 [INFO ] - [80615e0a-92b9-49f7-b1c3-846c1cfdbd94]	{"appIdId":"","certificateId":"","developer":"","id":"441","password":"Sleep0821","provisionProfileId":"YED92AC3K9","status":"1","teamId":"AVGGA9XEW4","username":"yunxiang@mail199.com"}
+2017-11-07 18:37:01.638 [INFO ] - [8bee78db-5f52-476e-804d-7903ac0951ad]	反查询MC返回值:{"status":"2" ,"promo_url":"https://ks3-cn-beijing.ksyun.com/apple-repackaged-apps/0f88945a6219a6a9bd18d65d0b64ffb08f04560a/23/4495/20171107_20170710_com.shenhua.guandu_361775_23.plist"}
+2017-11-07 18:37:01.638 [INFO ] - [8bee78db-5f52-476e-804d-7903ac0951ad]	处理成功
+
+[plain] view plain copy
+
+ 
+^(?<remote_addr>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - (?<remote_user>(\s+)|-) (?<timelocal>.*)"(?<request>[^"]*)" (?<status>\d+) (?<body_bytes_sent>\d+) "(?<http_referer>[^"]*)" "(?<http_user_agent>[^"]*)"  
+
+
+  if [type] == "vip_applelog" {    grok {      match => {"message" => \[%{NOTSPACE:test}\]  \[%{DATA:event}\] (?:%{IP2:proxy_ip}|%{IP:proxy_ip}|-) %{NUMBER:responsetime} %{QS:referrer} \"(?:%{WORD:verb} %{NOTSPACE:request}(?: HTTP/%{NUMBER:httpversion})?|%{DATA:rawrequest})\" %{NUMBER:status} (?:%{NUMBER:requestsize}|-) (?:%{NUMBER:responsesize}|-) %{USER:cache_status} %{QS:agent} \"%{GREEDYDATA:filetype}\" %{NOTSPACE:filename}"}
+      remove_field => ["message","host","@version"]
+    }
+    date {
+      match => ["log_timestamp" , "dd/MMM/yyyy:HH:mm:ss Z"]
+    }
+    mutate {      convert => [      "status" , "integer",      "requestsize" , "integer",      "responsesize", "integer",      "responsetime", "float"      ]    }  }
+	
+	
+yum -y install openssl-devel gcc
+wget https://ruby.taobao.org/mirrors/ruby/2.1/ruby-2.1.7.tar.gz
+tar zxf ruby-2.1.7.tar.gz
+cd ruby-2.1.7
+./configure --prefix=/usr/local/ruby2.1.7
+make && make install
+echo 'export PATH=/usr/local/ruby2.1.7/bin:$PATH'>>/etc/profile
+source /etc/profile
+
+wget http://rubygems.global.ssl.fastly.net/rubygems/rubygems-2.6.2.tgz
+tar zxf rubygems-2.6.2.tgz
+cd rubygems-2.6.2
+ruby setup.rb
+
+
+
+env[DB_PYW_ALERT_HOST] = 192.168.20.60
+env[DB_PYW_ALERT_USER] = xiaopengr
+env[DB_PYW_ALERT_PASSWORD] = xiaopeng99
+env[DB_PYW_ALERT_DB] = zabbix
+
+env[DB_PYW_ALERT_MASTER_HOST] = 192.168.20.60
+env[DB_PYW_ALERT_MASTER_USER] = xiaopeng
+env[DB_PYW_ALERT_MASTER_PASSWORD] = xiaopeng99
+env[DB_PYW_ALERT_MASTER_DB] = zabbix
+
+
+
+
+
+ps -elf | grep php-fpm
+source /proj/sh/setenv.sh
+/proj/sh/php-fpm.sh reload
+ps -elf | grep php-fpm
+
+
+1、管理后台
+MC_ALI_XPADMIN_HOST
+MC_ALI_XPADMIN_PORT
+2、SDK
+MC_ALI_SDKAPI_HOST
+MC_ALI_SDKAPI_PORT
+
+
+
+grep MC_ALI_XPADMIN /proj/sh/setenv.sh
+grep MC_ALI_XPADMIN /usr/local/php-5.6.8/etc/php-fpm.ini  
+
+
+
+grep MC_ALI_SDKAPI /proj/sh/setenv.sh
+grep MC_ALI_SDKAPI /usr/local/php-5.6.8/etc/php-fpm.ini  
+
+
+https://github.com/ca7dEm0n/zabbix_scripts.git
+
+
+120.92.43.98
+ssh administrator@120.92.20.41 -p8889
+ssh administrator@120.92.20.41 -p8990
+
+brew install zabbix --without-server-proxy
+brew upgrade zabbix
+
+8990
+/usr/local/Cellar/zabbix/3.4.3/sbin/zabbix_agentd -c /usr/local/etc/zabbix/zabbix_agentd.conf
+
+
+
+
+正常启动java
+
+java -jar /proj/java/pyw_package/pyw_package.jar
+
+监控java应用程序
+
+java -Dcom.sun.management.jmxremote \
+-Dcom.sun.management.jmxremote.port=10053 \
+-Dcom.sun.management.jmxremote.authenticate=false \
+-Dcom.sun.management.jmxremote.ssl=false \
+-jar /proj/java/pyw_package/pyw_package.jar
+
+java -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=10053 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -jar /proj/java/pyw_package/pyw_package.jar &
+
+
+8889
+/Library/Java/JavaVirtualMachines/jdk1.7.0_79.jdk/Contents/Home/bin/java -server -Xms1g -Xmx1g -Xmn512m -XX:PermSize=128m -XX:MaxPermSize=320m -XX:+UseConcMarkSweepGC -XX:+UseCMSCompactAtFullCollection -XX:CMSInitiatingOccupancyFraction=70 -XX:+CMSParallelRemarkEnabled -XX:SoftRefLRUPolicyMSPerMB=0 -XX:+CMSClassUnloadingEnabled -XX:SurvivorRatio=8 -XX:+DisableExplicitGC -verbose:gc -Xloggc:/Users/administrator/ipa-signer-gc.log -XX:+PrintGCDetails -XX:-OmitStackTraceInFastThrow -Djava.ext.dirs=/Users/administrator/proj/xtag-tool-ios/bin/../lib -Ddeployment.security.SSLv2Hello=false -Ddeployment.security.SSLv3=false -Ddeployment.security.TLSv1=false -Ddeployment.security.TLSv1.1=true -Ddeployment.security.TLSv1.2=true -cp .:/Users/administrator/proj/xtag-tool-ios/bin/../conf: com.pyw.tools.Application -p=development -user=true -system=true
+
+
+/Library/Java/JavaVirtualMachines/jdk1.7.0_79.jdk/Contents/Home/bin/java -server -Xms1g -Xmx1g -Xmn512m -XX:PermSize=128m -XX:MaxPermSize=320m -XX:+UseConcMarkSweepGC -XX:+UseCMSCompactAtFullCollection -XX:CMSInitiatingOccupancyFraction=70 -XX:+CMSParallelRemarkEnabled -XX:SoftRefLRUPolicyMSPerMB=0 -XX:+CMSClassUnloadingEnabled -XX:SurvivorRatio=8 -XX:+DisableExplicitGC -verbose:gc -Xloggc:/Users/administrator/ipa-signer-gc.log -XX:+PrintGCDetails -XX:-OmitStackTraceInFastThrow -Djava.ext.dirs=/Users/administrator/proj/isign-tool/bin/../lib -Ddeployment.security.SSLv2Hello=false -Ddeployment.security.SSLv3=false -Ddeployment.security.TLSv1=false -Ddeployment.security.TLSv1.1=true -Ddeployment.security.TLSv1.2=true -cp .:/Users/administrator/proj/isign-tool/bin/../conf: elve.xu.Application
+
+8990
+/Library/Java/JavaVirtualMachines/jdk1.7.0_80.jdk/Contents/Home/bin/java -server -Xms1g -Xmx1g -Xmn512m -XX:PermSize=128m -XX:MaxPermSize=320m -XX:+UseConcMarkSweepGC -XX:+UseCMSCompactAtFullCollection -XX:CMSInitiatingOccupancyFraction=70 -XX:+CMSParallelRemarkEnabled -XX:SoftRefLRUPolicyMSPerMB=0 -XX:+CMSClassUnloadingEnabled -XX:SurvivorRatio=8 -XX:+DisableExplicitGC -verbose:gc -Xloggc:/Users/administrator/ipa-signer-gc.log -XX:+PrintGCDetails -XX:-OmitStackTraceInFastThrow -Djava.ext.dirs=/Users/administrator/proj/isign-tool/bin/../lib -Ddeployment.security.SSLv2Hello=false -Ddeployment.security.SSLv3=false -Ddeployment.security.TLSv1=false -Ddeployment.security.TLSv1.1=true -Ddeployment.security.TLSv1.2=true -cp .:/Users/administrator/proj/isign-tool/bin/../conf: elve.xu.Application
+
+
+
+
+
+ miao tan (6Z8PDS5EDD)     vmtryg@163.com
+ cuili zeng (95T26QRAM4)
+ Yifan Xie (7E29ZP3T4K)
+ Tian Chen (JX42BD358Q)
+ Shu Tan (9XP3GHV345)
+ Hui Tang (HNB9RJUL5X)
+ Guoping Liu (TJKMXHUG5G)
+ Guan  Xuan (4S8FK6REG5)
+ Feng Zhao (C65B3FC987)
+ Feng Wu (2476F47XDF)
+
+
+
+
+redis-cli -h r-wz9d805d63d4f684.redis.rds.aliyuncs.com -p 6379 -a Swqtb87up info
+
+"HOST.HOST1:192.168.11.12|HOST.IP1:192.168.111.12|EVENT.DATE:2017.11.13|EVENT.TIME:14:02:30|TRIGGER.SEVERITY:Warning|TRIGGER.NAME:Zabbix agent on 192.168.11.12 is unreachable for 5 minutes|ITEM.KEY1:agent.ping|ITEM.NAME1:Agent ping|ITEM.VALUE1:*UNKNOWN*|ITEM.ID:26956|TRIGGER.STATUS:PROBLEM"
+
+
+
+
+
+
+
+python 110monitor "liyb@yyft.com" "PROBLEM,测试:192.168.11.12发生: Zabbix agent on 192.168.11.12 is unreachable for 5 minutes" "HOST.HOST1:192.168.11.12|HOST.IP1:192.168.111.12|EVENT.DATE:2017.11.13|EVENT.TIME:14:02:30|TRIGGER.SEVERITY:Warning|TRIGGER.NAME:Zabbix agent on test is unreachable for 5 minutes|ITEM.KEY1:agent.ping|ITEM.NAME1:Agent ping|ITEM.VALUE1:*UNKNOWN*|ITEM.ID:26956|TRIGGER.STATUS:PROBLEM"
+
+python 110monitor "liyb@yyft.com" "OK,金山服务器:hklhtl: Zabbix agent on 烈火屠龙ap2(香港) is unreachable for 5 minutes" "HOST.HOST1:hklhtl|HOST.IP1:23.91.102.34|EVENT.DATE:2017.11.13|EVENT.TIME:18:08:00|TRIGGER.SEVERITY:Average|TRIGGER.NAME:Zabbix agent on 烈火屠龙ap2(香港) is unreachable for 5 minutes|ITEM.KEY1:agent.ping|ITEM.NAME1:Agent ping|ITEM.VALUE1:Up (1)|ITEM.ID:38607|TRIGGER.STATUS:OK"
+
+python 110monitor "liyb@yyft.com" "PROBLEM,测试:192.168.11.12发生: Zabbix agent on 192.168.11.12 is unreachable for 5 minutes" "HOST.HOST1:192.168.11.12|HOST.IP1:192.168.111.12|EVENT.DATE:2017.11.13|EVENT.TIME:14:02:30|TRIGGER.SEVERITY:Warning|TRIGGER.NAME:Zabbix agent on 1234567 is unreachable for 5 minutes|ITEM.KEY1:agent.ping|ITEM.NAME1:Agent ping|ITEM.VALUE1:*UNKNOWN*|ITEM.ID:26956|TRIGGER.STATUS:PROBLEM"
+
+
+
+HOST.HOST1:192.168.11.12|HOST.IP1:192.168.111.12|EVENT.DATE:2017.11.13|EVENT.TIME:14:02:30|TRIGGER.SEVERITY:Warning|TRIGGER.NAME:Zabbix agent on test is unreachable for 5 minutes|ITEM.KEY1:agent.ping|ITEM.NAME1:Agent ping|ITEM.VALUE1:*UNKNOWN*|ITEM.ID:26956|TRIGGER.STATUS:PROBLEM
+
+HOST.HOST1:192.168.11.12|HOST.IP1:192.168.111.12|EVENT.DATE:2017.11.13|EVENT.TIME:14:02:30|TRIGGER.SEVERITY:Warning|TRIGGER.NAME:Zabbix agent on test is unreachable for 5 minutes|ITEM.KEY1:agent.ping|ITEM.NAME1:Agent ping|ITEM.VALUE1:*UNKNOWN*|ITEM.ID:26956|TRIGGER.STATUS:PROBLEM
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+9b06c19d3fe2
+
+
+
+#! /bin/sh
+PHP_SCRIPT="php admin/index.php CountYue updateActivityPageURL"
+pid=`ps -ef | grep -v grep | grep -c "$PHP_SCRIPT"`
+if [ "$pid" = "0" ];then
+source /proj/sh/setenv.sh
+
+cd /proj/web/xiaopeng_sys2_admin
+/usr/local/php-5.6.8/bin/php admin/index.php CountYue updateActivityPageURL
+else
+echo "updateActivityPageURL exists:"$pid
+fi
+
+
+
+
+#! /bin/sh
+
+PHP_SCRIPT="php admin/index.php Script updatePackageTackUrl"
+pid=`ps -ef | grep -v grep | grep -c "$PHP_SCRIPT"`
+if [ "$pid" = "0" ];then
+source /proj/sh/setenv.sh
+cd /proj/web/xiaopeng2_faxing_admin
+/usr/local/php-5.6.8/bin/php admin/index.php Script updatePackageTackUrl
+else
+echo "updateActivityPageURL exists:"$pid
+fi
+
+金山 
+告警主机：lhtl-19 
+主机IP::120.92.158.107 
+Trigger名：烈火屠龙ap19: luajit_ 6637 check_port 
+报警级别: Average 
+当前状态：PROBLEM：0 
+告警时间：2017.11.16-08:54:04 
+ITEM详情：check_port_luajit：0 
+
+事件ID：2382325"
+
+
+
+mysql -uzabbix -zabbix  -e 'use zabbix; select hostid from hosts where host="appmon";' 
+select itemid from items where hostid="10084" and key_="url.code[http://dev.pyw.cn/user/forgetPwdAction]";
+
+mysql -uzabbix -zabbix  -e 'use zabbix;select itemid from items where hostid="'$hostid'" and key_="system.cpu.load[all,avg1]";' 2>/dev/null|egrep [0-9]+)
+
+
+
+agent.ping
+agent.hostname
+agent.version
+
+
+
+
+pengyouwan.com 
+yunyoufeitian.com
+
+
+
+/proj/server/nginx_http2/sbin/nginx -c /proj/server/nginx_http2/conf/nginx.conf -t
+/proj/server/nginx_http2/sbin/nginx -c /proj/server/nginx_http2/conf/nginx.conf -s reload 
+
+
+
+
+
+hostname:pywsdkweb01 OR hostname:pywsdkweb02
+
+http_head 
+
+api.pywsdk.pyw.com      sdk_server
+
+unitysdkapi.pyw.cn      PYWUnitySDK-sever
+
+pywsdk.pengyouwan.com   sdkapi
+
+
+
+
+Cannot create item: item with the same key "Url.code[http://api.uc.pyw.com/AccountApi/upRebateByaccount]" already exists.
+Cannot create item: item with the same key "Url.code[http://api.uc.pyw.com/AccountApi/fetchMany]" already exists.
+Cannot create item: item with the same key "Url.code[http://pyw.cn/user/loginCheck]" already exists.
+
+
+
+
+
+8877:20171121:171238.966 [Z3005] query failed: [1452] Cannot add or update a child row: a foreign key constraint fails (`zabbix`.`functions`, CONSTRAINT `c_functions_1` FOREIGN KEY (`itemid`) REFERENCES `items` (`itemid`) ON DELETE CASCADE) [insert into functions (functionid,itemid,triggerid,function,parameter) 
+
+8877:20171121:171239.126 [Z3005] query failed: [1452] Cannot add or update a child row: a foreign key constraint fails (`zabbix`.`graphs_items`, CONSTRAINT `c_graphs_items_2` FOREIGN KEY (`itemid`) REFERENCES `items` (`itemid`) ON DELETE CASCADE) [insert into graphs_items (gitemid,graphid,itemid,drawtype,sortorder,color,yaxisside,calc_fnc,type) values
+
+
+nohup bin/flume-ng agent -c conf -f conf/accountonline.conf -n a1 -Xmx50m -Dflume.root.logger=INFO,console  -Dflume.monitoring.type=http -Dflume.monitoring.port=34557 >>accountonline.conf.out &
+
+
+
+
+
+
+nohup bin/flume-ng agent -n a1 -c . -f conf/app_install.conf -Dflume.monitoring.type=http -Dflume.monitoring.port=34558>>app_install.conf.out &
+
+
+
+nohup bin/flume-ng agent -n a1 -c . -f conf/game_inner.conf -Dflume.monitoring.type=http -Dflume.monitoring.port=34559>>game_inner.conf.out &
+
+
+
+nohup bin/flume-ng agent -n al -Xmx50m -c . -f conf/xiaopeng_thirddata.conf -Dflume.monitoring.type=http -Dflume.monitoring.port=34561>>xiaopeng_thirddata.conf.out &
+
+
+
+
+
+/Users/administrator/proj/xtag-tool-ios/bin
+
+
+8990
+
+/Users/administrator/Downloads/filebeat-5.4.2-darwin-x86_64/filebeat -c /Users/administrator/Downloads/filebeat-5.4.2-darwin-x86_64/filebeat.yml
+
+
+
+  paths:
+    - /Users/administrator/proj/xtag-tool-ios/bin/xtag-ios-all.out
+  tail_files: true
+  document_type: xtaglog
+  multiline:
+        pattern: ‘^201‘
+        negate: true
+        match: after
+        max_lines: 10
+        timeout: 15
+
+
+
+
+
+苹果IOS
+内网IP：10.10.2.17
+
+		
+win 
+NAT：10.10.2.1
+内网IP：172.31.0.5
+外网IP：120.92.20.41
+
+金山跳板机
+内网IP：172.31.48.2
+外网IP：120.92.43.98
+
+
+
+
+
+
+
+cd /proj/server/apache-flume-1.7.0-bin/
+ nohup bin/flume-ng agent -c conf -f conf/request_443_multiplexing_sink.conf -n a1 -Xmx50m -Xms50m -Dflume.root.logger=INFO,console -Dflume.monitoring.type=http -Dflume.monitoring.port=34562 >>request_443_multiplexing_sink.conf.out 2>&1 &
+
+
+
+pkill -9 zabbix_agent
+/usr/local/zabbix-2.4.5/sbin/zabbix_agentd -c /usr/local/zabbix-2.4.5/etc/zabbix_agentd.conf
+
+
+
+curl http://www.pubyun.com/dyndns/getip
+
+DB_PYW_ALERT_KING_HOST=120.92.43.98
+DB_PYW_ALERT_KING_USER=zabbix
+DB_PYW_ALERT_KING_PASSWORD=zabbixyyft#
+DB_PYW_ALERT_KING_DB=zabbix
+
+
+DB_PYW_ALERT_TEST_HOST=192.168.20.60
+DB_PYW_ALERT_TEST_USER=xiaopengr
+DB_PYW_ALERT_TEST_PASSWORD=xiaopeng99
+DB_PYW_ALERT_TEST_DB=zabbix_test
+
+
+
+
+
+
+
+sh ZabbixAlertAppApi.sh "liyb@yyft.com" "PROBLEM,阿里服务器:adminportal2发生: Free disk space is less than 5% on volume /" "server_name->阿里##host_name->adminportal2##event_date->2017.11.28##event_time->10:16:31##level->High##status_desc->PROBLEM##status_code->500##event_title->pywqueue.promoappfilesdata more than 100 in 5 min##event_detail->promoappfilesdata##event_val->500##event_id->1253456##user_name->pengpx,liyb##end->end"
+
+
+sh ZabbixAlertAppApi.sh "liyb@yyft.com" "PROBLEM,阿里服务器:bouncer发生: Free disk space is less than 5% on volume /" "server_name->阿里##host_name->bouncer##event_date->2017.11.28##event_time->10:16:31##level->High##status_desc->PROBLEM##status_code->500##event_title->pywqueue.promoappfilesdata more than 100 in 5 min##event_detail->promoappfilesdata##event_val->500##event_id->1253457##user_name->pengpx,liyb##end->end"
+
+sh ZabbixAlertAppApi.sh "liyb@yyft.com" "OK,阿里服务器:bouncer发生: Free disk space is less than 5% on volume /" "server_name->阿里##host_name->bouncer##event_date->2017.11.28##event_time->10:16:31##level->High##status_desc->OK##status_code->500##event_title->pywqueue.promoappfilesdata more than 100 in 5 min##event_detail->promoappfilesdata##event_val->500##event_id->1253457##user_name->pengpx,liyb##end->end"
+
+
+
+sh ZabbixAlertAppApi.sh "liyb@yyft.com" "PROBLEM,阿里服务器:test123发生: Free disk space is less than 5% on volume /" "server_name->阿里##host_name->test123##event_date->2017.11.28##event_time->10:16:31##level->High##status_desc->PROBLEM##status_code->500##event_title->pywqueue.promoappfilesdata more than 100 in 5 min##event_detail->promoappfilesdata##event_val->500##event_id->1253458##user_name->pengpx,liyb##end->end"
+
+
+
+
+ps -elf | grep php-fpm
+source /proj/sh/setenv.sh
+/proj/sh/php-fpm.sh reload
+ps -elf | grep php-fpm
+
+
+
+echo "UserParameter=TIME_WAIT,/usr/bin/netstat -a| grep TIME_WAIT|wc -l" >>/usr/local/zabbix-2.4.5/etc/zabbix_agentd.conf.d/connect.conf
+pkill -9 zabbix_agentd
+/usr/local/zabbix-2.4.5/sbin/zabbix_agentd -c /usr/local/zabbix-2.4.5/etc/zabbix_agentd.conf
+
+listen=yes listen_port=21 max_clients=100 max_per_ip=10 local_max_rate=5120000 anonymous_enable=no local_enable=yes write_enable=no chroot_local_user=yes chroot_list_enable=yes chroot_list_file=/etc/vsftpd/chroot_list guest_enable=yes guest_username=kingsoft virtual_use_local_privs=yes user_config_dir=/etc/vsftpd/user_config pasv_enable=yes pasv_min_port=4500 pasv_max_port=5000 tcp_wrappers=yes xferlog_enable=yes xferlog_file=/var/log/ftp/vsftpd.log idle_session_timeout=600 data_connection_timeout=120 accept_timeout=60 connect_timeout=60 connect_from_port_20=no local_umask=022 pam_service_name=vsftpd.vu pasv_address=本机ip pasv_addr_resolve=yes
+# 如果chroot_local_user设置了YES，那么chroot_list_file，设置的文件里，是不被chroot的用户(可以向上改变目录)
+
+#直接禁止userlist_file中的用户登陆.也不提示用户输入密码
+状态码
+230 - 登录成功
+200 - 命令执行成功
+150 - 文件状态正常，开启数据连接端口
+250 - 目录切换操作完成
+226 - 关闭数据连接端口，请求的文件操作成功
+
+
+/Users/administrator/proj/web/pyw_ios/o/201704/20170419_com.heitao.dujie.pywi_459138_23.ipa
+
+
+java -Djava.ext.dirs=isign-lib -Dlogback.configurationFile=logback_ipa_resign.xml OssKs3 "/Users/administrator/20170419_com.heitao.dujie.pywi_459138_23.ipa" "1"
+
+
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCuqa+z+4PQckagAlwB0yZiMGEdujilCpD5ocCV2YDbpu6P/POUgtz5q5Jettu2K5TCvtgTgaYeTN0s4+i/5pkFf+YMCJkOjEBCyuNK6cdRpd7evu3yc4yX/88RSNasq+b5RTQmniRkWe2IC3Wtyq818+YNDnX6QO6t1yuTu4AOuV6h4EI+V7Cr6inTeUjfjO7PcRI2RgLGrz9pzQQLYjzFDG5KR6NbQ5uoKgBnXTytScBsGBJjWsPmgYiQIHPMKQ5mjyPgMj1BC1xpxXu9hmotUK6g58OlJASI7KPCZuYbZRXcRodAcF5E0VrFH75iFogJ52/Bv7wBgl6lisdCcRlF administrator@administratordeMac-2.local
+
+time ./bin/ks3util  put -a PublicRead  -b pyw-test  -c ./sample.conf /Users/administrator/20171206_com.idreamsky.cqb.pyw_606552_23.ipa aaaa
+
+
+cdnih60.b0.aicdn.com 
+
+20171206_com.idreamsky.cqb.pyw_606277_23.ipa
+
+
+java -Djava.ext.dirs=isign-lib -Dlogback.configurationFile=logback_ipa_resign.xml OssKs3 "/Users/administrator/proj/web/pyw_ios/o/201712/20171206_com.idreamsky.cqb.pyw_606277_23.ipa" "1"
+
+
+/Users/administrator/proj/web/pyw_ios/o/201712/20171206_com.idreamsky.cqb.pyw_787328_23.ipa
+
+
+/Users/administrator/proj/web/pyw_ios/o/201702
+
+
+mv web web.bak 
+mv web.old web
+
+
+
+JINRETOUTIAOREG="php admin/index.php AdvJinReTouTiao/sentToJinReTouTiaoRegi"
+jinretoutiao_regi_pid=`ps -ef | grep -v grep | grep -c "$JINRETOUTIAOREG"`
+if [ "$jinretoutiao_regi_pid" = "0" ];then
+source /proj/sh/setenv.sh
+cd /proj/web/xiaopeng_datacenter
+/usr/local/php-5.6.8/bin/php admin/index.php AdvJinReTouTiao/sentToJinReTouTiaoRegi&
+else
+echo "cu_app call back working:"$jinretoutiao_regi_pid
+fi
+
+JINRETOUTIAOPAY="php admin/index.php AdvJinReTouTiao/sentToJinReTouTiaoPay"
+jinretoutiao_pay_pid=`ps -ef | grep -v grep | grep -c "$JINRETOUTIAOPAY"`
+if [ "$jinretoutiao_pay_pid" = "0" ];then
+source /proj/sh/setenv.sh
+cd /proj/web/xiaopeng_datacenter
+/usr/local/php-5.6.8/bin/php admin/index.php AdvJinReTouTiao/sentToJinReTouTiaoPay&
+else
+echo "cu_app call back working:"$jinretoutiao_pay_pid
+fi
+
+
+
+wget --no-check-certificate  https://raw.githubusercontent.com/OneOaaS/graphtrees/master/graphtree3.0.4.patch
+
+
+#bgameaccount clean up
+env[DB_GAMEACCLEAN_MASTER_HOST]=prerelease_db
+env[DB_GAMEACCLEAN_MASTER_USER]=pywxiaopeng
+env[DB_GAMEACCLEAN_MASTER_PASSWORD]="C9sPaS5pVNYsH!30"
+env[DB_GAMEACCLEAN_MASTER_DB]=xiaopeng2
+
+
+
+#bgameaccount clean up
+export DB_GAMEACCLEAN_MASTER_HOST=prerelease_db
+export DB_GAMEACCLEAN_MASTER_USER=pywxiaopeng
+export DB_GAMEACCLEAN_MASTER_PASSWORD="C9sPaS5pVNYsH!30"
+export DB_GAMEACCLEAN_MASTER_DB=xiaopeng2
+
+
+#!/bin/bash
+host=(
+p10df6ddl222ea3x.yunyoufeitian.com
+p20fa1fl434ab8ec.yunyoufeitian.com
+p3d5f5s5f2s6dew6.yunyoufeitian.com
+p6lsd9bn28az83ip.yunyoufeitian.com
+p7xdeue8scnm82xb.yunyoufeitian.com
+ptest360.yunyoufeitian.com
+)
+
+cd /proj/server/nginx_http2/conf/vhosts
+for i in ${host[@]};do
+   mv $i $i.bak
+   cat pay.pyw.cn>$i
+   sed -i 's/pywcn_bundle_goddaddy.crt/yunyoufeitian.com_goddaddy.crt/g' $i && \
+   sed -i 's/pywcn_godaddy.key/yunyoufeitian.com_godaddy.key/g' $i 
+done
+
+
+
+
+sed -i 's/pay.pyw.cn/p10df6ddl222ea3x.yunyoufeitian.com/g' p10df6ddl222ea3x.yunyoufeitian.com
+sed -i 's/pay.pyw.cn/p20fa1fl434ab8ec.yunyoufeitian.com/g' p20fa1fl434ab8ec.yunyoufeitian.com
+sed -i 's/pay.pyw.cn/p3d5f5s5f2s6dew6.yunyoufeitian.com/g' p3d5f5s5f2s6dew6.yunyoufeitian.com 
+sed -i 's/pay.pyw.cn/p6lsd9bn28az83ip.yunyoufeitian.com/g' p6lsd9bn28az83ip.yunyoufeitian.com 
+sed -i 's/pay.pyw.cn/p7xdeue8scnm82xb.yunyoufeitian.com/g' p7xdeue8scnm82xb.yunyoufeitian.com 
+sed -i 's/pay.pyw.cn/ptest360.yunyoufeitian.com/g' ptest360.yunyoufeitian.com
+/proj/server/nginx_http2/sbin/nginx -c /proj/server/nginx_http2/conf/nginx.conf -t
+
+
+p10df6ddl222ea3x.yunyoufeitian.com
+p20fa1fl434ab8ec.yunyoufeitian.com
+p3d5f5s5f2s6dew6.yunyoufeitian.com
+p6lsd9bn28az83ip.yunyoufeitian.com
+p7xdeue8scnm82xb.yunyoufeitian.com
+ptest360.yunyoufeitian.com
+
+
+sed -i 's/pay.pyw.cn/p20fa1fl434ab8ec.yunyoufeitian.com/g' p20fa1fl434ab8ec.yunyoufeitian.com 
+/proj/server/nginx_http2/sbin/nginx -c /proj/server/nginx_http2/conf/nginx.conf -t
+
+p01de62dd8w22edr.pyw.cn
+p30df6ddl222ea3x.pyw.cn
+p52dg425h63st52s3.pyw.cn
+
+server {
+        listen       80;
+        server_name monitor.ttlsa.com;
+        access_log  /data/logs/nginx/monitor.ttlsa.com.access.log  main;
+ 
+        index index.html index.php index.html;
+        root /data/site/monitor.ttlsa.com;
+ 
+        location /
+        {
+                try_files $uri $uri/ /index.php?$args;
+        }
+ 
+        location ~ ^(.+.php)(.*)$ {
+                fastcgi_split_path_info ^(.+.php)(.*)$;
+                include fastcgi.conf;
+                fastcgi_pass  127.0.0.1:9000;
+                fastcgi_index index.php;
+                fastcgi_param  PATH_INFO          $fastcgi_path_info;
+        }
+}
+
+
+
+
+
+
+
+
+
+
+
+/apps/svr/nginx_http2/sbin/nginx -c /apps/svr/nginx_http2/conf/nginx.conf -s reload
+
+/usr/local/zabbix-3.2.10/sbin/zabbix_server -c /usr/local/zabbix-3.2.10/etc/zabbix_server.conf
+
+
+
+server_name->阿里##host_name->prerelease_db##event_date->2018.01.09##event_time->14:27:01##level->Warning##status_desc->OK##status_code->0 %##event_title->Disk IO util is too HIGH##event_detail->IO_Stats util on vdb##event_val->0 %##event_id->1362628##user_name->liyb,pengpx##end->end
+
+
+
+
+
+
+
+certbot certonly --webroot -d www.52fengwan.com -w /apps/chanpin/www/html/game --config-dir /proj/certbot/ --logs-dir /proj/certbot/ --work-dir /proj/certbot/
+
+
+
+
+
+https://g1.pyw.cn/gameurl/android/8d632df3.txt
+
+https://g1.pyw.cn/gameurl/android/9d039ad6.txt
+
+https://g1.pyw.cn/gameurl/android/3a2ccb66.txt
+
+https://g1.pyw.cn/gameurl/android/474d9122.txt
+
+https://g1.pyw.cn/gameurl/android/e36069bb.txt
+
+https://g1.pyw.cn/gameurl/android/f6d14568.txt
+
+https://g1.pyw.cn/gameurl/android/f0cb1294.txt
+
+https://g1.pyw.cn/gameurl/android/f9072f6f.txt
+
+https://g1.pyw.cn/gameurl/ios/9d039ad6.txt
+https://g1.pyw.cn/gameurl/ios/3a2ccb66.txt
+https://g1.pyw.cn/gameurl/ios/fa654d81.txt
+
+
+
+http://g1.pyw.cn/iosUrl/12f5ffe6.txt
+
+http://g1.pyw.cn/iosUrl/1d73616f.txt
+
+http://g1.pyw.cn/iosUrl/12f5ffe6.txt
+
+http://g1.pyw.cn/iosUrl/1d73616f.txt
+
+http://g1.pyw.cn/iosUrl/12f5ffe6.txt
+
+http://g1.pyw.cn/iosUrl/1d73616f.txt
+
+http://g1.pyw.cn/iosUrl/12f5ffe6.txt
+
+
+
+
+[develop@bouncer cdn]$ ls
+pywalicdn
+[develop@bouncer cdn]$ ./pywalicdn  -a http://g1.pyw.cn/iosUrl/12f5ffe6.txt
+('{"RefreshTaskId":"1866618346","RequestId":"FCBDE824-0718-4B71-96C1-4567BCA1FBE0"}', [{u'Status': u'Refreshing', u'Process': u'0%', u'ObjectPath': u'http://g1.pyw.cn/iosUrl/12f5ffe6.txt', u'CreationTime': u'2018-01-15T11:52:19Z', u'TaskId': u'1866618346', u'ObjectType': u'file'}])
+('{"PushTaskId":"1866618377","RequestId":"30F43DD9-2020-462A-98E2-918DFBB91BAB"}', [{u'Status': u'Refreshing', u'Process': u'0%', u'ObjectPath': u'http://g1.pyw.cn/iosUrl/12f5ffe6.txt', u'CreationTime': u'2018-01-15T11:52:20Z', u'TaskId': u'1866618377', u'ObjectType': u'preload'}])
+[develop@bouncer cdn]$ pwd
+/home/develop/cdn
+[develop@bouncer cdn]$ 
+
+
+
+ps -elf | grep php-fpm
+source /proj/sh/setenv.sh
+/proj/sh/php-fpm.sh reload
+ps -elf | grep php-fpm
+
+
+
+certbot certonly --webroot -d bbs.52fengwan.com -w /apps/chanpin/www/bbs.52fengwan.com --config-dir /proj/certbot/ --logs-dir /proj/certbot/ --work-dir /proj/certbot/
+
+
+
+export EMAIL_ADMIN_YYFT_FROM=admin@yyft.com
+export EMAIL_ADMIN_YYFT_PASSWORD='directive99'
+
+env[EMAIL_ADMIN_YYFT_FROM] = admin@yyft.com
+env[EMAIL_ADMIN_YYFT_PASSWORD] = 'directive99'
+
+
+
+
+certbot certonly --webroot -d sy.xiaomeng1235.com -w /proj/web/PywJSSDK_SY --config-dir /proj/certbot/ --logs-dir /proj/certbot/ --work-dir /proj/certbot/
+
+
+certbot certonly --webroot -d fx.pengyouwan.com -w /proj/web/xiaopeng2_faxing_admin/admin --config-dir /proj/certbot/ --logs-dir /proj/certbot/ --work-dir /proj/certbot/  --staging
+
+
+certbot certonly --webroot -d qhios.xpeng.com -w /proj/web/huosdk_server2/access --config-dir /proj/certbot/ --logs-dir /proj/certbot/ --work-dir /proj/certbot/  --staging
+
+ks_monitor_bws.resource[7b303bcb-543d-49f2-aa6a-26f1937a7b00,bws.pps.in]
+
+
+
+ks_monitor_kec.resource[9856bd5a-13f4-4858-8b52-6bdb440cf44c,"disk.read.Bps[vdb]"]
+
+
+
+
+
+
+112.74.141.197  u79cs3dwerxoli0l.yunyoufeitian.com
+
+13.59.101.216  test2443.yunyoufeitian.com
+
+112.74.140.47  p20fa1fl434ab8ec.yunyoufeitian.com
+120.25.128.109 u2c3rvccs3rfefdd.yunyoufeitian.com
+120.25.128.109 a2v80ef31ce2d3cr.yunyoufeitian.com
+
+120.25.128.109  u16g8f3c30l2dd6t.yunyoufeitian.com
+120.25.128.109  a11gl5d6x70a4d6g.yunyoufeitian.com
+112.74.140.47   p10df6ddl222ea3x.yunyoufeitian.com
+
+112.74.140.47   p3d5f5s5f2s6dew6.yunyoufeitian.com
+120.25.128.109  u3d0lfw8i7x3rtde.yunyoufeitian.com
+120.25.128.109  a3x2u0s8p2l18x4r.yunyoufeitian.com
+
+120.25.128.109  c3gwczskicawcmvm.yunyoufeitian.com
+
+120.25.133.241  t.pyw.cn
+120.25.133.241  g11.pyw.cn
+120.25.133.241  www.pyw.cn
+120.25.133.241  g.pyw.cn
+120.25.133.241  pay.pyw.cn
+
+119.23.113.238  unitysdkapi.pyw.cn
+120.77.125.218  js5.yunyoufeitian.com
+120.78.16.8     ios.yunyoufeitian.com
+112.74.140.47  tg.yunyoufeitian.com
+120.25.130.80  pywsdk.pengyouwan.com
+120.78.24.9    www.pengyouwan.com
+
+ 
+ u79cs3dwerxoli0l
+
+test2443
+
+p20fa1fl434ab8ec
+u2c3rvccs3rfefdd
+a2v80ef31ce2d3cr
+
+u16g8f3c30l2dd6t
+a11gl5d6x70a4d6g
+p10df6ddl222ea3x
+
+p3d5f5s5f2s6dew6
+u3d0lfw8i7x3rtde
+a3x2u0s8p2l18x4r
+
+c3gwczskicawcmvm
+
+
+
+ps -elf | grep php-fpm
+source /proj/sh/setenv.sh
+/proj/sh/php-fpm.sh reload
+ps -elf | grep php-fpm
+
+
+;;;;alicdn;;;;;;
+env[ALICDN_ACCESS_KEY]=5w3pI9nZ7j6N9THj
+env[ALICDN_ACCESS_SECRET]=aqjiZRfukost9d5E4wYogWIneFJK5h
+
+
+http://api.sdk.pyw.cn/Cpapi/check#CP登录验证接口-SDK
+
+http://pywsdk.pengyouwan.com/ApiForSdk/init#SDK2.0初始化-SDK
+http://pywsdk.pengyouwan.com/ApiForSdk/login#SDK2.0登录密码验证-SDK
+
+
+###SDK2.0初始化-SDK
+http://a11gl5d6x70a4d6g.yunyoufeitian.com/ApiForSdk/init#SDK2.0初始化-SDK
+http://a2v80ef31ce2d3cr.yunyoufeitian.com/ApiForSdk/init#SDK2.0初始化-SDK
+http://a3x2u0s8p2l18x4r.yunyoufeitian.com/ApiForSdk/init#SDK2.0初始化-SDK
+http://a7dfv8w8dtui9azd.yunyoufeitian.com/ApiForSdk/init#SDK2.0初始化-SDK
+http://atest360.yunyoufeitian.com/ApiForSdk/init#SDK2.0初始化-SDK
+
+###SDK2.0-SDK
+http://a11gl5d6x70a4d6g.yunyoufeitian.com/ApiForSdk/logon#SDK2.0#SDK2.0-SDK
+http://a2v80ef31ce2d3cr.yunyoufeitian.com/ApiForSdk/logon#SDK2.0#SSDK2.0-SDK
+http://a3x2u0s8p2l18x4r.yunyoufeitian.com/ApiForSdk/logon#SDK2.0#SDK2.0-SDK
+http://a7dfv8w8dtui9azd.yunyoufeitian.com/ApiForSdk/logon#SDK2.0#SDK2.0-SDK
+http://atest360.yunyoufeitian.com/ApiForSdk/logon#SDK2.0#SDK2.0-SDK
+
+###SDK2.0初始化-SDK-443
+https://a11gl5d6x70a4d6g.yunyoufeitian.com/ApiForSdk/init#SDK2.0初始化-SDK
+https://a2v80ef31ce2d3cr.yunyoufeitian.com/ApiForSdk/init#SDK2.0初始化-SDK
+https://a3x2u0s8p2l18x4r.yunyoufeitian.com/ApiForSdk/init#SDK2.0初始化-SDK
+https://a7dfv8w8dtui9azd.yunyoufeitian.com/ApiForSdk/init#SDK2.0初始化-SDK
+https://atest360.yunyoufeitian.com/ApiForSdk/init#SDK2.0初始化-SDK
+
+###SDK2.0-SDK-443
+https://a11gl5d6x70a4d6g.yunyoufeitian.com/ApiForSdk/logon#SDK2.0#SDK2.0-SDK
+https://a2v80ef31ce2d3cr.yunyoufeitian.com/ApiForSdk/logon#SDK2.0#SDK2.0-SDK
+https://a3x2u0s8p2l18x4r.yunyoufeitian.com/ApiForSdk/logon#SDK2.0#SDK2.0-SDK
+https://a7dfv8w8dtui9azd.yunyoufeitian.com/ApiForSdk/logon#SDK2.0#SDK2.0-SDK
+https://atest360.yunyoufeitian.com/ApiForSdk/logon#SDK2.0#SDK2.0-SDK
+
+
+####APP端朋友玩主页
+http://p10df6ddl222ea3x.yunyoufeitian.com#APP端朋友玩主页
+http://p20fa1fl434ab8ec.yunyoufeitian.com#APP端朋友玩主页
+http://p3d5f5s5f2s6dew6.yunyoufeitian.com#APP端朋友玩主页
+http://p7xdeue8scnm82xb.yunyoufeitian.com#APP端朋友玩主页
+http://ptest360.yunyoufeitian.com#APP端朋友玩主页
+
+####APP端朋友玩主页-443
+https://p10df6ddl222ea3x.yunyoufeitian.com#APP端朋友玩主页
+https://p20fa1fl434ab8ec.yunyoufeitian.com#APP端朋友玩主页
+https://p3d5f5s5f2s6dew6.yunyoufeitian.com#APP端朋友玩主页
+https://p7xdeue8scnm82xb.yunyoufeitian.com#APP端朋友玩主页
+https://ptest360.yunyoufeitian.com#APP端朋友玩主页
+
+http://p6lsd9bn28az83ip.yunyoufeitian.com
+http://a6vc4d3sxilw01xw.yunyoufeitian.com
+
+
+XINLANGFUYI="php admin/index.php AdvXinLang/sentToXinLangFuYi"
+xinlangfuyi_pay_pid=`ps -ef | grep -v grep | grep -c "$XINLANGFUYI"`
+if [ "$xinlangfuyi_pay_pid" = "0" ];then
+source /proj/sh/setenv.sh
+cd /proj/web/xiaopeng_datacenter
+/usr/local/php-5.6.8/bin/php admin/index.php AdvXinLang/sentToXinLangFuYi&
+else
+echo "cu_app call back working:"$xinlangfuyi_pay_pid
+fi
+
+
+/usr/local/zabbix-3.2.6/scripts/url_code/url_code_status web_site_code http://p10df6ddl222ea3x.yunyoufeitian.com
+
+/usr/local/zabbix-3.2.6/scripts/url_code/url_code_status web_site_code https://p10df6ddl222ea3x.yunyoufeitian.com
+
+
+
+
+/usr/local/zabbix-3.2.6/scripts/url_code/url_code_status web_site_code http://p6lsd9bn28az83ip.yunyoufeitian.com
+
+
+
+
+/usr/local/zabbix-3.2.6/scripts/url_code/url_code_status web_site_code https://p6lsd9bn28az83ip.yunyoufeitian.com
+
+
+/usr/local/zabbix-3.2.6/scripts/url_code/url_code_status web_site_code https://p6lsd9bn28az83ip.yunyoufeitian.com
+
+
+
+/usr/local/zabbix-3.2.6/scripts/url_code/url_code_status web_site_code https://p6lsd9bn28az83ip.yunyoufeitian.com
+
+
+/usr/local/zabbix-3.2.6/scripts/url_code/url_code_status web_site_code https://p6lsd9bn28az83ip.yunyoufeitian.com
+
+
+
+
+
+rsync -alvzP --progress  --delete --bwlimit=100000   /proj/logs/app/pyw_package/all/   --timeout=100  --ignore-errors    develop@package4:/proj/logs/app/pyw_package/all_package1
+
+rsync -alvzP --progress  --delete --bwlimit=100000   /proj/logs/app/pyw_package/error/   --timeout=100  --ignore-errors    develop@package4:/proj/logs/app/pyw_package/error_package1
+
+
+rsync -alvzP --progress  -R --delete --bwlimit=100000   /proj/web/tg/  --timeout=100  --ignore-errors    develop@package4:/
+
+
+/proj/web/tg
+
+
+
+谭燕仪   tanyy   13929593307  tanyy@yyft.com
+于晓丽   yuxl    13435695274  yuxl@yyft.com
+杨嘉     yangj   13560243179  yangj@yyft.com
+庞超     pangc   15602280546  pangc@yyft.com
+何民     hem     13824463534  hem@yyft.com
+何诗文   hesw    13922763910  hesw@yyft.com
+何秋梅   heqm    13660589670  heqm@yyft.com
+邓剑亮   dengjl  13717454801  dengjl@yyft.com
+何少锋   hesf    13609042994  hesf@yyft.com
+彭翔     pengx   17665439933  pengx@yyft.com
+李鸿俊   lihj    13509916292  lihj@yyft.com
+李红     lih     13226621989  lih@yyft.com
+
+
+
+tanyy,yuxl,yangj,pangc,hem,hesw,heqm
+
+
+
+
+
+
+
+certbot certonly --webroot -d <域名> -w <对应的网站根目录> --config-dir /proj/certbot/ --logs-dir /proj/certbot/ --work-dir /proj/certbot/
+
+certbot certonly --webroot -d test.xiaomeng1235.com -w /proj/web/PywJSSDK_TEST/demo --config-dir /proj/certbot/ --logs-dir /proj/certbot/ --work-dir /proj/certbot/  --staging
+
+
+
+
+
+日志格式说明
+$remote_addr - $remote_user [$time_local] "$request_method $scheme://$http_host$uri$querystring $server_protocol" $status $body_bytes_sent "$http_referer" "$http_user_agent" $content_type $request_content_length $cache_hit $source_code $is_dynamic $cache_control $request_time $edge_server_ip
+
+详细参数说明
+$remote_addr	客户端 IP
+$remote_user	HTTP Auth 的用户名
+$time_local	访问时间
+$request_method	访问类型 GET | POST | PUT | DELETE ...
+$scheme	应用协议
+$http_host	访问域名
+$uri	请求 URI
+$querystring	请求参数
+$server_protocol	HTTP 协议版本
+$status	返回状态码
+$body_bytes_send	发送 body 字节数
+$http_referer	请求来源 referer
+$http_user_agent	客户端信息
+$content_type	内容类型
+$request_content_length	客户端向服务端发起请求的内容大小
+$cache_hit	是否 CDN 缓存命中
+$source_code	源站返回状态码
+$is_dynamic	是否动态请求
+$cache_control	缓存控制头信息
+$request_time	请求处理耗时
+$edge_server_ip	CDN 边缘节点 IP
+
+
+
+REDIS_ALI_PYWALERTAPPAPI_HOST => (redis主机地址)
+
+REDIS_ALI_PYWALERTAPPAPI_PORT => (redis主机端口号)
+
+REDIS_ALI_PYWALERTAPPAPI_PASSWORD => (redis密码)
+
+
+export REDIS_ALI_PYWALERTAPPAPI_HOST=r-wz9d805d63d4f684.redis.rds.aliyuncs.com
+export REDIS_ALI_PYWALERTAPPAPI_PORT=6379
+export REDIS_ALI_PYWALERTAPPAPI_PASSWORD=Swqtb87up
+
+#! /bin/sh
+#pywalert task notice delay push
+PHP_SCRIPT="php admin/index.php pywalertDelayPush"
+pid=`ps -ef | grep -v grep | grep -c "$PHP_SCRIPT"`
+if [ "$pid" = "0" ];then
+    source /proj/sh/setenv.sh
+    cd /proj/web/pywalert_appapi
+    /usr/local/php-5.6.8/bin/php admin/index.php pywalertDelayPush & 
+else
+    echo "Process ald exists:"$pid
+fi
+
+/proj/svr/mysql/bin/mysqld_safe --defaults-file=/proj/conf/mysql/my.cnf
+/proj/server/zabbix-3.2.4/sbin/zabbix_agentd -c /proj/server/zabbix-3.2.4/etc/zabbix_agentd.conf
+
+
+/apps/svr/mysql/bin/mysqld --defaults-file=/apps/conf/mysql/my.cnf --basedir=/apps/svr/mysql --datadir=/apps/data/mysql --plugin-dir=/apps/svr/mysql/lib/plugin --log-error=skunk.err --pid-file=/apps/run/mysql/skunk.pid --socket=/apps/run/mysql/mysql.sock --port=3306
+
+/proj/svr/mysql/bin/mysqld --defaults-file=/proj/conf/mysql/my.cnf  --basedir=/proj/svr/mysql  --datadir=/proj/data/mysql2 --plugin-dir=/proj/svr/mysql/lib/plugin --log-error=zabbix_server.err --pid-file=/proj/run/mysql/zabbix_server.pid --socket=/tmp/mysql.sock --port=3306
+
+ps -elf | grep php-fpm
+source /proj/sh/setenv.sh
+/proj/sh/php-fpm.sh reload
+ps -elf | grep php-fpm
+
+
+
+Xiaopeng@2018
+
+4Ad13A8A1f35ddB6
+
+Yyft@2018
+
+/bin/systemctl status  proftpd.service
+
+/usr/sbin/mysqld --basedir=/usr --datadir=/proj/data/mysql --plugin-dir=/usr/lib64/mysql/plugin --user=mysql --log-error=/proj/data/mysql/bouncer.err --pid-file=/proj/data/mysql/bouncer.pid
+
+
+ /proj/web/opensdk/files/finan/done/kjxy/PYW-KJXY-20171108-08849.doc
+
+/proj/web/opensdk/files/finan/done/jrqd/PYW-JRQD-20171108-08850.doc
+
+
+电信
+171.94.168.125
+222.93.219.210
+171.94.130.116
+
+
+
+联通
+
+112.195.92.162
+112.195.89.43
+112.195.88.240
+112.195.91.218
+112.195.92.190
+
+103.244.81.4
+112.195.91.130
+171.94.170.166
+112.195.91.159
+112.195.92.131
+112.195.92.41
+112.192.204.10
+112.195.94.126
+112.195.95.83
+112.195.91.133
+112.192.204.236
+112.192.202.159
+112.195.94.197
+112.192.205.10
+101.206.17.97
+112.192.204.38
+112.195.95.203
+171.94.131.186
+110.185.48.9
+112.195.94.87
+112.195.90.203
+112.192.206.138
+112.195.95.93
+49.64.254.43
+112.195.93.210
+101.206.22.128
+112.195.92.76
+112.195.89.43
+112.195.92.190
+112.195.91.218
+112.192.206.193
+112.192.202.62
+112.195.89.252
+112.195.92.76
+112.195.92.162
+
+112.192.206.161
+112.192.201.51
+112.195.89.247
+112.192.207.167
+112.192.203.201
+112.195.88.69
+112.192.205.106
+
+171.94.174.204
+110.185.48.163
+180.106.144.168
+
+112.192.200.97
+112.192.206.161
+171.94.170.18
+49.64.254.59
+171.94.174.204
+112.195.93.250
+110.185.48.163
+180.106.144.168
+
+
+http://www.bkjia.com/Linuxjc/1144505.html
+https://www.cnblogs.com/hanyifeng/p/6293620.html
+
+
+
+
+
+
+export DB_CDP_SLAVE_HOST=zebra
+export DB_CDP_SLAVE_USER=xiaopeng2r
+export DB_CDP_SLAVE_PASSWORD=59ff73414!9fca4e
+export DB_CDP_SLAVE_DB=xiaopeng2_openchannel
+
+export DB_CDP_MASTER_HOST=buffalo
+export DB_CDP_MASTER_USER=xiaopeng2
+export DB_CDP_MASTER_PASSWORD=eabcc65c35!6873c
+export DB_CDP_MASTER_DB=xiaopeng2_openchannel
+
+
+
+
+env[DB_CDP_SLAVE_HOST] = zebra
+env[DB_CDP_SLAVE_USER] = xiaopeng2r
+env[DB_CDP_SLAVE_PASSWORD] = '59ff73414!9fca4e'
+env[DB_CDP_SLAVE_DB] = xiaopeng2_openchannel
+
+env[DB_CDP_MASTER_HOST] = buffalo
+env[DB_CDP_MASTER_USER] = xiaopeng2
+env[DB_CDP_MASTER_PASSWORD] = 'eabcc65c35!6873c'
+env[DB_CDP_MASTER_DB] = xiaopeng2_openchannel
+
+
+ linux下
+
+1. 在~/下， touch创建文件 .git-credentials, 用vim编辑此文件，输入：
+
+    https://gitpull:gitpull123456@github.com
+
+ 注意去掉{}
+
+2. 在终端下执行  git config --global credential.helper store
+
+3. 可以看到~/.gitconfig文件，会多了一项：
+    [credential]
+        helper = store
+	
+echo "http://gitpull:gitpull123456@a.yyft.com">.git-credentials
+git config --global user.email "gitpull@a.yyft.com"
+git config --global user.name "gitpull"
+git config --global credential.helper store
+
+sed -i '/alias/d' .bash_profile
+echo "alias fabu='source fabu'">>.bash_profile
+source .bash_profile
+	
+./elasticdump  --input=http://10.116.155.217:9200/ --output=http://172.17.2.84:9200/ --all=true 	
+
+
+172.16.15.19  elk1_vpc
+172.17.2.84   elk2_vpc
+
+172.16.15.11  bouncer_vpc
+172.16.15.12  web02_vpc
+172.17.2.80   magpie_vpc
+
+172.16.15.18  pywsdkweb01_vpc
+172.17.2.82   pywsdkweb02_vpc 
+172.18.2.225  tg_vpc
+172.16.15.15  adminportal1_vpc
+172.17.2.83   adminportal2_vpc
+172.16.15.16  uc1_vpc
+172.18.2.226  uc2_vpc
+172.16.15.17  fxweb_vpc
+172.18.2.227  appapi01_vpc
+172.18.2.228  dtweb01_vpc
+172.18.2.229  package4_vpc
+	
+		
+node exporter.js -a 10.116.155.217 -b 172.17.2.84 -p 9200 -q 9200 -i awppx -j awppx		
+
+Atmosphere99
+
+
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDIuTCfwobtAnGUg94/FngN9J1XUE/CchU9LJ28z5DYjC0QQzeh941JvETTTwWZc8yvHRbZeDVJwPrIXVBd4RHaaY6IoJacJvuYFO276xOzuia2rdVIVATVL1i0zqGE7r4ix168XBoi8YRtgfReXlHOtx8nyS+pmCl/oZzJRqqUnfVt/hR1Uc34lpg82HoTtL4q7bu+t3i0VtR0CJgG78u2oh71l7KxATHNdA4FkkZYCOPlpVlGaeq2NEJLx1Un0xVEWqQfcE2hX4gAgBwV1IYaC+OwToVVPHy++L+/Q0B4DWwm3xGvcsFBibMschmH0RPTMsBbVymmhQq0hTbQ1c4D develop@magpie
+
+
+
+172.19.8.48   hadoopslave3  
+172.18.2.230  hadoopslave2  
+172.17.2.85   hadoopslave1  
+172.16.15.20  hadoopmaster
+
+
+10.46.133.57 172.16.15.20  hadoopmaster
+10.46.133.56 172.17.2.85   hadoopslave1
+10.46.133.69 172.18.2.230  hadoopslave2
+10.46.133.54 172.19.8.48   hadoopslave3
+
+cd /proj/server/apache-flume-1.7.0-bin/conf
+sed -i 's/10.46.133.57/172.16.15.20/g' * 
+sed -i 's/10.46.133.56/172.17.2.85/g' * 
+sed -i 's/10.46.133.69/172.18.2.230/g' * 
+sed -i 's/10.46.133.54/172.19.8.48/g' * 
+
+
+ansible vpc_flume -m copy -a "src=/home/develop/vpc_flume.sh dest=/home/develop/"
+
+ansible vpc_zabbix -m copy -a "src=/home/develop/vpc_zabbix/vpc_zabbix.sh dest=/home/develop/"
+
+sed -i 's/10.46.133.54/172.19.8.48/g' * 
+
+
+
+172.16.15.11
+
+ip=`ifconfig eth0| grep inet| awk '{print $2}'`
+ListenIP=${ip}
+
+su - root 
+Atmosphere99
+
+#!/bin/bash
+ip=`ifconfig eth0| grep inet| awk '{print $2}'`
+cd /home/develop/${HOSTNAME}_zabbix-2.4.5/etc
+sed -i 's/10.116.132.238/172.16.15.11/g' *
+num=`grep -n "^ListenIP" zabbix_agentd.conf| awk -F':' '{print $1}'`
+sed -i ''${num}'c/ListenIP='${ip}'' zabbix.agentd.conf
+
+cd /home/develop/${HOSTNAME}_rsyslog.d
+sed -i 's/10.116.155.217/172.17.2.84/g' *
+exit
+
+Atmosphere99
+
+mv /home/develop/${HOSTNAME}_zabbix-2.4.5 /usr/local/zabbix-2.4.5
+mv /etc/rsyslog.conf /etc/rsyslog.conf.bak
+mv /home/develop/${HOSTNAME}_rsyslog.d/${HOSTNAME}_rsyslog.conf /etc/rsyslog.conf
+mv -f /home/develop/${HOSTNAME}_rsyslog.d/* /etc/rsyslog.d/
+chown -R develop.  /usr/local/zabbix-2.4.5
+ifconfig
+
+
+
+setip=`/usr/sbin/ifconfig eth0| grep inet| awk '{print $2}'&&`
+sed -i ''${num}'c/ListenIP='${setip}'' /usr/local/zabbix-2.4.5/etc/zabbix_agentd.conf
+
+sed -i 's/home/proj/g' /usr/local/zabbix-2.4.5/etc/zabbix_agentd.conf
+
+yum install -y lrzsz zip unzip 
+mkdir -p /proj/logs/zabbix/
+chown -R develop.   /proj/logs/zabbix/
+
+cd /home/hduser/.ssh/
+mv known_hosts /tmp/
+
+
+export HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S  `whoami` "
+export PROMPT_COMMAND='{ dd=$(date "+%F %T");host=$(hostname);who_tty="$(whoami)@${SSH_TTY}";ssh_add="$(echo ${SSH_CONNECTION})";command=$(history 1|awk "{\$1=\"\";print}");logger -p local2.debug : $dd $host $who_tty $ssh_add "$command" ;}'
+
+
+cat /etc/security/limits.d/20-nproc.conf
+
+
+
+120.79.161.70
+
+curl -XGET 'http://172.17.2.84:9200/logstash-nginx-2018-03-08?pretty'
+
+
+curl -XGET 'http://172.16.15.19:9200/logstash-nginx-2018-03-08?pretty'
+
+
+connect: {
+    server: {
+        options: {
+            port: 9100,
+            hostname: '*',
+            base: '.',
+            keepalive: true
+        }
+    }
+}
+
+
+-e ‘input { stdin {} } output { stdout {} }‘
+
+
+Sending Logstash's logs to /es/logstash-5.6.8/logs which is now configured via log4j2.properties
+[2018-03-10T14:51:37,224][INFO ][logstash.modules.scaffold] Initializing module {:module_name=>"fb_apache", :directory=>"/es/logstash-5.6.8/modules/fb_apache/configuration"}
+[2018-03-10T14:51:37,230][INFO ][logstash.modules.scaffold] Initializing module {:module_name=>"netflow", :directory=>"/es/logstash-5.6.8/modules/netflow/configuration"}
+[2018-03-10T14:51:37,482][ERROR][logstash.agent           ] Cannot create pipeline {:reason=>"You are using a plugin that doesn't support workers but have set the workers value explicitly! This plugin uses the shared and doesn't need this option"}
+
+
+sed -i 's/10.116.155.217/172.16.15.19/g' /etc/rsyslog.d/*
+sed -i 's/10.116.155.217/172.16.15.19/g' /etc/rsyslog.conf
+sed -i 's/10.116.132.238/172.16.15.11/g' /usr/local/zabbix-2.4.5/etc/*
+
+curl "http://logview.pengyouwan.com:9200/_cat/shards?v"
+
+POST /_cluster/reroute { "commands": [ { "allocate_stale_primary": { "index": ".monitoring-kibana-6-2018.03.10", "shard": 2, "node": "node-1", "accept_data_loss" : true } } ] }
+
+
+xpack.security.enabled: false
+
+
+node-v4.8.0-linux-x86.tar.gz   
+
+172.17.2.84
+
+sed -i 's/172.17.2.84/172.16.15.19/g' /etc/rsyslog.d/*
+sed -i 's/172.17.2.84/172.16.15.19/g' /etc/rsyslog.conf
+
+ansible vpc_hadoop --ask-su-pass -S -R root  -m shell -a "sed -i 's/172.17.2.84/172.16.15.19/g' /etc/rsyslog.conf"
+
+
+DB_FXADM_MASTER_HOST
+DB_FXADM_MASTER_USER
+DB_FXADM_MASTER_PASSWORD
+DB_FXADM_MASTER_DB
+
+
+echo >>/proj/sh/setenv.sh<<EOF
+export DB_FXADM_MASTER_HOST=buffalo
+export DB_FXADM_MASTER_USER=xiaopeng2
+export DB_FXADM_MASTER_PASSWORD='eabcc65c35!6873c'
+export DB_FXADM_MASTER_DB=xiaopeng2_faxing
+EOF
+
+env[DB_FXADM_MASTER_HOST]=buffalo
+env[DB_FXADM_MASTER_USER]=xiaopeng2
+env[DB_FXADM_MASTER_PASSWORD]="eabcc65c35!6873c"
+env[DB_FXADM_MASTER_DB]=xiaopeng2_faxing
+
+
+echo "\
+
+export DB_FXADM_MASTER_HOST=buffalo
+export DB_FXADM_MASTER_USER=xiaopeng2
+export DB_FXADM_MASTER_PASSWORD='eabcc65c35!6873c'
+export DB_FXADM_MASTER_DB=xiaopeng2_faxing">>/proj/sh/setenv.sh
+
+echo "\
+
+env[DB_FXADM_MASTER_HOST]=buffalo
+env[DB_FXADM_MASTER_USER]=xiaopeng2
+env[DB_FXADM_MASTER_PASSWORD]='eabcc65c35!6873c'
+env[DB_FXADM_MASTER_DB]=xiaopeng2_faxing">>/usr/local/php-5.6.8/etc/php-fpm.ini
+
+
+ps -elf | grep php-fpm
+source /proj/sh/setenv.sh
+/proj/sh/php-fpm.sh reload
+ps -elf | grep php-fpm
+
+
+
+pgamebackup1.yunyoufeitian.com  120.25.128.73
+ugamebackup1.yunyoufeitian.com 112.74.141.197
+agamebackup1.yunyoufeitian.com 112.74.141.197
+
+pgamebackup2.yunyoufeitian.com 120.25.128.73
+ugamebackup2.yunyoufeitian.com 112.74.141.197
+agamebackup2.yunyoufeitian.com 112.74.141.197
+
+pkill -9 zabbix_agentd
+/usr/local/zabbix-2.4.5/sbin/zabbix_agentd -c /usr/local/zabbix-2.4.5/etc/zabbix_agentd.conf
+
+
+
+神之裁决/安卓  https://g1.pyw.cn/gameurl/android/0cc1f918.txt
+神之裁决/IOS   https://g1.pyw.cn/gameurl/ios/890d393b.txt
+皓月传奇/安卓  https://g1.pyw.cn/gameurl/android/52dd4d4e.txt
+皓月传奇/IOS   https://g1.pyw.cn/gameurl/ios/ce474080.txt
+
+
+
+for i in `ps -elf | grep -v grep | grep  flume | awk '{print $4}'`;do kill -9 $i;done; 
+cd /proj/server/apache-flume-1.7.0-bin/conf  &&\
+sed -i 's/10.46.133.57/172.16.15.20/g' * && \
+sed -i 's/10.46.133.56/172.17.2.85/g' *  && \
+sed -i 's/10.46.133.69/172.18.2.230/g' * && \
+sed -i 's/10.46.133.54/172.19.8.48/g' *  &&\
+sh /proj/sh/start-flume.sh
+
+
+回退脚本
+
+for i in `ps -elf | grep -v grep | grep  flume | awk '{print $4}'`;do kill -9 $i;done; 
+cd /proj/server/apache-flume-1.7.0-bin/conf &&\
+sed -i 's/172.16.15.20/10.46.133.57/g' * &&\
+sed -i 's/172.17.2.85/10.46.133.56/g' * &&\
+sed -i 's/172.18.2.230/10.46.133.69/g' *  &&\
+sed -i 's/172.19.8.48/10.46.133.54/g' * &&\
+sh /proj/sh/start-flume.sh
+
+TIME=`date +%F`
+
+/proj/logs/app/sdk_api/bi/sdk_api_bi_${TIME}.log
+/proj/logs/app/sdk_common/bi/sdk_common_${TIME}.log
+/proj/logs/app/sdk_server/bi/sdk_server_bi_${TIME}.log
+
+/proj/logs/app/sdk_api/bi/sdk_api_bi_${TIME}.log
+/proj/logs/app/sdk_common/bi/sdk_common_${TIME}.log
+/proj/logsapp/sdk_server/bi/sdk_server_bi_${TIME}.log
+
+/proj/logs/app/tg/bi/tg_bi_ ${TIME}.log
+/proj/logs/nginx80/tg.pyw.cn_access.log
+/proj/logs/nginx80/tg.yunyoufeitian.cn.acces_443.log
+/proj/logs/app/backend/xiaopeng_wap_${TIME}.log
+/proj/logs/app/backend/xiaopeng_backend_${TIME}.log
+
+
+/proj/logstg/app/bi/tg_bi_ ${TIME}.log
+/proj/logs/nginx80/tg.pyw.cn_access.log
+/proj/logs/nginx80/tg.yunyoufeitian.cn.acces_443.log
+/proj/logs/app/backend/xiaopeng_wap***.log;backend/xiaopeng_backend***.log
+
+
+backend/xiaopeng_backend***.log
+
+/proj/logs/app/appapi2.2/
+/proj/logs/app/member_app_yyyy-mm-dd.log
+/proj/logs/app/bi_accountonline_2017-06-17.log
+/proj/logs/app/adv_bi/
+/proj/java/datax-server-motan/logs/bi.log
+uc/xiaopeng_usercenter_yyyy-mm-dd.log
+backend/xiaopeng_backend_yyyy-mm-dd.log
+
+
+
+echo "\
+
+#增加号码归属地查询和导出功能
+export MMSPROMO_SHOWAPI_APPID=59389
+export MMSPROMO_SHOWAPI_SECRET=8dbd9da4b0bf489cbf155e8eaa42e4f1
+export MMSPROMO_MAX_THREAD=20">>/proj/sh/setenv.sh
+
+echo "\
+
+;增加号码归属地查询和导出功能
+env[MMSPROMO_SHOWAPI_APPID] = 59389
+env[MMSPROMO_SHOWAPI_SECRET] = 8dbd9da4b0bf489cbf155e8eaa42e4f1
+env[MMSPROMO_MAX_THREAD] = 20">>/usr/local/php-5.6.8/etc/php-fpm.ini
+
+
+export MMSPROMO_SHOWAPI_APPID=59389
+export MMSPROMO_SHOWAPI_SECRET=8dbd9da4b0bf489cbf155e8eaa42e4f1
+
+
+ps -elf | grep php-fpm
+source /proj/sh/setenv.sh
+/proj/sh/php-fpm.sh reload
+ps -elf | grep php-fpm
+
+pkill -9 zabbix_agentd && /usr/local/zabbix-2.4.5/sbin/zabbix_agentd -c /usr/local/zabbix-2.4.5/etc/zabbix_agentd.conf && ps -elf | grep zabbix 
+
+/usr/local/php-5.6.8/bin/php -q /usr/local/zabbix-2.4.5/scripts/mysql/ss_get_mysql_stats.php --host ucdb --items gg
+
+
+
+
+
+wget http://rpms.famillecollet.com/enterprise/7/remi/x86_64//gd-last-2.2.4-1.el7.remi.x86_64.rpm
+rpm -ivh gd-last-2.2.4-1.el7.remi.x86_64.rpm
+/usr/local/zabbix-2.4.5/scripts/mysql/get_mysql_stats_wrapper.sh ou
+/usr/local/php-5.6.8/bin/php -q /usr/local/zabbix-2.4.5/scripts/mysql/ss_get_mysql_stats.php --host zebra --items gg
+/usr/local/zabbix-2.4.5/scripts/mysql/get_mysql_stats_wrapper.sh ou
+
+
+
+
+export DB_PYW_ALERT_FXADM_SLAVE_HOST=zebra
+export DB_PYW_ALERT_FXADM_SLAVE_USER=xiaopeng2r
+export DB_PYW_ALERT_FXADM_SLAVE_PASSWORD="59ff73414!9fca4e"
+export DB_PYW_ALERT_FXADM_SLAVE_DB=xiaopeng2_faxing
+
+export DB_PYW_ALERT_BI_SLAVE_HOST=hippo
+export DB_PYW_ALERT_BI_SLAVE_USER=opensdkr
+export DB_PYW_ALERT_BI_SLAVE_PASSWORD=25369508f 
+export DB_PYW_ALERT_BI_SLAVE_DB=xiaopeng2_bi
+
+
+
+
+env[DB_PYW_ALERT_FXADM_SLAVE_HOST]= zebra
+env[DB_PYW_ALERT_FXADM_SLAVE_USER] = xiaopeng2r
+env[DB_PYW_ALERT_FXADM_SLAVE_PASSWORD] = "59ff73414!9fca4e"
+env[DB_PYW_ALERT_FXADM_SLAVE_DB] = xiaopeng2_faxing
+
+env[DB_PYW_ALERT_BI_SLAVE_HOST] = hippo
+env[DB_PYW_ALERT_BI_SLAVE_USER] = opensdkr
+env[DB_PYW_ALERT_BI_SLAVE_PASSWORD] = 25369508f 
+env[DB_PYW_ALERT_BI_SLAVE_DB] = xiaopeng2_bi
+
+
+
+
+#! /bin/sh
+#game monitor item push
+PHP_SCRIPT="php admin/index.php monitorItemPush"
+pid=`ps -ef | grep -v grep | grep -c "$PHP_SCRIPT"`
+if [ "$pid" = "0" ];then
+    source /proj/sh/setenv.sh
+    cd /proj/web/xiaopeng2_faxing_admin
+    /usr/local/php-5.6.8/bin/php admin/index.php monitorItemPush & 
+else
+    echo "Process ald exists:"$pid
+fi
+##pop: php index.php monitorItemPush index
+
+
+[2018-03-24T12:31:42,586][INFO ][logstash.outputs.elasticsearch] retrying failed action with response code: 429 ({"type"=>"es_rejected_execution_exception", "reason"=>"rejected execution of org.elasticsearch.transport.TransportService$7@45e9b0ff on EsThreadPoolExecutor[bulk, queue capacity = 200, org.elasticsearch.common.util.concurrent.EsThreadPoolExecutor@66aacf47[Running, pool size = 4, active threads = 4, queued tasks = 200, completed tasks = 19144719]]"})
+
+
+
+[24-Mar-2018 10:47:51]
+[22-Mar-2018 12:08:43 Asia/Shanghai]
+
+
+ps -elf | grep filebeat&&/proj/sh/filebeat.sh start &&ps -elf | grep filebeat
+
+
+echo "http://gitpull:gitpull123456@a.yyft.com">.git-credentials
+git config --global user.email "gitpull@a.yyft.com"
+git config --global user.name "gitpull"
+git config --global credential.helper store
+
+
+
+
+cd /proj/server/apache-flume-1.7.0-bin/conf 
+
+
+
+
+
+10.46.133.57 hadoopmaster
+10.46.133.56 hadoopslave1
+10.46.133.69 hadoopslave2
+10.46.133.54 hadoopslave3
+#VPC_hadoop
+172.19.8.48   hadoopslave3_vpc  
+172.18.2.230  hadoopslave2_vpc  
+172.17.2.85   hadoopslave1_vpc  
+172.16.15.20  hadoopmaster_vpc 
+
+sed -i 's/10.46.120.165/172.16.15.25/g' /etc/hosts
+
+grep fxsys@yyft.com /proj/sh/setenv.sh
+
+sed -i 's/wuRkXVhdFdB2b4GK/Q3FtpwJLtcJwXegc/g' /proj/sh/setenv.sh
+grep Q3FtpwJLtcJwXegc /proj/sh/setenv.sh
+sed -i 's/wuRkXVhdFdB2b4GK/Q3FtpwJLtcJwXegc/g' /usr/local/php-5.6.8/etc/php-fpm.ini
+
+
+172.19.8.49
+
+
+sed -i -e 's/10.46.133.57/172.19.8.49/g' -e  's/10.46.133.56/172.19.8.49/g'  -e  's/10.46.133.69/172.19.8.49/g' -e 's/10.46.133.54/172.19.8.49/g' /proj/server/apache-flume-1.7.0-bin/conf/* 
+
+sed -i -e 's/172.19.8.49/10.30.3.17/g' -e  's/10.46.133.56/10.30.3.17/g'  -e  's/10.46.133.69/10.30.3.17/g' -e 's/10.46.133.54/10.30.3.17/g' /proj/server/apache-flume-1.7.0-bin/conf/* 
+
+certbot certonly --manual  -d fx.pengyouwan.com -w /proj/web/xiaopeng2_faxing_admin/admin --config-dir /proj/certbot/ --logs-dir /proj/certbot/ --work-dir /proj/certbot/
+
+certbot-2 certonly  -d *pengyouwan.com --manual --preferred-challenges dns --server https://acme-v02.api.letsencrypt.org/directory
+
+
+grep -r GAME_LIST_SERVER_URL /proj/sh/setenv.sh
+grep -r GAME_LIST_SERVER_URL /usr/local/php-5.6.8/etc/php-fpm.ini
+
+#! /bin/sh
+#game monitor item push
+PHP_SCRIPT="php admin/index.php monitorItemPush"
+pid=`ps -ef | grep -v grep | grep -c "$PHP_SCRIPT"`
+if [ "$pid" = "0" ];then
+    source /proj/sh/setenv.sh
+    cd /proj/web/xiaopeng2_faxing_admin
+    /usr/local/php-5.6.8/bin/php admin/index.php monitorItemPush & 
+else
+    echo "Process ald exists:"$pid
+fi
+##pop: php index.php monitorItemPush index
+
+https://help.aliyun.com/document_detail/60952.html
+
+
+
+certbot certonly --manual -d www.52fengwan.com -w /apps/chanpin/www/html/game --config-dir /proj/certbot/ --logs-dir /proj/certbot/ --work-dir /proj/certbot/
+
+certbot certonly --manual -d bbs.52fengwan.com -w /apps/chanpin/www/bbs.52fengwan.com --config-dir /proj/certbot/ --logs-dir /proj/certbot/ --work-dir /proj/certbot/
+
+certbot certonly --webroot -d bbs.52fengwan.com -w /apps/chanpin/www/bbs.52fengwan.com --config-dir /proj/certbot/ --logs-dir /proj/certbot/ --work-dir /proj/certbot/
+
+
+certbot certonly --webroot -d www.52fengwan.com -w /apps/chanpin/www/html/game --config-dir /proj/certbot/ --logs-dir /proj/certbot/ --work-dir /proj/certbot/
+
+
+
+curl -s -XPOST '172.16.15.19:9200/logstash-nginx-2018-04-08,logstash-nginx-2018-04-09/_search?pretty' -d '{"size":0,"query":{"filtered":{"query":{"query_string":{"query":"request:\"/user/register\"","analyze_wildcard":true}},"filter":{"bool":{"must":[{"range":{"@timestamp":{"gte":1523205530000,"lte":1523291930000,"format":"epoch_millis"}}}],"must_not":[]}}}},"aggs":{"2":{"terms":{"field":"http_x_forwarded_for.raw","size":200,"order":{"_count":"desc"}}}}}'
+
+
+{"index":["logstash-nginx-2018-04-08","logstash-nginx-2018-04-09"],"ignore_unavailable":true,"preference":1523166776860}
+
+curl -s -XPOST '172.16.15.19:9200/logstash-nginx-2018-04-08,logstash-nginx-2018-04-09/_search?pretty' -d '{"size":0,"query":{"bool":{"must":[{"query_string":{"query":"request:\"/ApiForSdk/init\"","analyze_wildcard":true}},{"range":{"@timestamp":{"gte":1523203200000,"lte":1523289599999,"format":"epoch_millis"}}}],"must_not":[]}},"_source":{"excludes":[]},"aggs":{"3":{"terms":{"field":"http_x_forwarded_for.keyword","size":200,"order":{"_count":"desc"}}}}}'
+curl -s -XPOST '172.16.15.19:9200/logstash-nginx-2018-04-08,logstash-nginx-2018-04-09/_search?pretty' -d '{"size":0,"query":{"bool":{"must":[{"query_string":{"query":"request:\"/ApiForSdk/init\"","analyze_wildcard":true}},{"range":{"@timestamp":{"gte":1523211000000:,"lte":1523297400000,"format":"epoch_millis"}}}],"must_not":[]}},"_source":{"excludes":[]},"aggs":{"3":{"terms":{"field":"http_x_forwarded_for.keyword","size":200,"order":{"_count":"desc"}}}}}'
+
+{"index":["logstash-nginx-2018-04-08","logstash-nginx-2018-04-09"],"ignore_unavailable":true,"preference":1523166776860}
+{"size":0,"query":{"bool":{"must":[{"query_string":{"query":"status:500","analyze_wildcard":true}},{"range":{"@timestamp":{"gte":1523203200000,"lte":1523289599999,"format":"epoch_millis"}}}],"must_not":[]}},"_source":{"excludes":[]},"aggs":{"3":{"terms":{"field":"host.keyword","size":200,"order":{"_count":"desc"}}}}}
+
+1523289599999
+1523296014000
+
+
+
+PermitRootLogin yes
+PasswordAuthentication yes
+
+index.number_of_shards: 1 
+index.number_of_replicas: 0 
+
+
+{"index":["logstash-bi-2018-04-11"],"ignore_unavailable":true,"preference":1523355229327}
+{"version":true,"size":500,"sort":[{"@timestamp":{"order":"desc","unmapped_type":"boolean"}}],"query":{"bool":{"must":[{"match_all":{}},{"range":{"@timestamp":{"gte":1523414438016,"lte":1523415338016,"format":"epoch_millis"}}}],"must_not":[]}},"_source":{"excludes":[]},"aggs":{"2":{"date_histogram":{"field":"@timestamp","interval":"30s","time_zone":"Asia/Shanghai","min_doc_count":1}}},"stored_fields":["*"],"script_fields":{},"docvalue_fields":["@timestamp"],"highlight":{"pre_tags":["@kibana-highlighted-field@"],"post_tags":["@/kibana-highlighted-field@"],"fields":{"*":{"highlight_query":{"bool":{"must":[{"match_all":{}},{"range":{"@timestamp":{"gte":1523414438016,"lte":1523415338016,"format":"epoch_millis"}}}],"must_not":[]}}}},"fragment_size":2147483647}}
+
+{web_monitor:url.code[{#SITENAME}].last(0)}<>200 and
+{web_monitor:url.code[{#SITENAME}].last(0)}<>302 and
+{web_monitor:url.code[{#SITENAME}].last(0)}<>307 and
+{web_monitor:url.code[{#SITENAME}].last(0)}<>404

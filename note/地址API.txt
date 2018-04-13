@@ -1,0 +1,40 @@
+1 elk里面三个月的数据
+2 bussiness数据里面
+ApiForSdk::logon
+ApiForSdk::init
+ApiForSdk::fastRegiste
+
+三个关键字条目里面，ip包括
+17.200.2.214
+65.199.22.141
+17.200.11.44
+17.199.160.42
+17.199.160.43
+17.199.54.247
+每个Ip和对应的关键字分别统计成excel表格 
+
+
+
+cat test.txt |grep -E 'key|doc_count'|awk 'BEGIN{RS=",\n";ORS=""}1'| grep -E 'ApiForSdk::fastRegiste'|awk '{print $NF}'|awk '{sum +=$1} END{print sum}'
+
+cat 17.199.160.42.txt | grep -B 2 "fastRegiste"| grep -v "log_level"|awk 'BEGIN{RS=",\n";ORS=""}1'|awk -F'"' '{print $4","$19 }'|awk -F'\' '{print $1}'
+
+
+
+
+http://blog.csdn.net/yangwenbo214/article/details/54138740
+
+
+took: 执行搜索耗时，毫秒为单位，也就是本文我1ms
+time_out: 搜索是否超时
+_shards: 多少分片被搜索，成功多少，失败多少
+hits： 搜索结果展示
+hits.total: 匹配条件的文档总数
+hits.hits: 返回结果展示，默认返回十个
+hits.max_score：最大匹配得分
+hits._score: 返回文档的匹配得分（得分越高，匹配程度越高，越靠前）
+_index _type _id 作为剥层定位到特定的文档
+_source 文档源
+
+
+

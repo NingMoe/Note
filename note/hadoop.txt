@@ -1,0 +1,115 @@
+hadoopmaster
+
+
+
+[hduser@hadoopmaster ~]$  /home/hduser/hadoop-2.3.0/bin/yarn application -list|awk '{print $2}'|grep -E "AppPointAndQuota|GameInsideRole|NewPubBackClick|GamePublishBaseKpi|GamePublishKpi|GamePublishActive|GamePublishLogin|centurioncardGameAcc|GamePublishOsInfo"
+17/06/14 14:56:47 INFO client.RMProxy: Connecting to ResourceManager at hadoopmaster/10.46.133.57:18040
+AppPointAndQuota
+GameInsideRole
+NewPubBackClick
+GamePublishBaseKpi
+GamePublishKpi
+GamePublishActive
+GamePublishLogin
+centurioncardGameAcc
+GamePublishOsInfo
+
+
+计划任务 
+*/5 * * * * sh /home/hduser/crontabFiles/hadoop_stus.sh >/dev/null 2>&1 
+
+~~~~~~~~~~~~~~
+#!/usr/bin/env bash
+#! Encoding UTF-8
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
+export PATH
+
+FILE=/tmp/`date +%F`-hd_progress.log
+[ -f $file ] || touch $file 
+/home/hduser/hadoop-2.3.0/bin/yarn application -list|awk '{print $2}'|grep -E "AppPointAndQuota|GameInsideRole|NewPubBackClick|GamePublishBaseKpi|GamePublishKpi|GamePublishActive|GamePublishLogin|centurioncardGameAcc|GamePublishOsInfo">$FILE
+
+~~~~~~~~~~~~~~
+
+hadoop_stus.sh 脚本
+#!/usr/bin/env bash
+#! Encoding UTF-8
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
+export PATH
+DIR=/tmp/
+PROGRESSFILE=`ls $DIR | grep "progress.log"`
+case $1 in
+    AppPointAndQuota)
+        cat $progressfile | grep $1 >> /dev/null
+            echo $?
+            ;;
+    GameInsideRole)
+        cat $progressfile | grep $1 >> /dev/null
+            echo $?
+            ;;
+    NewPubBackClick)
+        cat $progressfile | grep $1 >> /dev/null
+            echo $?
+            ;;	
+    GamePublishBaseKpi)
+        cat $progressfile | grep $1 >> /dev/null
+            echo $?
+            ;;	
+    GamePublishKpi)
+        cat $progressfile | grep $1 >> /dev/null
+            echo $?
+            ;;	
+    GamePublishActive)
+        cat $progressfile | grep $1 >> /dev/null
+            echo $?
+            ;;	
+    GamePublishLogin)
+        cat $progressfile | grep $1 >> /dev/null
+            echo $?
+            ;;	
+    centurioncardGameAcc)
+        cat $progressfile | grep $1 >> /dev/null
+            echo $?
+            ;;	
+	*)
+        echo "Usage:$0(AppPointAndQuota|GameInsideRole|NewPubBackClick|GamePublishBaseKpi|GamePublishKpi|GamePublishActive|GamePublishLogin|centurioncardGameAcc)"
+        ;;
+esac			
+
+vim /etc/zabbix_agentd.conf  添加以下行    The Application Name: centurioncardGameAcc is down on {HOST.NAME}
+
+UserParameter=AppPointAndQuota.processe,/usr/local/zabbix-2.4.5/scripts/hadoop_stus.sh AppPointAndQuota
+
+UserParameter=GameInsideRole.processe,/usr/local/zabbix-2.4.5/scripts/hadoop_stus.sh GameInsideRole
+
+UserParameter=NewPubBackClick.processe,/usr/local/zabbix-2.4.5/scripts/hadoop_stus.sh NewPubBackClick
+
+UserParameter=GamePublishBaseKpi.processe,/usr/local/zabbix-2.4.5/scripts/hadoop_stus.sh GamePublishBaseKpi
+
+UserParameter=GamePublishKpi.processe,/usr/local/zabbix-2.4.5/scripts/hadoop_stus.sh GamePublishKpi
+
+UserParameter=GamePublishActive.processe,/usr/local/zabbix-2.4.5/scripts/hadoop_stus.sh GamePublishActive
+
+UserParameter=GamePublishLogin.processe,/usr/local/zabbix-2.4.5/scripts/hadoop_stus.sh GamePublishLogin
+
+UserParameter=centurioncardGameAcc.processe,/usr/local/zabbix-2.4.5/scripts/hadoop_stus.sh centurioncardGameAcc
+
+UserParameter=GamePublishOsInfo.processe,/usr/local/zabbix-2.4.5/scripts/hadoop_stus.sh GamePublishOsInfo
+
+
+
+触发器
+    The Application Name: NewPubBackClick is down on {HOST.NAME}	
+    The Application Name: GamePublishLogin is down on {HOST.NAME}	
+	The Application Name: GamePublishKpi is down on {HOST.NAME}	
+	The Application Name: GamePublishBaseKpi is down on {HOST.NAME}	
+	The Application Name: GamePublishActive is down on {HOST.NAME}	
+	The Application Name: GameInsideRole is down on {HOST.NAME}	
+	The Application Name: centurioncardGameAcc is down on {HOST.NAME}
+	The Application Name: AppPointAndQuota is down on {HOST.NAME}
+	The Application Name: GamePublishOsInfo is down on {HOST.NAME}
+	
+
+
+
+ps -elf| grep -E "AppPointAndQuota|GameInsideRole|NewPubBackClick|GamePublishBaseKpi|GamePublishKpi|GamePublishActive|GamePublishLogin|centurioncardGameAcc|GamePublishOsInfo" | grep -v grep | awk '{print $4}'	
+	

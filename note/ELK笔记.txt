@@ -1,0 +1,461 @@
+学习网址
+http://www.ttlsa.com/elk/howto-install-elasticsearch-logstash-and-kibana-elk-stack/ 
+
+
+
+rsyslog 安装仓库
+[rsyslog_v8]
+name=Adiscon CentOS-$releasever - local packages for $basearch
+baseurl=http://rpms.adiscon.com/v8-stable/epel-$releasever/$basearch
+enabled=1
+gpgcheck=0
+gpgkey=http://rpms.adiscon.com/RPM-GPG-KEY-Adiscon
+protect=1
+
+
+
+7.elasticsearch常用插件。(head,kopf,bigdesk)
+在线安装：
+①.安装head插件。
+[root@node1 ~]# /usr/share/elasticsearch/bin/plugin install mobz/elasticsearch-head
+②.安装bigdesk插件。
+[root@node1 ~]# /usr/share/elasticsearch/bin/plugin install hlstudio/bigdesk
+③.安装kopf插件。
+[root@node1 ~]# /usr/share/elasticsearch/bin/plugin install lmenezes/elasticsearch-kopf
+安装Marvel插件
+[root@node1 ~]# bin/plugin install license
+[root@node1 ~]# bin/plugin install marvel-agent
+
+
+浏览插件
+http://192.168.111.128:9200/_plugin/head/
+http://192.168.111.128:9200/_plugin/bigdesk/
+http://192.168.111.128:9200/_plugin/kopf/
+
+安装Kibana
+
+到https://www.elastic.co/downloads/kibana 找合适的版本，每个版本下面有这么一行内容，一定要注意这些内容：Compatible with Elasticsearch 1.4.4 - 1.7
+
+
+
+
+rsyslog 配置
+$WorkDirectory /var/lib/rsyslog # where to place spool files    定义读取日志的位置
+自定义模板
+template(name="xiaopeng_usercenter_err" type="list"){
+property(name="hostname") constant(value="#xiaopeng_usercenter_err")
+constant(value="#") property(name="msg" position.from="1" position.to="23")
+constant(value="#") property(name="msg" field.delimiter="32" field.number="3")
+constant(value="#") property(name="msg" position.from="32" position.to="9999")
+}
+定义输入文件
+input(
+    type="imfile"##自定义日志类型
+    File="/proj/logs/app/uc/xiaopeng_usercenter_201*.err" ##日志存放位置
+    startmsg.regex="^201"
+    freshStartTail="off"
+    addMetadata="on"
+    Severity="info"
+    Facility="user"
+    tag="nginx_access"
+    ruleset="xiaopeng_usercenter_err"
+)
+##定义输出到哪里 
+ruleset( name="xiaopeng_usercenter_err" ){
+    action(type="omfwd" Target="10.116.155.217" Port="800" Protocol="tcp" template="xiaopeng_usercenter_err" )
+    stop
+}
+
+
+ 检测rsyslog配置文件是否有错
+rsyslogd -f /etc/rsyslog.conf -N1
+
+
+logstash配置过滤条件
+filter
+过滤条件 
+
+
+
+filter {
+  if [type] == "business"{
+    ruby {
+      init => "@kname = ['hostname','log_name','log_timestamp','log_level','event']"
+      code => "new_event = LogStash::Event.new(Hash[@kname.zip(event['message'].split('#'))]); new_event.remove('@timestamp');event.append(new_event)"
+      remove_field => ["message","@version","host"]
+    }
+    date {
+      match => ["log_timestamp" , "ISO8601"]
+    }
+  }
+
+  
+  检查logstash 的配置是否有问题
+  /opt/logstash/bin/logstash -f file.conf -t 
+####################################################################################  
+  
+  kibana索引名字 要注意  时间格式要大写才识别的到
+
+####################################################################################
+  
+ 练习
+ 
+2017-01-05 12:01:02 web02 /xxx/hh.html 1.1.1.1
+
+2017-01-05 12:01:02#web02#/xxx/hh.html#1.1.1.1
+
+{"log_time":"2017-01-05 12:01:02", "hostname":"web02", "uri":"/xxx/bai.html", "XFF":"1.1.1.1"}
+####################################################################################	  
+
+grok {
+      match => { "message" => "%{TIMESTAMP_ISO8601:log_timestamp} %{HOSTNAME:hostname} %{UNIXPATH:path} %{IP:ip} }
+      remove_field => ["message","@version","host"]
+	  }
+date {  
+      match => [ "log_timestamp" , "yyyy-MM-dd HH:mm:ss" ]
+    }
+
+####################################################################################	  
+
+ruby {
+      init => "@kname = ['log_timestamp','hostname','path','ip']"
+      code => "new_event = LogStash::Event.new(Hash[@kname.zip(event['message'].split('#'))]); 
+	  new_event.remove('@timestamp');event.append(new_event)"
+      remove_field => ["message","@version","host"]	  
+	  }
+date {  
+      match => [ "log_timestamp" , "yyyy-MM-dd HH:mm:ss" ]
+    }
+####################################################################################	  
+
+grok 在线调试网址
+http://grokdebug.herokuapp.com/	
+
+elasticsearch 创建索引
+
+
+[root@zabbix json]# curl -XPUT 'http://192.168.111.128:9200/zhouls/emp/1' -d'{"name":"tom","age":25}'
+{"_index":"zhouls","_type":"emp","_id":"1","_version":1,"_shards":{"total":2,"successful":1,"failed":0},"created":true}[root@zabbix json]# 
+[root@zabbix json]# 
+ 即，"_index":"zhouls",是索引库是zhouls
+
+        "_type":"emp",是类型是emp
+
+        "_id":"1"，是id是1
+
+        "_version":1，是版本是1
+
+        "_shards":{"total":2,"successful":1,"failed":0}，是
+
+        "created":true，是创建索引提示成功！
+含义：
+
+zhouls，代表是索引库
+
+emp代表类型，员工的意思
+
+1代表id，
+
+####################################################################################	  
+
+
+测试logstash 有无成功
+# /usr/local/logstash-1.5.2/bin/logstash -e 'input { stdin { } } output { stdout {} }'
+调试
+vim test.conf
+input { stdin { } }
+output {
+   elasticsearch { hosts => "192.168.11.128:9200"}
+   stdout { codec=> rubydebug }
+}
+
+查看elasticsearch 有没有收到logstash 发来的日志
+curl 'http://192.168.111.128:9200/_search pretty'
+####################################################################################	  
+
+kibana的使用
+http://blog.csdn.net/ming_311/article/details/50619859
+	  
+	  
+	  
+
+./filebeat -e -c filebeat.yml -d "Publish"
+
+如果能看到一堆东西输出，表示正在向elasticsearch或logstash发送日志。
+
+
+
+
+启动kibana报错
+提示超request timeout 30000ms
+fatal] Error: listen EADDRINUSE 192.168.111.128:5601
+
+错误listen EADDRINUSE 是比较常见的错误。‘EADDRINUSE’，借助有道的翻译，意思是：错误地址使用。‘EADDRINUSE’应该是‘error address in use’的缩写。后来借助google找到了合理的解释，说是你监听的端口已经被使用了!
+
+
+
+
+
+
+
+ELK(Elasticsearch/Logstash/Kibana)安装时常见错误总结
+http://www.fx114.net/qa-117-153974.aspx
+
+
+
+curl -XPUT 'http://192.168.111.128:9200/_template/filebeat pretty' -d@//usr/local/filebeat-1.3.1/filebeat.template.json
+logstash 配置文件示例
+
+input {
+    twitter {
+        consumer_key =>
+        consumer_secret =>
+        keywords =>
+        oauth_token =>
+        oauth_token_secret =>
+    }
+    beats {
+        port => "5043"
+        ssl => true
+        ssl_certificate => "/path/to/ssl-cert"
+        ssl_key => "/path/to/ssl-key"
+    }
+}
+output {
+    elasticsearch {
+        hosts => ["IP Address 1:port1", "IP Address 2:port2", "IP Address 3"]
+    }
+    file {
+        path => /path/to/target/file
+    }
+}
+
+ 
+ 
+ 
+filebeat 配置文件示例
+filebeat:
+  prospectors:
+    -
+      paths:
+        - /var/log/messages
+      encoding: utf-8
+      input_type: log
+output:
+  logstash:
+    hosts: ["192.168.111.128:5055"]
+    worker: 1
+shipper:
+  name: 192.168.111.10
+logging:
+  to_syslog: false
+  to_files: true
+  files:
+    path: /var/log/mybeat
+  level: info
+
+客户端要执行这句
+
+  curl -XPUT 'http://192.168.111.128:9200/_template/filebeat pretty' -d@//usr/local/filebeat-1.3.1/filebeat.template.json
+  curl -XPUT 'http://192.168.111.128:9200/_template/topbeat' -d@/etc/topbeat/topbeat.template.json
+  
+logstash
+
+input {
+    beats {
+        port => 5055
+    }
+}
+output {
+    elasticsearch {
+        hosts => "192.168.111.128:9200"
+        index => "logstash-filebeat-%{+YYYY-MM-dd}"
+    }
+}
+
+
+
+
+
+
+
+# vi /etc/filebeat/filebeat.yml
+filebeat:
+  prospectors:
+    -
+      paths:
+        - /www.ttlsa.com/logs/mysql/slow.log
+      document_type: mysqlslowlog
+      input_type: log
+      multiline:
+        negate: true
+        match: after
+    -
+      paths:
+        - /www.ttlsa.com/logs/mongodb/mongodb.log 
+      document_type: mongodblog
+  registry_file: /var/lib/filebeat/registry
+output:
+  logstash:
+    hosts: ["10.6.66.18:5046"]
+shipper:
+logging:
+  files:
+  
+	
+# vi 17-mongodblog.conf 
+filter {
+  if [type] == "mongodblog" {
+ 
+    grok {
+       match => ["message","%{TIMESTAMP_ISO8601:timestamp}\s+%{MONGO3_SEVERITY:severity}\s+%{MONGO3_COMPONENT:component}\s+( :\[%{DATA:context}\]) \s+%{GREEDYDATA:body}"]
+    }
+ 
+    if [body] =~ "ms$"  {  
+       grok {
+         match => ["body","query\s+%{WORD:db_name}\.%{WORD:collection_name}.*}.*\}(\s+%{NUMBER:spend_time:int}ms$) "]
+       }
+    }
+ 
+    date {
+      match => [ "timestamp", "UNIX", "YYYY-MM-dd HH:mm:ss", "ISO8601"]
+      remove_field => [ "timestamp" ]
+    }
+  }
+}  
+  
+# vim 30-beats-output.conf 
+output {
+    if "_grokparsefailure" in [tags] {
+      file { path => "/var/log/logstash/grokparsefailure-%{[type]}-%{+YYYY.MM.dd}.log" }
+    }
+ 
+if [@metadata][type] in [ "mysqlslowlog", "mongodblog" ] {
+    elasticsearch {
+      hosts => ["10.6.66.18:9200"]
+      sniffing => true
+      manage_template => false
+      template_overwrite => true
+      index => "%{[@metadata][beat]}-%{[type]}-%{+YYYY.MM.dd}"
+      document_type => "%{[@metadata][type]}"
+    }
+}
+
+
+
+rsyslog使用if判断
+module(load="imfile")
+module(load="omkafka")
+$PreserveFQDN on
+main_queue(
+  queue.workerthreads="10"      # threads to work on the queue
+  queue.dequeueBatchSize="1000" # max number of messages to process at once
+  queue.size="50000"            # max queue size
+)
+######################### nginx access #####################
+$template nginxlog,"xd172\.16\.11\.44`%msg%"
+ruleset(name="nginxlog") {
+    action(
+        broker=["10.13.88.190:9092","10.13.88.191:9092","10.13.88.192:9092","10.13.88.193:9092"]
+        type="omkafka"
+        topic="cms-nimg-s3"
+        template="nginxlog"
+        partitions.auto="on"
+     )
+  }
+input(type="imfile"
+      File="/data1/ms/comos/logs/access_s3.log"
+      Tag=""
+      ruleset="nginxlog"
+      freshStartTail="on"
+      reopenOnTruncate="on"
+     )
+####################### python s3 post  error################################
+$template s3post,"xd172\.16\.11\.43 %msg%"
+ruleset(name="s3post") {
+    if  ( $msg contains "post" ) then {
+        action(
+              broker=["10.13.88.190:9092","10.13.88.191:9092","10.13.88.192:9092","10.13.88.193:9092"]
+              type="omkafka"
+              topic="cms-nimg-s3-post"
+              template="s3post"
+              partitions.auto="on"
+              )
+       }
+    if  ( $msg contains "ERROR" ) then {
+        action(
+              broker=["10.13.88.190:9092","10.13.88.191:9092","10.13.88.192:9092","10.13.88.193:9092"]
+              type="omkafka"
+              topic="cms-nimg-s3-post-error"
+              template="s3post"
+              partitions.auto="on"
+              )
+       }
+}
+input(type="imfile"
+      File="/data1/ms/comos/logs/s3q_daemon_0.err"
+      Tag=""
+      ruleset="s3post"
+      freshStartTail="on"
+      reopenOnTruncate="on"
+     )
+input(type="imfile"
+      File="/data1/ms/comos/logs/s3q_daemon_1.err"
+      Tag=""
+      ruleset="s3post"
+      freshStartTail="on"
+      reopenOnTruncate="on"
+     )
+input(type="imfile"
+      File="/data1/ms/comos/logs/s3q_daemon_2.err"
+      Tag=""
+      ruleset="s3post"
+      freshStartTail="on"
+      reopenOnTruncate="on"
+     )
+
+	 
+	 
+	 格式模式 说明 
+　d 月中的某一天。一位数的日期没有前导零。 
+　dd 月中的某一天。一位数的日期有一个前导零。 
+　ddd 周中某天的缩写名称，在 AbbreviatedDayNames 中定义。 
+　dddd 周中某天的完整名称，在 DayNames 中定义。 
+　M 月份数字。一位数的月份没有前导零。 
+　MM 月份数字。一位数的月份有一个前导零。 
+　MMM 月份的缩写名称，在 AbbreviatedMonthNames 中定义。 
+　MMMM 月份的完整名称，在 MonthNames 中定义。 
+　y 不包含纪元的年份。如果不包含纪元的年份小于 10，则显示不具有前导零的年份。 
+　yy 不包含纪元的年份。如果不包含纪元的年份小于 10，则显示具有前导零的年份。 
+　yyyy 包括纪元的四位数的年份。 
+　gg 时期或纪元。如果要设置格式的日期不具有关联的时期或纪元字符串，则忽略该模式。 
+　h 12 小时制的小时。一位数的小时数没有前导零。 
+　hh 12 小时制的小时。一位数的小时数有前导零。 
+　H 24 小时制的小时。一位数的小时数没有前导零。 
+　HH 24 小时制的小时。一位数的小时数有前导零。 
+　m 分钟。一位数的分钟数没有前导零。 
+　mm 分钟。一位数的分钟数有一个前导零。 
+　s 秒。一位数的秒数没有前导零。 
+　ss 秒。一位数的秒数有一个前导零。 
+　f 秒的小数精度为一位。其余数字被截断。 
+　ff 秒的小数精度为两位。其余数字被截断。 
+　fff 秒的小数精度为三位。其余数字被截断。 
+　ffff 秒的小数精度为四位。其余数字被截断。 
+　fffff 秒的小数精度为五位。其余数字被截断。 
+　ffffff 秒的小数精度为六位。其余数字被截断。 
+　fffffff 秒的小数精度为七位。其余数字被截断。 
+　t 在 AMDesignator 或 PMDesignator 中定义的 AM/PM 指示项的第一个字符（如果存在）。 
+　tt 在 AMDesignator 或 PMDesignator 中定义的 AM/PM 指示项（如果存在）。 
+　z 时区偏移量（“+”或“-”后面仅跟小时）。一位数的小时数没有前导零。例如，太平洋标准时间是“-8”。 
+　zz 时区偏移量（“+”或“-”后面仅跟小时）。一位数的小时数有前导零。例如，太平洋标准时间是“-08”。 
+　zzz 完整时区偏移量（“+”或“-”后面跟有小时和分钟）。一位数的小时数和分钟数有前导零。例如，太平洋标准时间是“-08:00”。 
+　: 在 TimeSeparator 中定义的默认时间分隔符。 
+　/ 在 DateSeparator 中定义的默认日期分隔符。 
+　% c 其中 c 是格式模式（如果单独使用）。如果格式模式与原义字符或其他格式模式合并，则可以省略“%”字符。 
+　\ c 其中 c 是任意字符。照原义显示字符。若要显示反斜杠字符，请使用“\\”。 
+
+查看分片UNASSIGNED
+https://www.datadoghq.com/blog/elasticsearch-unassigned-shards/
+
+
+curl -XGET 172.16.15.19:9200/_cat/shards?h=index,shard,prirep,state,unassigned.reason| grep UNASSIGNED

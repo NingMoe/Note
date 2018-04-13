@@ -1,0 +1,311 @@
+########### 每个指令必须有分号结束。#################
+main全局配置
+
+user nobody nobody;  					#定义Nginx运行的用户和用户组,系统中必须有此用户,默认为nobody nobody
+
+worker_processes 1;   					#允许生成的进程数，默认为1，与服务器CPU有关，最大为CPU个数*2
+
+worker_cpu_affinity 0001 ；				#在高并发情况下，通过设置cpu粘性来降低由于多CPU核切换造成的寄存器等现场重建带来的性能损耗。如worker_cpu_affinity 0001 0010 0100 1000; （四核）。				
+	
+worker_rlimit_nofile 65535;			    #现在在Linux2.6内核下开启文件打开数为65535，worker_rlimit_nofile就相应应该填写65535 ，指当一个nginx进程打开的最多文件描述符数目，理论值应该是最多打开文件数（ulimit-n）与nginx进程数相除，但是nginx分配请求并不是那么均匀，所以最好与ulimit-n的值保持一致。
+
+pid  logs/nginx.pid;   			        #指定nginx进程运行文件存放地址
+
+error_log logs/error.log debug; 		#制定日志路径，级别。这个设置可以放入全局块，http块，server块，级别以此为：debug|info|notice|warn|error|crit|alert|emerg，debug输出日志最为详细，而crit输出日志最少。
+
+events {
+	accept_mutex on;  				    #设置网路连接序列化，防止惊群现象发生，默认为on
+	
+    multi_accept on;  					#设置一个进程是否同时接受多个网络连接，默认为off
+	
+    use epoll;      					#事件驱动模型，epoll是多路复用IO(I/OMultiplexing)中的一种高效方式,但是仅用于linux2.6以上内核,可以大大提高nginx的性能
+	
+    worker_connections  65535;    		#单个后台worker process进程的最大并发链接数 （最大连接数=连接数*进程数）
+}
+http {
+    include       conf/mime.types;      #文件扩展名与文件类型映射表，设定mime类型,类型由mime.type文件定义
+	
+    default_type  application/octet-stream;    #默认文件类型
+	
+    #access_log off; 					#取消服务日志 
+	
+    #log_format  main  '$remote_addr - $remote_user [$time_local] "$request" ' #日志输出自定义格式
+    #                  '$status $body_bytes_sent "$http_referer" '
+    #                  '"$http_user_agent" "$http_x_forwarded_for"';
+                                        
+    access_log logs/access.log main;  	#combined为日志格式的默认值
+	
+	server_tokens on;  					#禁止在错误页面上显示nginx版本号
+	
+    sendfile_max_chunk 100k;  			#每个进程每次调用传输数量不能大于设定的值，默认为0，即不设上限。
+	
+	charset utf-8; 						#默认编码
+	
+	server_names_hash_max_size 512;  	
+	
+	server_names_hash_bucket_size 128;  #服务器名字的hash表大小
+
+	client_header_buffer_size 32k;	    #上传文件大小限制
+	
+	large_client_header_buffers 4 64k;  ##客户端请求中较大的消息头指定的缓存最大数量和大小
+	
+	client_max_body_size 100m; 			#允许客户端请求的最大单文件字节数
+	
+	client_body_timeout 20;  			#设置客户端请求主体读取超时时间
+	
+    client_header_timeout 20; 					#设置客户端请求头读取超时时间open_file_cachemax=65535inactive=60s;#这个将为打开文件指定缓存，默认是没有启用的，max指定缓存数量，建议和打开文件数一致，inactive是指经过多长时间文件没被请求后删除缓存。
+
+	send_timeoute 25;					#指定响应客户端的超时时间，这个超时仅用于两个连接活动之间的时间，如果超时这个时间，客户端没有任何活动，Nginx将关闭连接
+	
+	open_file_cache_valid 80s;			#这个是指多长时间检查一次缓存的有效信息。
+
+	open_file_cache_min_uses 1;	
+
+	open_file_cache max=65535 inactive=20s；	#open_file_cache指令中的inactive参数时间内文件的最少使用次数，如果超过这个数字，文件描述符一直是在缓存中打开的，如上例，如果有一个文件在inactive时间内一次没被使用，它将被移除。
+	
+	sendfile on; 						#开启高效文件传输模式，sendfile指令指定nginx是否调用sendfile函数来输出文件，对于普通应用设为 on，如果用来进行下载等应用磁盘IO重负载应用，可设置为off，以平衡磁盘与网络I/O处理速度，降低系统的负载。注意：如果图片显示不正常把这个改 成off。
+	
+	tcp_nopush on; 						#防止网络阻塞，此选项允许或禁止使用socke的TCP_CORK的选项，此选项仅在使用sendfile的时候使用
+	
+	tcp_nodelay on; 					#防止网络阻塞,提高I/O性能
+	
+	autoindex on; 						#开启目录列表访问，合适下载服务器，默认关闭。
+	
+	autoindex_exact_size on;			#默认为on，显示出文件的确切大小，单位是bytes。改为off后，显示出文件的大概大小，单位是kB或者MB或者GB
+	
+	autoindex_localtime on;				#默认为off，显示的文件时间为GMT时间。改为on后，显示的文件时间为文件的服务器时间
+	
+	keepalive_timeout 60; 				#客户端连接保持会话超时时间，长连接超时时间，单位是秒
+	
+	limit_conn_zone  $binary_remote_addr zone=addr:10m; #开启限制IP连接数的时候需要使用
+	
+	#FastCGI相关参数是为了改善网站的性能：减少资源占用，提高访问速度
+
+	fastcgi_connect_timeout=60; 		#连接到后端fastcgi超时时间，这个值通常不要超过75秒，因为建立的越多，消耗的资源就越多
+	
+	fastcgi_send_timeout=60; 			#向fastcgi请求超时时间(这个指定值已经完成两次握手后向fastcgi传送请求的超时时间)
+	
+	fastcgi_rend_timeout=60; 			#接收fastcgi应答超时时间，同理也是2次握手后
+	PHP-FPM设置的脚本最大执行时间已经够长了，但执行耗时PHP脚本时，发现Nginx报错变为504错误。这是因为我们修改的只是PHP的配置，Nginx中也有关于与上游服务器通信超时时间的配置factcgi_connect/read/send_timeout。
+	
+	fastcgi_buffer_size=4k; 			#指定读取FastCGI应答第一部分需要用多大的缓冲区，一般第一部分应答不会超过1k，由于页面大小为4k，所以这里设置为4k。
+	
+	fastcgi_buffers 4 64k;				#指定本地需要多少和多大的缓冲区来缓冲fastcgi应答请求，假设一个php或java脚本所产生页面大小为256kb,那么会为其分配4个64kb的缓冲来缓存；若页面大于256kb,那么大于的256kb的部分会缓存到fastcgi_temp指定路径中，这并非是个好办法，内存数据处理快于硬盘，一般该值应该为站点中php/java脚本所产生页面大小中间值，如果站点大部分脚本所产生的页面大小为256kb，那么可把值设置为16 16k,4 64k等
+	
+	fastcgi_busy_buffers_size 128k; 	#默认值是fastcgi_buffer的2倍
+	
+	fastcgi_temp_file_write_size 128k;	#写入缓存文件使用多大的数据块，默认值是fastcgi_buffer的2倍
+	
+	#fastcgi_temp_path /data/ngx_fcgi_tmp;
+	
+	fastcgi_cache_path /usr/local/nginx/ngx_fcgi_cache levels=2:2 keys_zone=ngx_fcgi_cache:512m inactive=5d max_size=40g; #缓存路径文件，目录结构等级，关键字区域实际和非活动时间
+
+	#gzip模块设置
+	gzip on; 							#开启gzip压缩输出，减少网络传输。
+	
+	gzip_min_length 1k; 				#设置允许压缩的页面最小字节数，页面字节数从header头得content-length中进行获取。默认值是20。建议设置成大于1k的字节数，小于1k可能会越压越大。
+	
+	gzip_buffers 4 16k; 				#压缩缓冲区，设置系统获取几个单位的缓存用于存储gzip的压缩结果数据流。4 16k代表以16k为单位，安装原始数据大小以16k为单位的4倍申请内存。
+	
+	gzip_http_version 1.1; 				#压缩版本（默认1.1，前端如果是squid2.5请使用1.0）
+	
+	gzip_comp_level 1; 					#压缩等级，gzip压缩比，1压缩比最小处理速度最快，9压缩比最大但处理速度最慢(传输快但比较消耗cpu)
+	
+	gzip_types text/plain application/x-javascript text/css application/xml;	#压缩类型，默认就已经包含text/html，所以下面就不用再写了，写上去也不会有问题，但是会有一个warn。
+	
+	gzip_vary on;						#和http头有关系，会在响应头加个Vary:Accept-Encoding，可以让前端的缓存服务器缓存经过gzip压缩的页面，例如，用Squid缓存经过Nginx压缩的数据 
+	
+	#模块http_proxy
+	
+
+	client_body_buffer_size 512k; 		#缓冲区代理缓冲用户端请求的最大字节数，
+
+	proxy_connect_timeout 10; 			#nginx服务器与被代理的服务器建立连接的超时时间，默认60秒
+
+	proxy_send_timeout 5;				#nginx服务器想被代理服务器组发出write请求后，等待响应的超时间，默认为60秒。
+
+	proxy_read_timeout 60;	    		#nginx服务器想被代理服务器组发出read请求后，等待响应的超时间，默认为60秒。
+
+	
+	proxy_ignore_client_abort on;  		#客户端断网时，nginx服务器是否中断对被代理服务器的请求。默认为off。
+	
+	proxy_ignore_headers "Expires" "Set-Cookie";  #Nginx服务器不处理设置的http相应投中的头域，这里空格隔开可以设置多个。
+	
+	proxy_intercept_errors on;    		#如果被代理服务器返回的状态码为400或者大于400，设置的error_page配置起作用。默认为off
+	
+	proxy_headers_hash_max_size 1024; 	#存放http报文头的哈希表容量上限，默认为512个字符。
+	
+	proxy_headers_hash_bucket_size 128; #nginx服务器申请存放http报文头的哈希表容量大小。默认为64个字符。
+
+	#proxy_method get;    				#支持客户端的请求方法。post/get；
+	
+	proxy_buffer_size 4k; 				#设置代理服务器（nginx）从后端realserver读取并保存用户头信息的缓冲区大小，默认与proxy_buffers大小相同，其实可以将这个指令值设的小一点
+
+	proxy_buffers 4 32k; 				#proxy_buffers缓冲区，网页平均在32k以下的话，这样设置,设置用于读取应答（来自被代理服务器）的缓冲区数目和大小，默认情况也为分页大小，根据操作系统的不同可能是4k或者8k
+
+	proxy_busy_buffers_size 64k; 		#高负荷下缓冲大小（proxy_buffers*2）
+
+	proxy_temp_file_write_size 64k; 	#设定缓存文件夹大小，大于这个值，将从upstream服务器传输 ,设置在写入proxy_temp_path时数据的大小，预防一个工作进程在传递文件时阻塞太长
+	
+	proxy_max_temp_file_size			#当 proxy_buffers 放不下后端服务器的响应内容时，会将一部分保存到硬盘的临时文件中，这个值用来设置最大临时文件大小，默认1024M，它与 proxy_cache 没有关系。大于这个值，将从upstream服务器传回。设置为0禁用	
+	
+	proxy_temp_path   /usr/local/nginx/proxy_temp_dir; #proxy_temp_path用于指定临时缓存存储路径，这里需要注意的是，proxy_temp_path和proxy_cache_path指定的路径必须在同一个磁盘分区
+	
+	proxy_cache_path  /usr/local/nginx/proxy_cache_dir levels=1:2 keys_zone=cache_zone:2048m?inactive=1d?max_size=2g;
+										#levels=1:2设置目录层次?,这里是再去目录深度，第一层是一个字符，第二层是二个字符
+										#keys_zone 设置缓存名字和共享内存大小?
+										$inactive 在指定时间内没人访问则被删除在这里是1天?
+										$max_size 最大缓存空间?，当内存缓存不足时，nginx会将不经常访问的数据从内存写到磁盘?
+	
+	#proxy_ssl_session_reuse on; 		#默认为on，如果我们在错误日志中发现“SSL3_GET_FINSHED:digest check failed”的情况时，可以将该指令设置为off。
+
+    upstream mysvr {   					#指定负载均衡服务器
+	
+		ip_hash;						#每个请求按访问ip的hash结果分配，这样每个访客固定访问一个后端服务器，可以解决session的问题。
+										#负载均衡的方式有：	
+											1、轮巡，nginx默认就是轮询其权重都默认为1
+											2、weight  加权轮询：跟据配置的权重的大小而分发给不同服务器不同数量的请求
+											3、backend 热备：如果你有2台服务器，当一台服务器发生事故时，才启用第二台服务器给提供服务
+											4、ip_hash:nginx会让相同的客户端ip请求相同的服务器。
+										###
+															
+		server 127.0.0.1:7878 	 weight=2 max_fails=2 fail_timeout=2;  #指定轮询几率，weight和访问比率成正比，用于后端服务器性能不均的情况。
+	  
+		server 192.168.10.121:3333 weight=1 max_fails=2 fail_timeout=1;  
+	  
+		###关于nginx负载均衡配置的几个状态参数讲解。
+			1.down		表示单前的server暂时不参与负载
+			2.weight	为weight越大，负载的权重就越大。
+			3.max_fails：允许请求失败的次数默认为1.当超过最大次数时，返回proxy_next_upstream模块定义的错误
+			4.fail_timeout:max_fails次失败后，暂停的时间。
+			5.backup：其它所有的非backup机器down或者忙的时候，请求backup机器。所以这台机器压力会最轻。
+		###
+    }
+		
+    server {
+        keepalive_requests 120; 				#单连接请求上限次数。
+		
+        listen 80;								#监听端口
+		
+		root /var/www/html; 					#定义服务器的默认网站根目录位置
+		
+		default backlog=1024
+		
+		server_name localhost; 					#服务器域名	,域名可以有多个，用空格隔开	
+
+		location / {							#对aspx后缀的进行负载均衡请求
+
+
+			index index.php index.html index.htm;#定义首页索引文件的名称
+			
+			limit_conn addr 1;					#限制单IP的并发连接为1
+			
+			proxy_cache?cache_zone;?			#根keys_zone后的内容对应?
+			?
+			proxy_cache_valid??200?304?301?302?10d;???#哪些状态缓存多长时间??
+			
+			proxy_cache_valid??any?1d;????		#其他的缓存多长时间??
+			
+			proxy_cache_key?$host$uri$is_args$args;???#通过key来hash，定义KEY的值
+
+			proxy_pass http://mysvr ;			#请求转向mysvr 定义的服务器列表
+
+			proxy_redirect on;					#后端的Web服务器可以通过X-Forwarded-For获取用户真实IP
+
+			proxy_set_header Host $host;		#只要用户在浏览器中访问的域名绑定了 VIP VIP 下面有RS；则就用$host ；host是访问URL中的域名和端口  例：www.taobao.com:80
+
+			proxy_set_header X-Real-IP $remote_addr;	#把源IP 【$remote_addr,建立HTTP连接header里面的信息】赋值给X-Real-IP;这样在代码中 	$X-Real-IP来获取 源IP
+
+			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;	
+														#在nginx 作为代理服务器时，设置的IP列表，会把经过的机器ip，代理机器ip都记录下来，用 【，】隔开；代码中用 echo $x-forwarded-for |awk -F, '{print $1}' 来作为源IP
+														#以上三行，目的是将代理服务器收到的用户的信息传到真实服务器上;
+														
+			proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504;	
+														#当其中一台返回错误码404,500...等错误时，可以分配到下一台服务器程序继续处理，提高平台访问成功率，多可运用于前台程序负载，设置proxy_next_upstream
+
+			proxy_next_upstream off 					#因为proxy_next_upstream 默认值: proxy_next_upstream error timeout; 
+														#场景:当访问A时，A返回error timeout时，访问会继续分配到下一台服务器处理，就等于一个请求分发到多台服务器，就可能出现多次处理的情况， 
+														#如果涉及到充值，就有可能充值多次的情况，这种情况下就要把proxy_next_upstream关掉 
+			expires 1d;
+        } 
+		
+		location ~ .*\.(php|php5)$
+			{
+				 				#fastcgi 的其他参数配置
+				fastcgi_pass   127.0.0.1:9000;
+				fastcgi_index  index.php;
+				include        fastcgi.conf;				
+				fastcgi_cache ngx_fcgi_cache;		#开启fastcgi缓存并为其指定为ngx_fcgi_cache名称，降低cpu负载,防止502错误发生.
+				fastcgi_cache_valid 200 302 1h;		#应答代码缓存时间，200和302应答缓存为1个小时，301为一天,其他1分钟					
+				fastcgi_cache_valid 301 1d;				
+				fastcgi_cache_valid any 1m;				
+				fastcgi_cache_min_uses 1;			# 请求过多少次相同的URL后, 缓存将开始
+				fastcgi_cache_methods	GET;		# 缓存触发的方法 HEADER, GET, POST 中的一个或多个						
+				fastcgi_cache_key	"$scheme$request_method$host$request_uri"; # 生成的缓存名称的 key 的名字	    
+										# $scheme https/http
+										# $request_method 请求方法,基于上面的设置,这里为GET
+										# $host 主机
+										# $request_uri 请求地址
+				fastcgi_cache_use_stale  error timeout invalid_header http_500; # 定义哪些情况使用过期在缓存
+
+			}
+			
+		#图片缓存时间设置
+		location ~ .*\.(gif|jpg|jpeg|png|bmp|swf)$
+			{
+				expires 10d;
+			}
+			
+		#JS和CSS缓存时间设置
+		location ~ .*\.(js|css)$
+			{
+				expires 1h;
+			}
+		###访问控制 allow/deny
+		location ~ /\.ht 
+			{
+			allow 192.168.10.100;
+			allow 172.29.73.0/24;
+			deny all;
+			}
+		
+		#设定查看Nginx状态的地址
+		location /NginxStatus 
+			{
+				stub_status on;						#on为启用stubstatus的工作状态统计功能
+				access_log logs/NginxStatus.log;	#用来指定stubstatus模块访问日志文件
+				auth_basic "NginxStatus";			#nginx的一种认证机制
+				auth_basic_user_file conf/htpasswd;	#用来指定的密码文件，htpasswd文件的内容可以用apache提供的htpasswd工具来产生。
+			}
+		
+		#错误页面
+		error_page  404              /404.html;		
+        #redirect server error pages to the static page /50x.html
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html 
+			{
+            root   html;
+			}
+    }
+	#
+	# HTTPS server
+    #
+    #server {
+    #    listen       443 ssl;
+    #    server_name  localhost;
+
+    #    ssl_certificate      cert.pem;
+    #    ssl_certificate_key  cert.key;
+
+    #    ssl_session_cache    shared:SSL:1m;
+    #    ssl_session_timeout  5m;
+
+    #    ssl_ciphers  HIGH:!aNULL:!MD5;
+    #    ssl_prefer_server_ciphers  on;
+
+    #    location / {
+    #        root   html;
+    #        index  index.html index.htm;
+    #    }
+    #}
+}

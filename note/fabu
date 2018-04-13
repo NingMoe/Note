@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+#! Encoding UTF-8
+
+
+[ "$1" == "-l" ] && \
+tail -50 /proj/logs/gitopt.log
+
+function  Inputdir(){
+    DIR=/proj/web
+    cd $DIR && ls  
+    read -p "please input directory:" directory
+    cd $directory
+
+    echo "create git tag"
+    sleep 1
+}
+
+##create tag
+function createtag(){
+    echo "$(date +%Y%m%d_%H%M%S):"
+    echo 
+    echo "创建新标签和回滚命令"
+    echo "项目：$directory"
+    echo "-----------------------"
+    tagunm="v$(date +%Y%m%d_%H%M%S)" && \
+    echo $tagunm &&  git tag $tagunm  && \
+    echo "回滚命令:git checkout $tagunm " && \
+    echo 
+    echo 
+    echo "记录回滚commit: 一般不用" 
+    echo "git reset --hard  $(git show $tagunm| grep commit |awk '{print $2}')"
+    echo 
+    echo "记录分支"
+    echo "-----------------------"
+    git branch
+    echo 
+    echo "回滚命令记录日志: /proj/logs/gitopt.log"
+    echo  
+    echo "--------------------------------------------------------------------------------"
+}
+
+
+[ "$1" != "-l" ] && \
+Inputdir && \
+createtag |tee -a /proj/logs/gitopt.log
+
+

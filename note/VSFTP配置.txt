@@ -1,0 +1,105 @@
+
+1、安装
+
+yum install -y vsftpd
+
+2、配置
+
+[root@ksbjbouncer ~]# egrep -v "^$|^#" /etc/vsftpd/vsftpd.conf
+
+anonymous_enable=NO #是否开启匿名用户访问  一般不开启
+
+local_enable=YES  #本地用户
+
+write_enable=YES  #读权限
+
+local_umask=022
+
+dirmessage_enable=YES #欢迎信息
+
+xferlog_enable=YES #开启日志记录
+
+connect_from_port_20=YES
+
+xferlog_std_format=YES
+
+chroot_local_user=YES #单独开启时，本地用户不能切换上一级目录
+
+chroot_list_enable=YES # 如果chroot_local_user设置了YES，那么chroot_list_file，设置的文件里，是不被chroot的用户(可以向上改变目录)
+
+chroot_list_file=/etc/vsftpd/chroot_list
+
+listen=YES  #监听IPV4
+
+listen_ipv6=NO
+
+pam_service_name=vsftpd  #服务名
+
+userlist_enable=YES
+
+userlist_deny=NO #禁止userlist_file中的用户登陆.也不提示用户输入密码
+
+userlist_file=/etc/vsftpd/user_list
+
+tcp_wrappers=NO
+
+listen_port=55555
+
+allow_writeable_chroot=YES
+
+pasv_enable=yes   #开启被模式 被模式开启后，要注意在防火墙放通端口
+
+pasv_min_port=50000
+
+pasv_max_port=50999
+
+pasv_address=172.31.48.2
+
+pasv_addr_resolve=yes
+
+
+​
+
+注：在被动模式，服务器做了NAT，例如云主机，这时候我们用特定的IP访问机器，其实还转了一层。FTP客户端访问机器可能会没响应。具体情况为登录成功，但是list目录和文件的时候卡住。
+
+我们需要设置：
+
+pasv_address=172.31.48.2
+
+pasv_addr_resolve=yes
+
+
+3、添加用户
+
+useradd -d /xxxx/xxx -s /sbin/nologin
+
+-d  指定家目录
+
+-s  登陆的shell，FTP用户设置不可登陆
+
+
+
+﻿##############
+
+vsftpd中几种用户的区分：
+
+本地用户：用户在FTP服务器拥有账号，且该账号为本地用户的账号，可以通过自己的账号和口令进行授权登录，登录目录为自己的home目录$HOME
+
+虚拟用户：用户在FTP服务器上拥有账号，但该账号只能用于文件传输服务。登录目录为某一特定的目录，通常可以上传和下载
+
+匿名用户：用户在FTP服务器上没有账号，登录目录为/var/ftp
+
+
+状态码
+
+230 - 登录成功
+
+200 - 命令执行成功
+
+150 - 文件状态正常，开启数据连接端口
+
+250 - 目录切换操作完成
+
+226 - 关闭数据连接端口，请求的文件操作成功
+
+

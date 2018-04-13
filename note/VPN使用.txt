@@ -1,0 +1,43 @@
+VPN使用
+http://blog.csdn.net/l1028386804/article/details/72906818
+
+192.168.20.60
+a.yyft.com 1295   公司VPN端口与IP
+
+
+readme.txt  文件内容
+使用方法：
+OpenVPN 2.3.4 Windows 32位 安装文件：
+https://pan.baidu.com/s/1jIDpQuU
+OpenVPN 2.3.4 Windows 64位 安装文件：
+https://pan.baidu.com/s/1o8lxvke
+
+下载OpenVPN软件后一路默认安装（根据自己操作系统下载），如已安装，请按下面操作
+
+1、将OpenVPN服务器上的client.ovpn、ca.crt、zhangs.crt、zhangs.key、ta.key放在Windows客户端OpenVPN安装目录下的config文件夹（C:\Program Files\OpenVPN\config）
+
+2、修改client.ovpn证书：在第89,90行的位置，修改指定的 crt 和 key 文件，与之生成的证书文件名匹配。（注意给你的crt 和 key 文件名字，就是你名字的缩写）
+例：
+cert zhangs.crt
+key zhangs.key    
+
+3、启动OpenVPN GUI (右键用管理员权限启动),
+在电脑右下角的openvpn图标上右击，选择“Connect”。正常情况下应该能够连接成功，分配正常的IP，注意看OpenVPN 是否变成绿色状态。
+
+4、测试
+ping通服务器的内网IP，说明已经接入到服务器的内部网络。
+
+
+##############################################################################
+创建一个客户VPN   60机子root操作
+cd /usr/share/easy-rsa/2.0/
+source vars             # 初始化环境变量 
+./build-key client1     #为客户端生成证书和密钥（一路按回车，直到提示需要输入y/n时，输入y再按回车，一共两次）
+##在./key  目录下生成如下文件
+## 02.pem  client1.crt  client1.key  client1.csr   
+##将 client1.crt  client1.key  client.ovpn  ca.crt  ta.key  拷贝下来给客户即可
+
+
+
+
+
